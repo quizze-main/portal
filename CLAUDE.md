@@ -28,6 +28,15 @@ npm start                # Production server
 npm run start:prod       # Build + Production server
 ```
 
+### Production Deployment
+
+**ВАЖНО:** Деплой на прод ТОЛЬКО через агента `deploy-prod`.
+
+- **SSH:** `quizze_prod`
+- **Путь:** `/opt/portal-prod`
+- **Переменные окружения:** `.env` на сервере
+- **Workflow:** `.github/workflows/deploy-prod.yml`
+
 ### Docker
 ```bash
 npm run docker:local     # Docker compose с hot reload (Traefik + ngrok + webhook-setup)
