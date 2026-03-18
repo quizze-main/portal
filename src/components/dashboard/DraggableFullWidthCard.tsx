@@ -50,7 +50,7 @@ export function DraggableFullWidthCard({
       {/* Card wrapper */}
       <div
         className={cn(
-          "group",
+          "group h-full",
           isEditMode && "ml-6 pointer-events-none is-edit-mode"
         )}
       >

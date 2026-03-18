@@ -580,6 +580,9 @@ export interface DashboardMetricConfig {
   lossMode?: 'auto' | 'formula' | 'jsonpath' | 'disabled' | 'tracker';
   lossFormula?: string;
   jsonPathLoss?: string;
+  // V7: Forecast prediction
+  forecastMethod?: 'linear' | 'custom' | 'disabled';
+  forecastFormula?: string;
 }
 
 // V5: Ranking loss configuration

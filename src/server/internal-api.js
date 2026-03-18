@@ -17,6 +17,7 @@ import { resolvePlan, readPlans as readMetricPlans } from './metric-plans-api.js
 import { generateCacheKey, withCache, CACHE_TTL, isRedisConnected } from './cache.js';
 import { aggregate } from './aggregation-engine.js';
 import { getDynamicPlan } from './plan-engine.js';
+import { calculateForecast, buildDateContext } from './forecast-engine.js';
 import { setupEventRoutes } from './event-ingestion.js';
 import { listAdapters, clearAdapterCache } from './adapters/adapter-loader.js';
 import { manualPoll } from './adapters/polling-scheduler.js';
@@ -2238,7 +2239,7 @@ export function setupInternalApiRoutes(app) {
   };
 
   // Build normalized metric response from fact/plan/meta (V2: uses metricType + thresholds)
-  const _buildMetricResponse = (metricCfg, fact, plan, forecastRaw, lossOrOver, valueType, valuePostfixType, remainingWorkingDays = 0) => {
+  const _buildMetricResponse = (metricCfg, fact, plan, forecastRaw, lossOrOver, valueType, valuePostfixType, remainingWorkingDays = 0, dateCtx = null) => {
     const unitFromPostfix =
       valuePostfixType === 'rubles' ? '₽'
         : valuePostfixType === 'percent' ? '%'
@@ -2305,6 +2306,18 @@ export function setupInternalApiRoutes(app) {
       }
     }
 
+    // V7: Predictive forecast (end-of-month projection)
+    let predictedValue = undefined;
+    let predictedCompletion = undefined;
+    let dailyRate = undefined;
+    const effectiveDateCtx = dateCtx || buildDateContext(remainingWorkingDays);
+    const prediction = calculateForecast(metricCfg, fact, plan, effectiveDateCtx);
+    if (prediction) {
+      predictedValue = prediction.predictedValue;
+      predictedCompletion = prediction.predictedCompletion;
+      dailyRate = prediction.dailyRate;
+    }
+
     return {
       id: metricCfg.id,
       name: metricCfg.name,
@@ -2330,6 +2343,10 @@ export function setupInternalApiRoutes(app) {
       remainingDailyPlan: forecastLabel === 'remaining' && remainingWorkingDays > 0
         ? Math.round(Math.max(0, plan - fact) / remainingWorkingDays)
         : undefined,
+      // V7: Predictive forecast
+      predictedValue,
+      predictedCompletion,
+      dailyRate,
     };
   };
 

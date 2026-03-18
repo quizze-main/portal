@@ -148,6 +148,14 @@ function migrateMetric(m) {
   if (m.lossFormula === undefined) m.lossFormula = '';
   if (m.jsonPathLoss === undefined) m.jsonPathLoss = '';
 
+  // V7: Forecast prediction
+  const VALID_FORECAST_METHODS = ['linear', 'custom', 'disabled'];
+  if (m.forecastMethod && !VALID_FORECAST_METHODS.includes(m.forecastMethod)) {
+    m.forecastMethod = null;
+  }
+  if (m.forecastMethod === undefined) m.forecastMethod = null; // null = auto-detect from metricType
+  if (m.forecastFormula === undefined) m.forecastFormula = '';
+
   return m;
 }
 

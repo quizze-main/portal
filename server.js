@@ -426,7 +426,7 @@ app.post('/api/auth/telegram', async (req, res) => {
 
 // Dev auto-login (no PIN required, only when DEV_AUTO_LOGIN=true)
 app.post('/api/auth/dev-auto', async (req, res) => {
-    if (process.env.DEV_AUTO_LOGIN !== 'true') {
+    if (process.env.DEV_AUTO_LOGIN !== 'true' || process.env.NODE_ENV === 'production') {
         return res.status(403).json({ error: 'Dev auto-login is disabled' });
     }
     const JWT_SECRET = process.env.JWT_SECRET;
@@ -530,9 +530,9 @@ app.post('/api/auth/demo', async (req, res) => {
         tg_chat_id: demoTgUsername,
         designation,
         department,
-        demo: false
+        demo: true
     };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
     res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

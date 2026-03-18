@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
 import { isDbConnected, query } from './db.js';
+import { requireAuth } from './requireAuth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,7 +47,7 @@ function writeSessions(sessions) {
 
 export function setupSalaryAdminRoutes(app) {
   // List all sessions
-  app.get('/api/admin/salary/sessions', (req, res) => {
+  app.get('/api/admin/salary/sessions', requireAuth, (req, res) => {
     try {
       const sessions = readSessions();
       // Return summaries (without full employee data) for list view
@@ -69,7 +70,7 @@ export function setupSalaryAdminRoutes(app) {
   });
 
   // Get a single session
-  app.get('/api/admin/salary/sessions/:id', (req, res) => {
+  app.get('/api/admin/salary/sessions/:id', requireAuth, (req, res) => {
     try {
       const sessions = readSessions();
       const session = sessions.find(s => s.id === req.params.id);
@@ -82,7 +83,7 @@ export function setupSalaryAdminRoutes(app) {
   });
 
   // Save a new session
-  app.post('/api/admin/salary/sessions', (req, res) => {
+  app.post('/api/admin/salary/sessions', requireAuth, (req, res) => {
     try {
       const sessions = readSessions();
       const now = new Date().toISOString();
@@ -103,7 +104,7 @@ export function setupSalaryAdminRoutes(app) {
   });
 
   // Delete a session
-  app.delete('/api/admin/salary/sessions/:id', (req, res) => {
+  app.delete('/api/admin/salary/sessions/:id', requireAuth, (req, res) => {
     try {
       let sessions = readSessions();
       const idx = sessions.findIndex(s => s.id === req.params.id);
