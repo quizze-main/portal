@@ -1,181 +1,77 @@
 name: Deploy to Prod
 
-# Запуск по кнопке с помощью workflow_dispatch
 on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to deploy'  # Ветка, которую будем деплоить
+        description: 'Branch to deploy'
         required: true
         default: 'main'
-      deploy_infrastructure:
-        description: 'Deploy Infrastructure (PostgreSQL + Redis)'
-        type: boolean
-        default: false
-      deploy_prod:
-        description: 'Deploy Production Services (Traefik + Backend + Frontend)'
-        type: boolean
-        default: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Production
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.inputs.branch }}  # Получаем указанную ветку
+        ref: ${{ github.event.inputs.branch }}
 
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Секретный SSH ключ для доступа к серверу
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Set deployment variables
       run: |
-        echo "SSH_PORT=${SSH_PORT:-22}" >> $GITHUB_ENV
-        echo "DEPLOY_PATH=${DEPLOY_PATH:-/opt/portal-prod}" >> $GITHUB_ENV
-        echo "SSH_USER=${SSH_USER}" >> $GITHUB_ENV
-        echo "SSH_HOST=${SSH_HOST}" >> $GITHUB_ENV
-        echo "DOMAIN=${DOMAIN}" >> $GITHUB_ENV
-        echo "POSTGRES_DB=${POSTGRES_DB}" >> $GITHUB_ENV
-        echo "POSTGRES_USER=${POSTGRES_USER}" >> $GITHUB_ENV
-        echo "POSTGRES_PORT=${POSTGRES_PORT}" >> $GITHUB_ENV
-        echo "POSTGRES_USE_SSL=${POSTGRES_USE_SSL:-false}" >> $GITHUB_ENV
-        echo "POSTGRES_SSL_CERT_PATH=${POSTGRES_SSL_CERT_PATH}" >> $GITHUB_ENV
-        echo "REDIS_PORT=${REDIS_PORT:-6379}" >> $GITHUB_ENV
-      env:
-        SSH_PORT: ${{ vars.SSH_PORT }}
-        DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-        SSH_USER: ${{ vars.SSH_USER }}
-        SSH_HOST: ${{ vars.SSH_HOST }}
-        DOMAIN: ${{ vars.DOMAIN }}
-        POSTGRES_DB: ${{ vars.POSTGRES_DB }}
-        POSTGRES_USER: ${{ vars.POSTGRES_USER }}
-        POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
-        POSTGRES_USE_SSL: ${{ vars.POSTGRES_USE_SSL }}
-        POSTGRES_SSL_CERT_PATH: ${{ vars.POSTGRES_SSL_CERT_PATH }}
-        REDIS_PORT: ${{ vars.REDIS_PORT }}
+        echo "DEPLOY_PATH=${{ vars.DEPLOY_PATH }}" >> $GITHUB_ENV
+        echo "SSH_USER=${{ vars.SSH_USER }}" >> $GITHUB_ENV
+        echo "SSH_HOST=${{ vars.SSH_HOST }}" >> $GITHUB_ENV
+        echo "DOMAIN=${{ vars.DOMAIN }}" >> $GITHUB_ENV
 
     - name: Debug connection
       run: |
-        ssh -o StrictHostKeyChecking=no -p ${{ env.SSH_PORT }} ${{ env.SSH_USER }}@${{ env.SSH_HOST }} 'echo "SSH connection successful"'
+        ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} 'echo "SSH connection successful"'
 
-    - name: Sync project files to server using rsync
+    - name: Sync project files to server
       run: |
-        rsync -avz --delete --exclude '.git' --exclude 'node_modules' --exclude 'backups' --exclude 'data' --exclude '__pycache__' --exclude '*.log' --exclude '.env' --exclude 'docker/traefik/certs' -e "ssh -p ${{ env.SSH_PORT }}" ./ ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.DEPLOY_PATH }}
+        rsync -avz --delete \
+          --exclude '.git' \
+          --exclude 'node_modules' \
+          --exclude '.env' \
+          --exclude '*.log' \
+          -e "ssh -o StrictHostKeyChecking=no" \
+          ./ ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.DEPLOY_PATH }}
 
-    - name: Create .env file on server
+    - name: Deploy
       run: |
-        ssh -p ${{ env.SSH_PORT }} ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << EOF
-          cd ${{ env.DEPLOY_PATH }}
-          cat > .env << 'ENVEOF'
-        # Domain & SSL
-        DOMAIN=${{ env.DOMAIN }}
-        TRAEFIK_AUTH=${{ secrets.TRAEFIK_AUTH }}
-
-        # Database (для инфраструктуры)
-        POSTGRES_DB=${{ env.POSTGRES_DB }}
-        POSTGRES_USER=${{ env.POSTGRES_USER }}
-        POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-        POSTGRES_PORT=${{ env.POSTGRES_PORT }}
-        POSTGRES_USE_SSL=${{ env.POSTGRES_USE_SSL }}
-        POSTGRES_SSL_CERT_PATH=${{ env.POSTGRES_SSL_CERT_PATH }}
-
-        # Database URI (для бэкенда)
-        SERVER_DB_URI=${{ secrets.SERVER_DB_URI }}
-
-        # Redis (для инфраструктуры)
-        REDIS_PORT=${{ env.REDIS_PORT }}
-
-        # JWT
-        JWT_SECRET=${{ secrets.JWT_SECRET }}
-        ENVEOF
-        EOF
-
-    - name: Create docker network if not exists
-      run: |
-        ssh -p ${{ env.SSH_PORT }} ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << EOF
-          cd ${{ env.DEPLOY_PATH }}
-          sudo docker network create portal-network 2>/dev/null || true
-        EOF
-
-    - name: Deploy Infrastructure
-      if: ${{ inputs.deploy_infrastructure }}
-      run: |
-        ssh -p ${{ env.SSH_PORT }} ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
           set -e
-          
-          echo "🚀 Начинаем деплой инфраструктуры..."
-          
-          cd ${{ env.DEPLOY_PATH }}
-          
-          if [ ! -f .env ]; then
-            echo "❌ Ошибка: .env файл не найден!"; exit 1
-          fi
-          
-          echo "🛑 Останавливаем текущие контейнеры..."
-          sudo -E docker compose --env-file .env -f docker/docker-compose.infra.yml down || true
-          
-          echo "🚀 Запускаем инфраструктуру..."
-          sudo -E docker compose --env-file .env -f docker/docker-compose.infra.yml up -d --build postgres redis
-          
-          echo "⏳ Ждем запуска сервисов..."
-          sleep 10
-          
-          echo "📊 Статус контейнеров:"
-          sudo -E docker compose --env-file .env -f docker/docker-compose.infra.yml ps
-          
-          echo "🧹 Очищаем старые образы..."
-          sudo -E docker image prune -f
-          
-          echo "✅ Деплой инфраструктуры завершен успешно!"
-        EOF
 
-    - name: Deploy Production Services
-      if: ${{ inputs.deploy_prod }}
-      run: |
-        ssh -p ${{ env.SSH_PORT }} ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
-          set -e
-          
           echo "🚀 Начинаем деплой Portal..."
-          
+
           cd ${{ env.DEPLOY_PATH }}
-          
+
           if [ ! -f .env ]; then
-            echo "❌ Ошибка: .env файл не найден!"; exit 1
+            echo "❌ Ошибка: .env файл не найден!"
+            exit 1
           fi
-          
+
           echo "🛑 Останавливаем текущие контейнеры..."
-          sudo -E docker compose --env-file .env -f docker/docker-compose.prod.yml down || true
-          
-          echo "🔐 Настраиваем права доступа для SSL сертификатов..."
-          mkdir -p docker/traefik/certs
-          chmod 755 docker/traefik/certs
-          
-          if [ -f docker/traefik/certs/certificate.crt ] && [ -f docker/traefik/certs/certificate.key ]; then
-            chmod 644 docker/traefik/certs/certificate.crt
-            chmod 600 docker/traefik/certs/certificate.key
-            echo "✅ SSL сертификаты найдены"
-          else
-            echo "⚠️  ВНИМАНИЕ: SSL сертификаты не найдены!"
-            echo "   Убедитесь, что файлы certificate.crt и certificate.key находятся в docker/traefik/certs/"
-            echo "   Traefik может не запуститься без сертификатов."
-          fi
-          
+          docker compose -f docker-compose.prod.yml down || true
+
           echo "🚀 Запускаем Portal..."
-          sudo -E docker compose --env-file .env -f docker/docker-compose.prod.yml up -d --build
-          
+          docker compose -f docker-compose.prod.yml up -d --build
+
           echo "⏳ Ждем запуска приложения..."
-          sleep 10
-          
+          sleep 15
+
           echo "📊 Статус контейнеров:"
-          sudo -E docker compose --env-file .env -f docker/docker-compose.prod.yml ps
-          
+          docker compose -f docker-compose.prod.yml ps
+
           echo "🧹 Очищаем старые образы..."
-          sudo -E docker image prune -f
-          
-          echo "✅ Деплой Portal завершен успешно!"
+          docker image prune -f
+
+          echo "✅ Деплой Portal завершен!"
         EOF
