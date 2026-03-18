@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LoovIS Portal Design System */
+
+@layer base {
+  :root {
+    /* Background with gradient */
+    --background: 240 10% 98%;
+    --background-gradient: linear-gradient(135deg, hsl(240, 15%, 99%) 0%, hsl(240, 8%, 95%) 100%);
+    --foreground: 220 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+    --card-shadow: 0 2px 10px -1px rgba(0, 0, 0, 0.06);
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
+
+    /* LoovIS Brand Colors */
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --primary-dark: 220 15% 26%;
+    --primary-light: 239 84% 95%;
+
+    --secondary: 220 15% 93%;
+    --secondary-foreground: 220 15% 15%;
+
+    --muted: 240 8% 96%;
+    --muted-foreground: 220 12% 50%;
+
+    --accent: 239 84% 67%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-light: 0 85% 97%;
+
+    --success: 142 76% 40%;
+    --success-foreground: 0 0% 100%;
+    --success-light: 142 76% 96%;
+
+    --warning: 220 60% 50%;
+    --warning-foreground: 0 0% 100%;
+    --warning-light: 220 60% 96%;
+
+    --border: 220 15% 90%;
+    --input: 220 15% 92%;
+    --ring: 239 84% 67%;
+
+    --radius: 16px;
+
+    /* Header */
+    --header-bg: 220 15% 26%;
+    --header-foreground: 0 0% 100%;
+
+    /* Navigation */
+    --nav-bg: 0 0% 100%;
+    --nav-border: 220 15% 88%;
+    --nav-active: 239 84% 67%;
+    --nav-shadow: 0 -4px 20px -4px rgba(0, 0, 0, 0.1);
+
+    /* Progress bars */
+    --progress-bg: 220 15% 88%;
+    --progress-success: 142 76% 40%;
+
+    /* Avatars */
+    --avatar-blue: 239 84% 67%;
+    --avatar-orange: 25 95% 58%;
+
+    /* KPI Colors */
+    --kpi-reserve: 300 70% 65%;
+    --kpi-forecast: 220 15% 50%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for mobile scroll areas */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Fade effect for scroll indication */
+  .scroll-fade-right {
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  }
+}

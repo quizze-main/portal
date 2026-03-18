@@ -1,0 +1,144 @@
+{
+  "plans": [
+    {
+      "id": "a1c7ba26-3a1d-4199-9e14-97923bb09b54",
+      "metricId": "amo_leads_total",
+      "scope": "branch",
+      "scopeId": "moscow_club",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-07T21:08:36.520Z",
+      "updatedAt": "2026-03-07T21:08:36.520Z"
+    },
+    {
+      "id": "1d95af18-7441-4eba-9ce5-eb7bb4793d10",
+      "metricId": "amo_leads_total",
+      "scope": "branch",
+      "scopeId": "spb_clinic",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-07T21:08:36.520Z",
+      "updatedAt": "2026-03-07T21:08:36.520Z"
+    },
+    {
+      "id": "80f13522-682c-4d2d-b831-b5ba9301cf99",
+      "metricId": "amo_leads_total",
+      "scope": "branch",
+      "scopeId": "kaliningrad_club",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-07T21:08:36.520Z",
+      "updatedAt": "2026-03-07T21:08:36.520Z"
+    },
+    {
+      "id": "d6a80c99-dc3f-4298-abc4-d0f50e465580",
+      "metricId": "amo_leads_total",
+      "scope": "branch",
+      "scopeId": "kaliningrad_clinic",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-07T21:08:36.520Z",
+      "updatedAt": "2026-03-07T21:08:36.520Z"
+    },
+    {
+      "id": "590f4777-dcb1-4fad-8e9c-ba9ab6c93db6",
+      "metricId": "amo_leads_total",
+      "scope": "branch",
+      "scopeId": "yakutsk_club",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-07T21:08:36.520Z",
+      "updatedAt": "2026-03-07T21:08:36.520Z"
+    },
+    {
+      "id": "488b33bb-c779-43c0-87b2-751735213705",
+      "metricId": "amo_leads_total",
+      "scope": "branch",
+      "scopeId": "yakutsk_clinic",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-07T21:08:36.520Z",
+      "updatedAt": "2026-03-07T21:08:36.520Z"
+    },
+    {
+      "id": "f3db1ba1-e6d8-4cee-9e8e-809e23f2a18f",
+      "metricId": "amo_leads_total",
+      "scope": "branch",
+      "scopeId": "kazan_club",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-07T21:08:36.520Z",
+      "updatedAt": "2026-03-07T21:08:36.520Z"
+    },
+    {
+      "id": "09bb2285-b260-4854-af01-fc97aa6b34a2",
+      "metricId": "amo_leads_p10241466_s81062898",
+      "scope": "branch",
+      "scopeId": "1000000006",
+      "period": "2026-03",
+      "planValue": 1000,
+      "createdAt": "2026-03-07T21:10:32.213Z",
+      "updatedAt": "2026-03-07T21:10:32.213Z"
+    },
+    {
+      "id": "95cf7ab4-57e5-40bf-afec-4b0a2853d3d8",
+      "metricId": "amo_leads_p10241466_s81062894",
+      "scope": "branch",
+      "scopeId": "1000000052",
+      "period": "2026-03",
+      "planValue": 1000,
+      "createdAt": "2026-03-07T21:12:53.542Z",
+      "updatedAt": "2026-03-07T21:12:53.542Z"
+    },
+    {
+      "id": "58c8042c-a280-4429-9c13-3a566ed591b4",
+      "metricId": "revenue_created",
+      "scope": "branch",
+      "scopeId": "1000000052",
+      "period": "2026-03",
+      "planValue": 5000000,
+      "createdAt": "2026-03-07T21:17:49.602Z",
+      "updatedAt": "2026-03-14T10:58:12.299Z"
+    },
+    {
+      "id": "930f26aa-5174-4260-8e64-1fbb3efaf08f",
+      "metricId": "1",
+      "scope": "network",
+      "scopeId": "*",
+      "period": "2026-03",
+      "planValue": 1000000,
+      "createdAt": "2026-03-12T12:47:05.579Z",
+      "updatedAt": "2026-03-12T12:47:05.579Z"
+    },
+    {
+      "id": "bae79c6f-199e-4fac-b842-3282cb961d62",
+      "metricId": "csi",
+      "scope": "branch",
+      "scopeId": "1000000052",
+      "period": "2026-03",
+      "planValue": 100,
+      "createdAt": "2026-03-12T20:38:43.998Z",
+      "updatedAt": "2026-03-12T20:38:43.998Z"
+    },
+    {
+      "id": "72ee77a2-8153-4d6a-9f01-3264ca9f23dc",
+      "metricId": "csi",
+      "scope": "branch",
+      "scopeId": "1000000043",
+      "period": "2026-03",
+      "planValue": 90,
+      "createdAt": "2026-03-12T20:43:08.170Z",
+      "updatedAt": "2026-03-12T20:43:08.170Z"
+    },
+    {
+      "id": "e64cc9f2-375f-4998-bb56-e29d9d2ab407",
+      "metricId": "margin_rate",
+      "scope": "branch",
+      "scopeId": "1000000052",
+      "period": "2026-03",
+      "planValue": 6000000,
+      "createdAt": "2026-03-13T14:13:13.736Z",
+      "updatedAt": "2026-03-13T14:13:13.736Z"
+    }
+  ]
+}

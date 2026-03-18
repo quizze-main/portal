@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  outline-migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.Migration
+    environment:
+      - OUTLINE_BASE_URL=${OUTLINE_BASE_URL:-https://outline.loov.ru}
+      - OUTLINE_API_KEY=${OUTLINE_API_KEY}
+      - FRAPPE_BASE_URL=${FRAPPE_BASE_URL:-https://loovtest.erpnext.com}
+      - FRAPPE_API_KEY=${FRAPPE_API_KEY:-2a06bb8d1c393a3}
+      - FRAPPE_API_SECRET=${FRAPPE_API_SECRET:-550343f86db2294}
+      - MIGRATION_URLS=${MIGRATION_URLS:-}
+      - MIGRATION_URLS_FILE=${MIGRATION_URLS_FILE:-migration-input/urls.txt}
+    volumes:
+      # Монтируем директорию для входных файлов с URL
+      - ./migration-input:/app/migration-input:ro
+    command: ["node", "scripts/migrate-outline-to-frappe.js"] 

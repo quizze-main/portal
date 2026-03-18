@@ -1,0 +1,90 @@
+volumes:
+  redis_data:
+  postgres_data:
+
+services:
+  postgres:
+    extends:
+      file: ./docker-compose.yml
+      service: postgres
+    container_name: staff-focus-postgres-demo
+
+  redis:
+    extends:
+      file: ./docker-compose.yml
+      service: redis
+    container_name: staff-focus-redis-demo
+    ports:
+      - "6380:6379"
+
+  staff-focus-app-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        COMMIT_HASH: ${COMMIT_HASH:-unknown}
+        SHORT_HASH: ${SHORT_HASH:-unknown}
+        COMMIT_TIME: ${COMMIT_TIME:-unknown}
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+        VITE_API_SECRET_KEY: ${VITE_API_SECRET_KEY}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+        VITE_OUTLINE_BASE_URL: ${VITE_OUTLINE_BASE_URL}
+        VITE_FRAPPE_BASE_URL: ${VITE_FRAPPE_BASE_URL}
+        VITE_TG_BOT_USERNAME: ${VITE_TG_BOT_USERNAME}
+        YANDEX_TREKER_AUTH_TOKEN: ${YANDEX_TREKER_AUTH_TOKEN}
+        X_ORG_ID: ${X_ORG_ID}
+    container_name: staff-focus-app-demo
+    environment:
+      - NODE_ENV=production
+      - PORT=${PORT}
+      - FRAPPE_BASE_URL=${FRAPPE_BASE_URL}
+      - FRAPPE_INTEGRATION_TYPE=${FRAPPE_INTEGRATION_TYPE}
+      - FRAPPE_API_KEY=${FRAPPE_API_KEY}
+      - FRAPPE_API_SECRET=${FRAPPE_API_SECRET}
+      - VITE_FRAPPE_BASE_URL=${VITE_FRAPPE_BASE_URL}
+      - VITE_TG_BOT_USERNAME=${VITE_TG_BOT_USERNAME}
+      - X_ORG_ID=${X_ORG_ID}
+      - YANDEX_TREKER_AUTH_TOKEN=${YANDEX_TREKER_AUTH_TOKEN}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+      - DEMO_PIN=${DEMO_PIN}
+      - JWT_SECRET=${JWT_SECRET}
+      - EXTERNAL_API_KEY=${EXTERNAL_API_KEY}
+      - LOOV_IS_STAFF_PORTAL_URL=${LOOV_IS_STAFF_PORTAL_URL}
+      - HOST=${HOST}
+      - COMMIT_HASH=${COMMIT_HASH:-unknown}
+      - SHORT_HASH=${SHORT_HASH:-unknown}
+      - COMMIT_TIME=${COMMIT_TIME:-unknown}
+      - BUILD_TIME=${BUILD_TIME:-unknown}
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - VITE_API_SECRET_KEY=${VITE_API_SECRET_KEY}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - VITE_OUTLINE_BASE_URL=${VITE_OUTLINE_BASE_URL}
+      - OUTLINE_BASE_URL=${OUTLINE_BASE_URL}
+      - OUTLINE_API_KEY=${OUTLINE_API_KEY}
+      - TRACKER_API_URL=${TRACKER_API_URL}
+      - TRACKER_API_TOKEN=${TRACKER_API_TOKEN}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - OPENSEARCH_SEND_LOGS=false
+      - VICTORIA_LOGS_SEND_LOGS=${VICTORIA_LOGS_SEND_LOGS}
+      - VICTORIA_LOGS_URL=${VICTORIA_LOGS_URL}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-staff_focus}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-staff_focus}
+    ports:
+      - "${PORT}:${PORT}"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:${PORT}/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    command: ["npm", "run", "start:prod"]
+    volumes: []  # Переопределяем volumes, убирая все mount'ы
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy

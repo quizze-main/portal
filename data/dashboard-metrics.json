@@ -1,0 +1,1090 @@
+{
+  "metrics": [
+    {
+      "id": "revenue_created",
+      "name": "Выручка СЗ",
+      "unit": "₽",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "source": "tracker",
+      "trackerCode": "",
+      "enabled": true,
+      "order": 0,
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "manualData": [
+        {
+          "period": "2026-02",
+          "storeId": "",
+          "fact": 10000,
+          "plan": 10000
+        },
+        {
+          "period": "2026-03",
+          "storeId": "",
+          "fact": 15400,
+          "plan": 20000
+        },
+        {
+          "period": "2026-02",
+          "storeId": "1000000052",
+          "fact": 50000,
+          "plan": 0
+        },
+        {
+          "period": "2026-02-02",
+          "storeId": "1000000052",
+          "fact": 10000,
+          "plan": 0
+        },
+        {
+          "period": "2026-03",
+          "storeId": "1000000043",
+          "fact": 85000,
+          "plan": 120000
+        },
+        {
+          "period": "2026-03",
+          "storeId": "1000000052",
+          "fact": 5000,
+          "plan": 0
+        },
+        {
+          "period": "2026-03",
+          "storeId": "1000000006",
+          "fact": 97000,
+          "plan": 130000
+        },
+        {
+          "period": "2026-03-01",
+          "storeId": "1000000009",
+          "fact": 100,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-02",
+          "storeId": "1000000009",
+          "fact": 200,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-03",
+          "storeId": "1000000009",
+          "fact": 100,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-13",
+          "storeId": "1000000043",
+          "fact": 999,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-13",
+          "storeId": "1000000009",
+          "fact": 10000,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-12",
+          "storeId": "1000000009",
+          "fact": 1,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-14",
+          "storeId": "1000000009",
+          "fact": 200000,
+          "plan": 0
+        }
+      ],
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "color": "#EC4899",
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "currency",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [
+        {
+          "scope": "branch",
+          "scopeId": "1000000052",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "1000000006",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "1000000009",
+          "enabled": true
+        }
+      ],
+      "fieldMappings": [],
+      "lossMode": "disabled",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "revenue_closed",
+      "name": "Выручка ЗЗ",
+      "unit": "₽",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "source": "tracker",
+      "trackerCode": "revenue_closed",
+      "enabled": true,
+      "order": 2,
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "visibleToPositions": [
+        "senior_manager",
+        "manager",
+        "manager_5_2",
+        "manager_2_2",
+        "universal_manager",
+        "leader"
+      ],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "currency",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [
+        {
+          "scope": "network",
+          "scopeId": "*",
+          "enabled": true
+        }
+      ],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "color": "#3B82F6"
+    },
+    {
+      "id": "frames_count",
+      "name": "Кол-во ФЛ",
+      "unit": "шт",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "source": "tracker",
+      "trackerCode": "frames_count",
+      "enabled": true,
+      "order": 3,
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "count",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "conversion_rate",
+      "name": "Конверсия",
+      "unit": "%",
+      "forecastUnit": "%",
+      "forecastLabel": "deviation",
+      "source": "tracker",
+      "trackerCode": "conversion_rate",
+      "enabled": true,
+      "order": 4,
+      "widgetType": "kpi_deviation",
+      "parentId": null,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "averaged",
+      "valueType": "percentage",
+      "aggregation": "simple_average",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 1,
+      "thresholds": {
+        "critical": -5,
+        "good": 5
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "csi",
+      "name": "CSI",
+      "unit": "%",
+      "forecastUnit": "%",
+      "forecastLabel": "deviation",
+      "source": "tracker",
+      "trackerCode": "csi",
+      "enabled": true,
+      "order": 5,
+      "widgetType": "kpi_deviation",
+      "parentId": null,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "averaged",
+      "valueType": "percentage",
+      "aggregation": "simple_average",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 1,
+      "thresholds": {
+        "critical": -5,
+        "good": 5
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "avg_glasses_price",
+      "name": "Ср. стоимость очков",
+      "unit": "₽",
+      "forecastUnit": "%",
+      "forecastLabel": "deviation",
+      "source": "tracker",
+      "trackerCode": "avg_glasses_price",
+      "enabled": true,
+      "order": 6,
+      "widgetType": "kpi_deviation",
+      "parentId": null,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "averaged",
+      "valueType": "currency",
+      "aggregation": "simple_average",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": -5,
+        "good": 5
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "margin_rate",
+      "name": "Маржинальность",
+      "unit": "₽",
+      "forecastUnit": "%",
+      "forecastLabel": "deviation",
+      "source": "tracker",
+      "trackerCode": "margin_rate",
+      "enabled": true,
+      "order": 8,
+      "color": "#3B82F6",
+      "widgetType": "kpi_deviation",
+      "parentId": null,
+      "visibleToPositions": [
+        "manager"
+      ],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "averaged",
+      "valueType": "currency",
+      "aggregation": "simple_average",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": -5,
+        "good": 5
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": ""
+    },
+    {
+      "id": "avg_repaires_price",
+      "name": "Ср. стоимость ремонтов",
+      "unit": "₽",
+      "forecastUnit": "%",
+      "forecastLabel": "deviation",
+      "source": "tracker",
+      "trackerCode": "avg_repaires_price",
+      "enabled": true,
+      "order": 7,
+      "widgetType": "kpi_deviation",
+      "parentId": null,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "averaged",
+      "valueType": "currency",
+      "aggregation": "simple_average",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": -5,
+        "good": 5
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "test",
+      "name": "тест",
+      "unit": "",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "widgetType": "kpi_forecast",
+      "parentId": "revenue_created",
+      "source": "manual",
+      "trackerCode": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "manualData": [
+        {
+          "period": "2026-02",
+          "fact": 0,
+          "plan": 100000
+        },
+        {
+          "period": "2026-03",
+          "storeId": "",
+          "fact": 67500,
+          "plan": 100000
+        },
+        {
+          "period": "2026-03-13",
+          "storeId": "1000000009",
+          "fact": 0,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-12",
+          "storeId": "1000000009",
+          "fact": 200,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-14",
+          "storeId": "1000000009",
+          "employeeId": "HR-EMP-00015",
+          "employeeName": "Дмитрий Олегович Федулов",
+          "fact": 1000,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-15",
+          "storeId": "1000000009",
+          "employeeId": "HR-EMP-00015",
+          "employeeName": "Дмитрий Олегович Федулов",
+          "fact": 100,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-15",
+          "storeId": "1000000052",
+          "employeeId": "HR-EMP-00015",
+          "employeeName": "Дмитрий Олегович Федулов",
+          "fact": 100,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-17",
+          "storeId": "1000000009",
+          "employeeId": "HR-EMP-00015",
+          "employeeName": "Дмитрий Олегович Федулов",
+          "fact": 100,
+          "plan": 0
+        }
+      ],
+      "color": "#3B82F6",
+      "enabled": true,
+      "order": 8,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "count",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "disabled",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "2",
+      "name": "вторая",
+      "unit": "",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "widgetType": "kpi_forecast",
+      "parentId": "revenue_created",
+      "source": "manual",
+      "trackerCode": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "manualData": [
+        {
+          "period": "2026-02",
+          "fact": 0,
+          "plan": 1000
+        },
+        {
+          "period": "2026-03",
+          "storeId": "",
+          "fact": 820,
+          "plan": 1000
+        },
+        {
+          "period": "2026-03-13",
+          "storeId": "1000000009",
+          "fact": 0,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-14",
+          "storeId": "1000000009",
+          "fact": 222222,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-15",
+          "storeId": "1000000009",
+          "employeeId": "HR-EMP-00015",
+          "employeeName": "Дмитрий Олегович Федулов",
+          "fact": 2000,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-15",
+          "storeId": "1000000052",
+          "employeeId": "HR-EMP-00015",
+          "employeeName": "Дмитрий Олегович Федулов",
+          "fact": 200,
+          "plan": 0
+        },
+        {
+          "period": "2026-03-17",
+          "storeId": "1000000009",
+          "employeeId": "HR-EMP-00015",
+          "employeeName": "Дмитрий Олегович Федулов",
+          "fact": 222,
+          "plan": 0
+        }
+      ],
+      "color": "#3B82F6",
+      "enabled": true,
+      "order": 9,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "count",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "disabled",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "amo_leads_p10241466_s81063298",
+      "name": "Рассылка → Отправлено",
+      "unit": "шт.",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "source": "external_api",
+      "trackerCode": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "_embedded.leads.length",
+      "jsonPathPlan": "",
+      "manualData": [],
+      "color": "#3B82F6",
+      "enabled": false,
+      "order": 11,
+      "visibleToPositions": [],
+      "dataSourceId": "amo",
+      "externalPath": "/api/v4/leads",
+      "externalQueryParams": [
+        {
+          "key": "limit",
+          "value": "250"
+        },
+        {
+          "key": "filter[statuses][0][pipeline_id]",
+          "value": "10241466"
+        },
+        {
+          "key": "filter[statuses][0][status_id]",
+          "value": "81063298"
+        }
+      ],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "count",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "formula": "",
+      "formulaDependencies": [],
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "disabled",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "amo_leads_p10241466_s81062894",
+      "name": "Рассылка → Доставлено",
+      "unit": "шт.",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "source": "external_api",
+      "trackerCode": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "_embedded.leads.length",
+      "jsonPathPlan": "",
+      "manualData": [],
+      "color": "#3B82F6",
+      "enabled": false,
+      "order": 12,
+      "visibleToPositions": [],
+      "dataSourceId": "amo",
+      "externalPath": "/api/v4/leads",
+      "externalQueryParams": [
+        {
+          "key": "limit",
+          "value": "250"
+        },
+        {
+          "key": "filter[statuses][0][pipeline_id]",
+          "value": "10241466"
+        },
+        {
+          "key": "filter[statuses][0][status_id]",
+          "value": "81062894"
+        }
+      ],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "count",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "formula": "",
+      "formulaDependencies": [],
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "bindings": [
+        {
+          "scope": "branch",
+          "scopeId": "moscow_club",
+          "enabled": true
+        }
+      ],
+      "fieldMappings": [],
+      "lossMode": "disabled",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "amo_leads_total",
+      "name": "Сделки (всего)",
+      "unit": "шт.",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "source": "external_api",
+      "trackerCode": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "_embedded.leads.length",
+      "jsonPathPlan": "",
+      "manualData": [],
+      "color": "#3B82F6",
+      "enabled": true,
+      "order": 9,
+      "visibleToPositions": [
+        "leader"
+      ],
+      "dataSourceId": "amo",
+      "externalPath": "/api/v4/leads",
+      "externalQueryParams": [
+        {
+          "key": "limit",
+          "value": "250"
+        }
+      ],
+      "externalBody": null,
+      "metricType": "absolute",
+      "valueType": "count",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "formula": "",
+      "formulaDependencies": [],
+      "decimalPlaces": 0,
+      "thresholds": {
+        "critical": 70,
+        "good": 95
+      },
+      "bindings": [
+        {
+          "scope": "branch",
+          "scopeId": "moscow_club",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "spb_clinic",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "kaliningrad_club",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "kaliningrad_clinic",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "yakutsk_club",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "yakutsk_clinic",
+          "enabled": true
+        },
+        {
+          "scope": "branch",
+          "scopeId": "kazan_club",
+          "enabled": true
+        }
+      ],
+      "fieldMappings": [],
+      "lossMode": "disabled",
+      "lossFormula": "",
+      "jsonPathLoss": ""
+    },
+    {
+      "id": "1",
+      "name": "kassa",
+      "unit": "",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "source": "computed",
+      "trackerCode": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "manualData": [],
+      "color": "#3B82F6",
+      "enabled": true,
+      "order": 10,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "computed",
+      "valueType": "currency",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "formula": "{revenue_closed} + {revenue_created}",
+      "formulaDependencies": [],
+      "decimalPlaces": 0,
+      "thresholds": {},
+      "bindings": [
+        {
+          "scope": "network",
+          "scopeId": "*",
+          "enabled": true
+        }
+      ],
+      "lossMode": "auto",
+      "lossFormula": "",
+      "jsonPathLoss": "",
+      "fieldMappings": []
+    },
+    {
+      "id": "123",
+      "name": "222",
+      "unit": "",
+      "forecastUnit": "%",
+      "forecastLabel": "forecast",
+      "widgetType": "kpi_forecast",
+      "parentId": null,
+      "source": "computed",
+      "trackerCode": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "manualData": [],
+      "color": "#3B82F6",
+      "enabled": true,
+      "order": -1,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "computed",
+      "valueType": "currency",
+      "aggregation": "sum",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "formula": "{revenue_created.fact} + {revenue_closed.fact}",
+      "formulaDependencies": [],
+      "decimalPlaces": 0,
+      "thresholds": {},
+      "bindings": [
+        {
+          "scope": "network",
+          "scopeId": "*",
+          "enabled": true
+        }
+      ],
+      "lossMode": "auto",
+      "lossFormula": "",
+      "jsonPathLoss": "",
+      "fieldMappings": []
+    }
+  ],
+  "widgets": [
+    {
+      "id": "ranking_branches",
+      "type": "ranking",
+      "name": "Рейтинг филиалов",
+      "enabled": true,
+      "order": 100,
+      "config": {
+        "entityType": "branch",
+        "metricCodes": [
+          "revenue_created",
+          "revenue_closed",
+          "frames_count",
+          "conversion_rate",
+          "csi",
+          "avg_glasses_price",
+          "margin_rate",
+          "avg_repaires_price"
+        ],
+        "lossConfig": {
+          "mode": "metric",
+          "metricCode": "revenue_created",
+          "formula": ""
+        }
+      }
+    },
+    {
+      "id": "ranking_managers",
+      "type": "ranking",
+      "name": "Рейтинг менеджеров",
+      "enabled": true,
+      "order": 200,
+      "config": {
+        "entityType": "manager",
+        "metricCodes": [
+          "revenue_created",
+          "revenue_closed",
+          "frames_count",
+          "avg_glasses_price",
+          "conversion_rate",
+          "csi",
+          "margin_rate"
+        ],
+        "lossConfig": {
+          "mode": "metric",
+          "metricCode": "revenue_created",
+          "formula": ""
+        }
+      }
+    },
+    {
+      "id": "ranking_1773310065390",
+      "type": "ranking",
+      "name": "ЗЗ факт-план формула",
+      "enabled": true,
+      "order": 300,
+      "config": {
+        "entityType": "branch",
+        "metricCodes": [
+          "revenue_created",
+          "revenue_closed"
+        ],
+        "lossConfig": {
+          "mode": "auto",
+          "metricCode": "revenue_created",
+          "formula": "{revenue_closed} - {revenue_closed}"
+        }
+      },
+      "parentId": "revenue_created"
+    },
+    {
+      "id": "chart_1773409571032",
+      "type": "chart",
+      "name": "График: Выручка СЗ",
+      "enabled": true,
+      "order": 400,
+      "parentId": null,
+      "config": {
+        "metricCode": "revenue_created",
+        "chartType": "bar",
+        "subjectType": "store",
+        "isAggregated": true
+      }
+    },
+    {
+      "id": "chart_1773417367571",
+      "type": "chart",
+      "name": "csi",
+      "enabled": true,
+      "order": 500,
+      "parentId": "csi",
+      "config": {
+        "metricCode": "revenue_created",
+        "chartType": "percent",
+        "subjectType": "store",
+        "isAggregated": true
+      }
+    },
+    {
+      "id": "chart_1773426820098",
+      "type": "chart",
+      "name": "csi",
+      "enabled": true,
+      "order": 600,
+      "parentId": null,
+      "config": {
+        "metricSeries": [
+          {
+            "metricCode": "csi",
+            "chartType": "line",
+            "color": "#f7483b"
+          }
+        ],
+        "subjectType": "store",
+        "isAggregated": true
+      }
+    },
+    {
+      "id": "chart_1773433839472",
+      "type": "chart",
+      "name": "СЗ ЗЗ Клиенты",
+      "enabled": true,
+      "order": 700,
+      "parentId": null,
+      "config": {
+        "metricSeries": [
+          {
+            "metricCode": "revenue_closed",
+            "chartType": "bar",
+            "color": "#3B82F6",
+            "barStyle": "static"
+          },
+          {
+            "metricCode": "revenue_created",
+            "chartType": "bar",
+            "color": "#10B981",
+            "barStyle": "static"
+          },
+          {
+            "metricCode": "frames_count",
+            "chartType": "line",
+            "color": "#F59E0B"
+          }
+        ],
+        "subjectType": "store",
+        "isAggregated": false
+      }
+    },
+    {
+      "id": "metric_selector_chart",
+      "type": "metric_selector_chart",
+      "name": "График метрики",
+      "enabled": true,
+      "order": 800,
+      "parentId": null,
+      "config": {}
+    },
+    {
+      "id": "chart_1773472017784",
+      "type": "chart",
+      "name": "Мульти-график",
+      "enabled": true,
+      "order": 900,
+      "parentId": "revenue_created",
+      "config": {
+        "metricSeries": [],
+        "subjectType": "store",
+        "isAggregated": true,
+        "isMetricSelector": true
+      }
+    },
+    {
+      "id": "ranking_1773482203452",
+      "type": "ranking",
+      "name": "Рейтинг филиалов",
+      "enabled": true,
+      "order": 1000,
+      "parentId": "revcrea",
+      "config": {
+        "entityType": "branch",
+        "metricCodes": [
+          "revenue_created",
+          "revenue_closed"
+        ],
+        "lossConfig": {
+          "mode": "formula",
+          "metricCode": "revenue_created",
+          "formula": "{revenue_created} + {revenue_closed}"
+        }
+      }
+    }
+  ]
+}

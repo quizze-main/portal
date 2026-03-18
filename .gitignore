@@ -1,0 +1,53 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker
+letsencrypt/
+certs/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Автоматически генерируемый файл версии
+src/version.json
+
+# Opensearch
+opensearch-data/*
+opensearch-config/*
+!opensearch-config/jvm.options
+!opensearch-config/opensearch.yml
+!opensearch-config/log4j2.properties
+
+#Redis
+redis-data/*
+
+# Vendor / temp clones
+# _vendor is used for git subtree vendors (e.g. loovis-sandbox). Do not ignore it.
+# If you need to ignore other vendor folders, do it more specifically.
+# _vendor/

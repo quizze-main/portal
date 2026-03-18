@@ -1,0 +1,13 @@
+name: 🛳 Deploy Prod
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Prod
+
+    steps:
+      - name: Trigger Portainer PROD webhook
+        run: curl -X POST "${{ secrets.PORTAINER_WEBHOOK }}"

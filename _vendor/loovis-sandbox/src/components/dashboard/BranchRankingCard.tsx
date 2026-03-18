@@ -1,0 +1,282 @@
+import { MapPin } from 'lucide-react';
+
+type ForecastLabel = 'forecast' | 'deviation';
+
+export type DisplayMode = 'fact' | 'plan';
+
+interface MetricIndicator {
+  value: number;
+  plan: number;
+  forecast: number;
+  label: ForecastLabel;
+}
+
+export interface BranchRankingRow {
+  id: string;
+  rank: number;
+  name: string;
+  type: string; // 'клуб' | 'клиника'
+  planPercent: number;
+  revenueSz: MetricIndicator;
+  revenueZz: MetricIndicator;
+  clientsCount: MetricIndicator;
+  conversion: MetricIndicator;
+  csi: MetricIndicator;
+  avgGlassesPrice: MetricIndicator;
+  margin: MetricIndicator;
+  repairs: MetricIndicator;
+  lostRevenue: number;
+}
+
+export type BranchSortField = 'name' | 'planPercent' | 'revenueSz' | 'revenueZz' | 'clientsCount' | 
+                  'conversion' | 'csi' | 'avgGlassesPrice' | 'margin' | 'repairs' | 'lostRevenue';
+
+interface BranchRankingCardProps {
+  branch: BranchRankingRow;
+  displayMode: DisplayMode;
+  isInverted: boolean;
+  highlightedField?: BranchSortField;
+  onClick?: () => void;
+}
+
+const getPercentColor = (percent: number): string => {
+  if (percent >= 100) return 'text-emerald-600';
+  if (percent >= 80) return 'text-amber-500';
+  return 'text-red-500';
+};
+
+const getProgressColor = (percent: number): string => {
+  if (percent >= 100) return 'bg-emerald-500';
+  if (percent >= 80) return 'bg-amber-500';
+  return 'bg-red-500';
+};
+
+const getIndicatorColor = (forecast: number, label: ForecastLabel): string => {
+  if (label === 'forecast') {
+    return forecast >= 100 ? 'text-emerald-600' : 'text-red-500';
+  }
+  const deviation = forecast - 100;
+  if (deviation >= 5) return 'text-emerald-600';
+  if (deviation <= -5) return 'text-red-500';
+  return 'text-muted-foreground';
+};
+
+const formatIndicator = (forecast: number, label: ForecastLabel): string => {
+  if (label === 'forecast') return `${forecast}%`;
+  const deviation = forecast - 100;
+  return `${deviation >= 0 ? '+' : ''}${deviation}%`;
+};
+
+const formatNumber = (value: number): string => {
+  return value.toLocaleString('ru-RU');
+};
+
+interface CompactMetricProps {
+  label: string;
+  metric: MetricIndicator;
+  formatValue: (value: number) => string;
+  suffix?: string;
+  displayMode: DisplayMode;
+  isInverted: boolean;
+  isHighlighted?: boolean;
+}
+
+const CompactMetric = ({ label, metric, formatValue, suffix = '', displayMode, isInverted, isHighlighted }: CompactMetricProps) => {
+  const getValues = () => {
+    if (displayMode === 'fact') {
+      const factValue = (
+        <span className="font-semibold text-foreground tabular-nums">{formatValue(metric.value)}{suffix}</span>
+      );
+      const percentValue = (
+        <span className={`tabular-nums ${getIndicatorColor(metric.forecast, metric.label)}`}>
+          {formatIndicator(metric.forecast, metric.label)}
+        </span>
+      );
+      
+      return isInverted 
+        ? { primary: percentValue, secondary: factValue }
+        : { primary: factValue, secondary: percentValue };
+    } else {
+      const diff = metric.value - metric.plan;
+      const factColor = diff >= 0 ? 'text-emerald-600' : 'text-red-500';
+      
+      if (isInverted) {
+        return {
+          primary: <span className={`font-semibold tabular-nums ${factColor}`}>{formatValue(metric.value)}{suffix}</span>,
+          secondary: <span className="text-muted-foreground tabular-nums">{formatValue(metric.plan)}{suffix}</span>,
+        };
+      } else {
+        return {
+          primary: <span className="font-semibold text-foreground tabular-nums">{formatValue(metric.plan)}{suffix}</span>,
+          secondary: <span className={`tabular-nums ${factColor}`}>{formatValue(metric.value)}{suffix}</span>
+        };
+      }
+    }
+  };
+
+  const { primary, secondary } = getValues();
+
+  return (
+    <div className={`text-center p-1.5 rounded-md min-h-[60px] min-w-0 flex flex-col justify-center transition-all ${
+      isHighlighted 
+        ? 'bg-primary/10 ring-1 ring-primary/40' 
+        : 'bg-muted/30'
+    }`}>
+      <div className="text-[9px] text-muted-foreground mb-0.5 leading-tight break-words">{label}</div>
+      <div className="text-xs font-medium leading-tight">
+        {primary}
+      </div>
+      <div className="text-[9px] leading-tight">
+        {secondary}
+      </div>
+    </div>
+  );
+};
+
+const fieldToLabel: Record<BranchSortField, string> = {
+  name: '',
+  planPercent: '',
+  revenueSz: 'Выручка СЗ',
+  revenueZz: 'Выручка ЗЗ',
+  clientsCount: 'Кол-во ФЛ',
+  conversion: 'Конверсия',
+  csi: 'CSI',
+  avgGlassesPrice: 'Ср. стоим.',
+  margin: 'Маржа',
+  repairs: 'Ремонты',
+  lostRevenue: 'Потери',
+};
+
+export function BranchRankingCard({ branch, displayMode, isInverted, highlightedField, onClick }: BranchRankingCardProps) {
+  const isHighlighted = (label: string) => highlightedField && fieldToLabel[highlightedField] === label;
+  
+  return (
+    <div 
+      onClick={onClick}
+      className="bg-card rounded-xl border border-border/80 shadow-md p-2 cursor-pointer hover:bg-primary/5 transition-colors active:scale-[0.99]"
+    >
+      {/* Header: Rank + Icon + Name + Progress */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className={`text-base font-bold w-5 text-center ${getPercentColor(branch.planPercent)}`}>
+          {branch.rank}
+        </span>
+        <div className="w-8 h-8 flex-shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+          <MapPin className="w-4 h-4 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-foreground truncate">{branch.name}</p>
+          <p className="text-xs text-muted-foreground">{branch.type}</p>
+        </div>
+        <div className="flex items-center gap-2 min-w-[70px]">
+          <div className="w-10 h-1.5 bg-muted rounded-full overflow-hidden">
+            <div 
+              className={`h-full rounded-full transition-all ${getProgressColor(branch.planPercent)}`}
+              style={{ width: `${Math.min(branch.planPercent, 100)}%` }}
+            />
+          </div>
+          <span className={`text-sm font-bold ${getPercentColor(branch.planPercent)}`}>
+            {branch.planPercent}%
+          </span>
+        </div>
+      </div>
+      
+      {/* Metrics Grid - 5 columns, 2 rows */}
+      <div className="grid grid-cols-5 gap-1">
+        <CompactMetric 
+          label="Выручка СЗ" 
+          metric={branch.revenueSz} 
+          formatValue={formatNumber} 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('Выручка СЗ')}
+        />
+        <CompactMetric 
+          label="Выручка ЗЗ" 
+          metric={branch.revenueZz} 
+          formatValue={formatNumber} 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('Выручка ЗЗ')}
+        />
+        <CompactMetric 
+          label="Кол-во ФЛ" 
+          metric={branch.clientsCount} 
+          formatValue={(v) => String(v)} 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('Кол-во ФЛ')}
+        />
+        <CompactMetric 
+          label="Конверсия" 
+          metric={branch.conversion} 
+          formatValue={(v) => String(v)} 
+          suffix="%" 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('Конверсия')}
+        />
+        <CompactMetric 
+          label="CSI" 
+          metric={branch.csi} 
+          formatValue={(v) => String(v)} 
+          suffix="%" 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('CSI')}
+        />
+        <CompactMetric 
+          label="Ср. стоим." 
+          metric={branch.avgGlassesPrice} 
+          formatValue={formatNumber} 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('Ср. стоим.')}
+        />
+        <CompactMetric 
+          label="Маржа" 
+          metric={branch.margin} 
+          formatValue={formatNumber} 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('Маржа')}
+        />
+        <CompactMetric 
+          label="Ремонты" 
+          metric={branch.repairs} 
+          formatValue={(v) => String(v)} 
+          displayMode={displayMode}
+          isInverted={isInverted}
+          isHighlighted={isHighlighted('Ремонты')}
+        />
+        
+        {/* Empty cell for alignment */}
+        <div className="min-h-[60px]" />
+        
+        {/* Lost Revenue / Reserve */}
+        {(() => {
+          const isOverPlan = branch.planPercent >= 100;
+          const label = isOverPlan ? 'Запас' : 'Потери';
+          const bgColor = isOverPlan 
+            ? 'bg-emerald-50/80 dark:bg-emerald-900/20' 
+            : 'bg-red-50/80 dark:bg-red-900/20';
+          const textColor = isOverPlan 
+            ? 'text-emerald-600 dark:text-emerald-400' 
+            : 'text-red-600 dark:text-red-400';
+          
+          return (
+            <div className={`p-1.5 rounded text-center min-w-0 transition-all flex flex-col justify-center min-h-[60px] ${
+              highlightedField === 'lostRevenue'
+                ? 'bg-primary/10 ring-1 ring-primary/40'
+                : bgColor
+            }`}>
+              <span className="text-[9px] text-muted-foreground block leading-tight">{label}</span>
+              <span className={`text-[11px] font-medium ${textColor} leading-tight`}>
+                {isOverPlan ? '+' : '−'}{formatNumber(Math.abs(branch.lostRevenue))}
+              </span>
+            </div>
+          );
+        })()}
+      </div>
+    </div>
+  );
+}

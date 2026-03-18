@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+.gitignore
+README.md
+.nyc_output
+coverage
+.DS_Store
+*.tgz
+*.tar.gz
+dist
+build
+.cache
+.parcel-cache
+.vscode
+.idea
+*.log 
+.env

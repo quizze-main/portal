@@ -1,0 +1,174 @@
+{
+  "moscow_club_manager": {
+    "branchId": "moscow_club",
+    "positionId": "manager",
+    "baseSalary": 40000,
+    "personalPlan": 1000000,
+    "clubPlan": 5000000,
+    "matrix": {
+      "0%": {
+        "100%": 5
+      }
+    },
+    "kpis": [
+      {
+        "id": "closure_time",
+        "label": "Время закрытия заказа менее 10 дней",
+        "type": "tier",
+        "tiers": [
+          {
+            "range": "90-100%",
+            "bonus": 12000,
+            "minPercent": 90,
+            "maxPercent": 100
+          },
+          {
+            "range": "85-90%",
+            "bonus": 6000,
+            "minPercent": 85,
+            "maxPercent": 90
+          },
+          {
+            "range": "<85%",
+            "bonus": 0,
+            "minPercent": 0,
+            "maxPercent": 85
+          }
+        ]
+      }
+    ],
+    "clubLevels": [
+      {
+        "label": "0%",
+        "threshold": 0
+      }
+    ],
+    "managerLevels": [
+      {
+        "label": "100%",
+        "threshold": 100
+      }
+    ],
+    "managerLinkedMetricId": "revenue_created"
+  },
+  "kaliningrad_club_manager_5_2": {
+    "branchId": "kaliningrad_club",
+    "positionId": "manager_5_2",
+    "baseSalary": 35000,
+    "personalPlan": 1000000,
+    "clubPlan": 3500000,
+    "matrix": {
+      "<95%": {
+        "<100%": 2.5,
+        "100%": 2.5,
+        "110%": 3,
+        "120%": 3.5,
+        "130%": 4
+      },
+      "100%": {
+        "<100%": 2.5,
+        "100%": 3,
+        "110%": 3.5,
+        "120%": 4,
+        "130%": 4.5
+      },
+      "110%>": {
+        "<100%": 2.5,
+        "100%": 3.5,
+        "110%": 4,
+        "120%": 4.5,
+        "130%": 5
+      }
+    },
+    "kpis": [
+      {
+        "id": "closure_time",
+        "label": "Время закрытия заказа менее 10 дней",
+        "tiers": [
+          {
+            "range": "90-100%",
+            "bonus": 5000,
+            "minPercent": 90,
+            "maxPercent": 100
+          },
+          {
+            "range": "85-90%",
+            "bonus": 2500,
+            "minPercent": 85,
+            "maxPercent": 90
+          },
+          {
+            "range": "<85%",
+            "bonus": 0,
+            "minPercent": 0,
+            "maxPercent": 85
+          }
+        ]
+      }
+    ],
+    "managerLinkedMetricId": "revenue_created",
+    "clubLinkedMetricId": "revenue_closed",
+    "managerAxisLabel": "План менеджера по ЗЗ",
+    "clubAxisLabel": "План филиала по ЗЗ"
+  },
+  "kaliningrad_club_senior_manager": {
+    "branchId": "kaliningrad_club",
+    "positionId": "senior_manager",
+    "baseSalary": 40000,
+    "personalPlan": 1000000,
+    "clubPlan": 3500000,
+    "matrix": {
+      "<95%": {
+        "<100%": 2.5,
+        "100%": 3,
+        "110%": 3.5,
+        "120%": 4,
+        "130%": 4.5
+      },
+      "100%": {
+        "<100%": 2.5,
+        "100%": 3.5,
+        "110%": 4,
+        "120%": 4.5,
+        "130%": 5
+      },
+      "110%>": {
+        "<100%": 2.5,
+        "100%": 4,
+        "110%": 4.5,
+        "120%": 5,
+        "130%": 5.5
+      }
+    },
+    "kpis": [
+      {
+        "id": "closure_time",
+        "label": "Время закрытия заказа менее 10 дней",
+        "tiers": [
+          {
+            "range": "90-100%",
+            "bonus": 10000,
+            "minPercent": 90,
+            "maxPercent": 100
+          },
+          {
+            "range": "85-90%",
+            "bonus": 5000,
+            "minPercent": 85,
+            "maxPercent": 90
+          },
+          {
+            "range": "<85%",
+            "bonus": 0,
+            "minPercent": 0,
+            "maxPercent": 85
+          }
+        ]
+      }
+    ],
+    "managerAxisLabel": "План менеджера по PP",
+    "clubAxisLabel": "План филиала по PP",
+    "managerLinkedMetricId": "revenue_created",
+    "clubLinkedMetricId": "revenue_closed"
+  }
+}

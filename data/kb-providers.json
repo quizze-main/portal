@@ -1,0 +1,13 @@
+{
+  "providers": {
+    "outline": {
+      "label": "Outline Wiki",
+      "base_url": "http://192.168.100.114:3001",
+      "api_key": "ol_api_cG003Iihd0sifg283znzywnhWUrnjYd7b8oQbK",
+      "is_active": true,
+      "source": "manual",
+      "last_test_at": "2026-02-13T10:27:17.010Z",
+      "last_test_status": "The operation was aborted."
+    }
+  }
+}

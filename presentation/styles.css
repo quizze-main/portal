@@ -1,0 +1,359 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --background-color: #ffffff;
+  --heading-font: "Inter", Helvetica, sans-serif;
+  --body-font: "Inter", Helvetica, sans-serif;
+  --base-font-size: 32px;
+  --text-size: 15pt;
+  --h1-size: 52pt;
+  --h2-size: 36pt;
+  --h3-size: 18pt;
+  --footnote-size: 10pt;
+
+  --text-color: #333333;
+  --text-dark: #000000;
+  --muted-color: #888888;
+  --line-color: #e0e0e0;
+  --accent-red: #e53935;
+  --accent-blue: #1e88e5;
+  --accent-green: #43a047;
+  --accent-purple: #7364e3;
+
+  --slide-padding: 60px;
+  --slide-padding-top: 45px;
+  --content-gap: 20px;
+}
+
+.reveal {
+  font-family: var(--body-font);
+  font-size: var(--base-font-size);
+}
+
+.reveal strong, .reveal b {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.reveal-viewport {
+  background: var(--background-color);
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  font-family: var(--heading-font);
+  text-transform: none;
+  color: var(--text-dark);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.reveal h1 { font-size: var(--h1-size); }
+.reveal h2 { font-size: var(--h2-size); margin-bottom: 0; }
+.reveal h3 { font-size: var(--h3-size); color: var(--text-dark); font-weight: 700; }
+
+.reveal p, .reveal li, .reveal td, .reveal th, .reveal blockquote {
+  font-size: var(--text-size);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Lists - clean, no bullets by default */
+.reveal ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 8px 0;
+}
+
+.reveal ul li {
+  position: relative;
+  padding-left: 0;
+  margin-bottom: 6px;
+}
+
+.reveal ul li::before {
+  display: none;
+}
+
+/* Problem list: black circles */
+.problems li {
+  padding-left: 24px;
+}
+
+.problems li::before {
+  display: block !important;
+  content: '○';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 14pt;
+  color: #000000;
+  background: none;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+}
+
+/* Solution list: green checkmarks */
+.solutions li {
+  padding-left: 24px;
+}
+
+.solutions li::before {
+  display: block !important;
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 14pt;
+  font-weight: 700;
+  color: var(--accent-green);
+  background: none;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+}
+
+/* Slide layout */
+.reveal .slides section {
+  height: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: var(--slide-padding-top) var(--slide-padding) 30px var(--slide-padding) !important;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.reveal .slides section.stack { padding: 0 !important; }
+
+.reveal .slides section > .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: var(--content-gap);
+  text-align: left;
+}
+
+.reveal .slides section > .footnote {
+  position: absolute;
+  bottom: 12px;
+  left: var(--slide-padding);
+  right: var(--slide-padding);
+  font-size: var(--footnote-size);
+  color: var(--muted-color);
+}
+
+/* No top accent line */
+.reveal .slides section::before {
+  display: none;
+}
+
+/* Section dividers - clean white */
+.reveal .slides section.section-divider {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center;
+  background: var(--background-color);
+}
+
+.reveal .slides section.section-divider h1 {
+  font-size: 52pt;
+  text-align: center;
+  color: var(--text-dark);
+  -webkit-text-fill-color: var(--text-dark);
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+}
+
+.reveal .slides section.section-divider p {
+  font-size: 18pt;
+  color: var(--muted-color);
+}
+
+/* Colored underlines for section headers */
+.underline-red {
+  display: inline-block;
+  border-bottom: 4px solid var(--accent-red);
+  padding-bottom: 4px;
+}
+
+.underline-blue {
+  display: inline-block;
+  border-bottom: 4px solid var(--accent-blue);
+  padding-bottom: 4px;
+}
+
+.underline-green {
+  display: inline-block;
+  border-bottom: 4px solid var(--accent-green);
+  padding-bottom: 4px;
+}
+
+.underline-purple {
+  display: inline-block;
+  border-bottom: 4px solid var(--accent-purple);
+  padding-bottom: 4px;
+}
+
+/* Text utilities */
+.text-lg { font-size: 17pt !important; }
+.text-xl { font-size: 19pt !important; }
+.text-2xl { font-size: 22pt !important; }
+.text-3xl { font-size: 26pt !important; }
+.text-4xl { font-size: 30pt !important; }
+.text-5xl { font-size: 36pt !important; }
+.text-muted { color: var(--muted-color) !important; }
+.text-center { text-align: center !important; }
+.font-light { font-weight: 300; }
+.font-bold { font-weight: 700; }
+.font-black { font-weight: 900; }
+
+/* Screenshots - no frames, subtle shadow */
+.screenshot {
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.screenshot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Big number stat */
+.big-number {
+  font-size: 48pt;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-dark);
+}
+
+.big-number-label {
+  font-size: 13pt;
+  color: var(--muted-color);
+  margin-top: 4px;
+}
+
+/* Blockquotes - minimal */
+.reveal blockquote {
+  border-left: 3px solid var(--accent-blue);
+  padding: 12px 18px;
+  margin: 12px 0;
+  font-style: italic;
+  background: #f8f9fa;
+  box-shadow: none;
+  width: 100%;
+  max-width: none;
+  border-radius: 0 8px 8px 0;
+}
+
+.reveal blockquote p {
+  font-size: inherit;
+  margin: 0;
+}
+
+.reveal blockquote cite {
+  display: block;
+  margin-top: 6px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 12pt;
+}
+
+/* Table - clean */
+.reveal table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12pt;
+}
+
+.reveal table th {
+  background: #f5f5f5;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12pt;
+  color: var(--text-dark);
+  border-bottom: 2px solid var(--line-color);
+}
+
+.reveal table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line-color);
+  font-size: 12pt;
+}
+
+.reveal table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Circle stat (for efficiency comparison) */
+.circle-stat {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.circle-stat .circle-number {
+  font-size: 28pt;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.circle-stat .circle-label {
+  font-size: 10pt;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+/* Column header with colored underline */
+.col-header {
+  font-size: 16pt;
+  font-weight: 800;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  display: inline-block;
+}
+
+/* Slide number styling */
+.reveal .slide-number {
+  color: var(--muted-color);
+  font-size: 10pt;
+}
+
+/* Progress bar */
+.reveal .progress span {
+  background: var(--accent-purple);
+}
+
+/* Integration diagram node */
+.integration-node {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 12pt;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.integration-node-primary {
+  background: var(--accent-purple);
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 14px 20px;
+  text-align: center;
+  font-size: 14pt;
+  font-weight: 700;
+}

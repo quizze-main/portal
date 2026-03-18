@@ -1,0 +1,2209 @@
+{
+  "roles": [
+    {
+      "id": "LIS-R-00000",
+      "name": "Стандарт",
+      "description": "Standard access",
+      "level": 0
+    },
+    {
+      "id": "LIS-R-00001",
+      "name": "Менеджер",
+      "description": "Manager access",
+      "level": 1
+    },
+    {
+      "id": "LIS-R-00002",
+      "name": "Стандарт (менеджер)",
+      "description": "Standard manager access",
+      "level": 0
+    }
+  ],
+  "employee_roles": [
+    {
+      "employee_id": "HR-EMP-00001",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:28.693Z"
+    },
+    {
+      "employee_id": "HR-EMP-00009",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.057Z"
+    },
+    {
+      "employee_id": "HR-EMP-00003",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.104Z"
+    },
+    {
+      "employee_id": "HR-EMP-00007",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.114Z"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.139Z"
+    },
+    {
+      "employee_id": "HR-EMP-00010",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.306Z"
+    },
+    {
+      "employee_id": "HR-EMP-00016",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.306Z"
+    },
+    {
+      "employee_id": "HR-EMP-00012",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.306Z"
+    },
+    {
+      "employee_id": "HR-EMP-00013",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.307Z"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.312Z"
+    },
+    {
+      "employee_id": "HR-EMP-00021",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.468Z"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.487Z"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.489Z"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.496Z"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.508Z"
+    },
+    {
+      "employee_id": "HR-EMP-00023",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.715Z"
+    },
+    {
+      "employee_id": "HR-EMP-00022",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.716Z"
+    },
+    {
+      "employee_id": "HR-EMP-00027",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.716Z"
+    },
+    {
+      "employee_id": "HR-EMP-00026",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.716Z"
+    },
+    {
+      "employee_id": "HR-EMP-00025",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.716Z"
+    },
+    {
+      "employee_id": "HR-EMP-00029",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.853Z"
+    },
+    {
+      "employee_id": "HR-EMP-00036",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.855Z"
+    },
+    {
+      "employee_id": "HR-EMP-00031",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.856Z"
+    },
+    {
+      "employee_id": "HR-EMP-00030",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.864Z"
+    },
+    {
+      "employee_id": "HR-EMP-00033",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:29.881Z"
+    },
+    {
+      "employee_id": "HR-EMP-00038",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.045Z"
+    },
+    {
+      "employee_id": "HR-EMP-00041",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.045Z"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.048Z"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.049Z"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.452Z"
+    },
+    {
+      "employee_id": "HR-EMP-00047",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.618Z"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.619Z"
+    },
+    {
+      "employee_id": "HR-EMP-00049",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.651Z"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.653Z"
+    },
+    {
+      "employee_id": "HR-EMP-00046",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.659Z"
+    },
+    {
+      "employee_id": "HR-EMP-00053",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.876Z"
+    },
+    {
+      "employee_id": "HR-EMP-00056",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.877Z"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.877Z"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.877Z"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:30.877Z"
+    },
+    {
+      "employee_id": "HR-EMP-00059",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.033Z"
+    },
+    {
+      "employee_id": "HR-EMP-00060",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.033Z"
+    },
+    {
+      "employee_id": "HR-EMP-00058",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.034Z"
+    },
+    {
+      "employee_id": "HR-EMP-00057",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.059Z"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.070Z"
+    },
+    {
+      "employee_id": "HR-EMP-00064",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.213Z"
+    },
+    {
+      "employee_id": "HR-EMP-00068",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.215Z"
+    },
+    {
+      "employee_id": "HR-EMP-00065",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.233Z"
+    },
+    {
+      "employee_id": "HR-EMP-00067",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.282Z"
+    },
+    {
+      "employee_id": "HR-EMP-00062",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.283Z"
+    },
+    {
+      "employee_id": "HR-EMP-00070",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.445Z"
+    },
+    {
+      "employee_id": "HR-EMP-00069",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.445Z"
+    },
+    {
+      "employee_id": "HR-EMP-00074",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.445Z"
+    },
+    {
+      "employee_id": "HR-EMP-00073",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.449Z"
+    },
+    {
+      "employee_id": "HR-EMP-00075",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.769Z"
+    },
+    {
+      "employee_id": "HR-EMP-00086",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.938Z"
+    },
+    {
+      "employee_id": "HR-EMP-00076",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.939Z"
+    },
+    {
+      "employee_id": "HR-EMP-00084",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.943Z"
+    },
+    {
+      "employee_id": "HR-EMP-00080",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.943Z"
+    },
+    {
+      "employee_id": "HR-EMP-00081",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:31.951Z"
+    },
+    {
+      "employee_id": "HR-EMP-00091",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.102Z"
+    },
+    {
+      "employee_id": "HR-EMP-00087",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.102Z"
+    },
+    {
+      "employee_id": "HR-EMP-00088",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.141Z"
+    },
+    {
+      "employee_id": "HR-EMP-00090",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.153Z"
+    },
+    {
+      "employee_id": "HR-EMP-00089",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.207Z"
+    },
+    {
+      "employee_id": "HR-EMP-00093",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.352Z"
+    },
+    {
+      "employee_id": "HR-EMP-00095",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.355Z"
+    },
+    {
+      "employee_id": "HR-EMP-00096",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.359Z"
+    },
+    {
+      "employee_id": "HR-EMP-00094",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.428Z"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.429Z"
+    },
+    {
+      "employee_id": "HR-EMP-00104",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.584Z"
+    },
+    {
+      "employee_id": "HR-EMP-00100",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.584Z"
+    },
+    {
+      "employee_id": "HR-EMP-00098",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.584Z"
+    },
+    {
+      "employee_id": "HR-EMP-00097",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.604Z"
+    },
+    {
+      "employee_id": "HR-EMP-00103",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.680Z"
+    },
+    {
+      "employee_id": "HR-EMP-00111",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.931Z"
+    },
+    {
+      "employee_id": "HR-EMP-00105",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.931Z"
+    },
+    {
+      "employee_id": "HR-EMP-00107",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.931Z"
+    },
+    {
+      "employee_id": "HR-EMP-00108",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.931Z"
+    },
+    {
+      "employee_id": "HR-EMP-00106",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:32.931Z"
+    },
+    {
+      "employee_id": "HR-EMP-00118",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.102Z"
+    },
+    {
+      "employee_id": "HR-EMP-00116",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.102Z"
+    },
+    {
+      "employee_id": "HR-EMP-00112",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.102Z"
+    },
+    {
+      "employee_id": "HR-EMP-00113",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.169Z"
+    },
+    {
+      "employee_id": "HR-EMP-00115",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.425Z"
+    },
+    {
+      "employee_id": "HR-EMP-00122",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.596Z"
+    },
+    {
+      "employee_id": "HR-EMP-00119",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.598Z"
+    },
+    {
+      "employee_id": "HR-EMP-00123",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.598Z"
+    },
+    {
+      "employee_id": "HR-EMP-00124",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.598Z"
+    },
+    {
+      "employee_id": "HR-EMP-00125",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.598Z"
+    },
+    {
+      "employee_id": "HR-EMP-00128",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.754Z"
+    },
+    {
+      "employee_id": "HR-EMP-00126",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.755Z"
+    },
+    {
+      "employee_id": "HR-EMP-00127",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.755Z"
+    },
+    {
+      "employee_id": "HR-EMP-00130",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.755Z"
+    },
+    {
+      "employee_id": "HR-EMP-00129",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.769Z"
+    },
+    {
+      "employee_id": "HR-EMP-00135",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.920Z"
+    },
+    {
+      "employee_id": "HR-EMP-00132",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.921Z"
+    },
+    {
+      "employee_id": "HR-EMP-00131",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.921Z"
+    },
+    {
+      "employee_id": "HR-EMP-00133",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.921Z"
+    },
+    {
+      "employee_id": "HR-EMP-00134",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:33.993Z"
+    },
+    {
+      "employee_id": "HR-EMP-00145",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.158Z"
+    },
+    {
+      "employee_id": "HR-EMP-00142",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.158Z"
+    },
+    {
+      "employee_id": "HR-EMP-00139",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.158Z"
+    },
+    {
+      "employee_id": "HR-EMP-00136",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.158Z"
+    },
+    {
+      "employee_id": "HR-EMP-00137",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.160Z"
+    },
+    {
+      "employee_id": "HR-EMP-00164",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.328Z"
+    },
+    {
+      "employee_id": "HR-EMP-00158",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.329Z"
+    },
+    {
+      "employee_id": "HR-EMP-00163",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.330Z"
+    },
+    {
+      "employee_id": "HR-EMP-00157",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.330Z"
+    },
+    {
+      "employee_id": "HR-EMP-00160",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.404Z"
+    },
+    {
+      "employee_id": "HR-EMP-00168",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.567Z"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.587Z"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.588Z"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.588Z"
+    },
+    {
+      "employee_id": "HR-EMP-00167",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.589Z"
+    },
+    {
+      "employee_id": "HR-EMP-00170",
+      "role_id": "LIS-R-00000",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.733Z"
+    },
+    {
+      "employee_id": "HR-EMP-00171",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.746Z"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.761Z"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.903Z"
+    },
+    {
+      "employee_id": "HR-EMP-00172",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:34.903Z"
+    },
+    {
+      "employee_id": "HR-EMP-00176",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:35.065Z"
+    },
+    {
+      "employee_id": "HR-EMP-00177",
+      "role_id": "LIS-R-00001",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:35.065Z"
+    },
+    {
+      "employee_id": "HR-EMP-00175",
+      "role_id": "LIS-R-00002",
+      "source": "frappe_sync",
+      "granted_by": null,
+      "granted_at": "2026-03-16T16:00:35.065Z"
+    }
+  ],
+  "store_access": [
+    {
+      "employee_id": "HR-EMP-00001",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00009",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00003",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00007",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00002",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00010",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00016",
+      "store_id": "1000000052",
+      "department_id": "Мск - тест - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00012",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00013",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00015",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00021",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00017",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00020",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00018",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00019",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00023",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00022",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00027",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00026",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00025",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00029",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00036",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00031",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00030",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00038",
+      "store_id": "1000000052",
+      "department_id": "Мск - тест - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00044",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00037",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00045",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00048",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00050",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00051",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00052",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00054",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00061",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00068",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00070",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00069",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00074",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00073",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00076",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00084",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00080",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00081",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00087",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00088",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00090",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00089",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00095",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00096",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00092",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00104",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00100",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00098",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00097",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00111",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00105",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00107",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00108",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00106",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00118",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00116",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00116",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00112",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00113",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00115",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00124",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00125",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00128",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00126",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00127",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00130",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00129",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00132",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00131",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00133",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00134",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00145",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00142",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00139",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00163",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00160",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00160",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00168",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00165",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00169",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00166",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00173",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "store_id": "1000000043",
+      "department_id": "Якутск клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "store_id": "1000000042",
+      "department_id": "Якутск клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "store_id": "1000000008",
+      "department_id": "Санкт-Петербург клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "store_id": "1000000007",
+      "department_id": "Калининград клиника - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "store_id": "1000000009",
+      "department_id": "Калининград клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00174",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00176",
+      "store_id": "1000000052",
+      "department_id": "Москва клуб заботы 0-1 - LR",
+      "source": "frappe_sync"
+    },
+    {
+      "employee_id": "HR-EMP-00177",
+      "store_id": "1000000006",
+      "department_id": "Казань клуб - LR",
+      "source": "frappe_sync"
+    }
+  ],
+  "feature_flags": [
+    {
+      "flag_name": "new_dashboard",
+      "scope_type": "store_id",
+      "scope_value": "1000000008",
+      "enabled": true
+    },
+    {
+      "flag_name": "new_dashboard",
+      "scope_type": "store_id",
+      "scope_value": "1000000052",
+      "enabled": true
+    },
+    {
+      "flag_name": "new_dashboard",
+      "scope_type": "store_id",
+      "scope_value": "1000000009",
+      "enabled": true
+    },
+    {
+      "flag_name": "full_dashboard_access",
+      "scope_type": "store_id",
+      "scope_value": "1000000009",
+      "enabled": true
+    }
+  ]
+}

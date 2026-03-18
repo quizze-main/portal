@@ -1,0 +1,48 @@
+{
+  "sources": {
+    "tracker": {
+      "id": "tracker",
+      "label": "Loovis Tracker",
+      "baseUrl": "https://tracker.loov.ru",
+      "authType": "bearer",
+      "authConfig": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      },
+      "paginationType": "none",
+      "paginationConfig": {},
+      "healthCheckPath": "/api/v1/portal/analytics/dashboards",
+      "healthCheckMethod": "GET",
+      "timeout": 10000,
+      "enabled": true,
+      "builtIn": true,
+      "source": "env",
+      "fieldMappings": [],
+      "createdAt": "2026-03-07T11:51:22.622Z",
+      "updatedAt": "2026-03-07T11:51:22.622Z",
+      "lastTestAt": "2026-03-17T17:59:34.118Z",
+      "lastTestStatus": "OK"
+    },
+    "amo": {
+      "id": "amo",
+      "label": "AmoCrm",
+      "baseUrl": "https://loov.amocrm.ru",
+      "authType": "bearer",
+      "authConfig": {
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6Ijk1OTZmYjZjODlmMGIxZDFlNDJiMjk2MTdlNTYwNTE2MWIxYzE1ZDdmZTY4MGY2MjdhYWNmMjgxMmJmMjhmZGI2Mjk0MGQ0ZWZlYmU2NzJjIn0.eyJhdWQiOiIxYTNjYzg5Ni05NmQ2LTQyZDktYmIyNS04Nzg0MmI4ZWYzZmIiLCJqdGkiOiI5NTk2ZmI2Yzg5ZjBiMWQxZTQyYjI5NjE3ZTU2MDUxNjFiMWMxNWQ3ZmU2ODBmNjI3YWFjZjI4MTJiZjI4ZmRiNjI5NDBkNGVmZWJlNjcyYyIsImlhdCI6MTc3Mjg5NjA3MCwibmJmIjoxNzcyODk2MDcwLCJleHAiOjE3NzUwMDE2MDAsInN1YiI6IjEwMjU1ODY2IiwiZ3JhbnRfdHlwZSI6IiIsImFjY291bnRfaWQiOjMxMzY5MDkwLCJiYXNlX2RvbWFpbiI6ImFtb2NybS5ydSIsInZlcnNpb24iOjIsInNjb3BlcyI6WyJwdXNoX25vdGlmaWNhdGlvbnMiLCJmaWxlcyIsImNybSIsImZpbGVzX2RlbGV0ZSIsIm5vdGlmaWNhdGlvbnMiXSwiaGFzaF91dWlkIjoiM2EyMGYxNGYtNjZjMy00YzFmLWFiMTgtNGIzYzlhNjlmY2E0IiwiYXBpX2RvbWFpbiI6ImFwaS1iLmFtb2NybS5ydSJ9.os1uuiJ5prH-ba0Zd4BbacywbPxxgITapNwf9xQUPVHZR3zvQ08duoMwKB9Cftcc8hJr0d5K_GPGdamZKPq6jV6WGKAQM7R6ZplWv14yGo7pAFzaeqZRdrSxfrDU36iJSIs-fsRATQlviCYmqi46cN3LFE-Q4E9RK_0wyG4E-l6lWB3OcMB6hZapVD_Fa3bv2y-9A4nxrXzqzBV3NONY_s1EhCwCZsmGAAZj5KV1WcsFIosDlclk0bh5ItHfVdeU_wZMgid1lYPn_jecpwU3bq_NbBCianBngAWxAwtCgqMUHuvcpZnCCaI2EbMY0KyNK8qzrd9KUnWtcZhjpnymxA"
+      },
+      "paginationType": "none",
+      "paginationConfig": {},
+      "healthCheckPath": "/api/v4/account",
+      "healthCheckMethod": "GET",
+      "timeout": 10000,
+      "enabled": true,
+      "builtIn": false,
+      "source": "manual",
+      "fieldMappings": [],
+      "createdAt": "2026-03-07T17:43:26.365Z",
+      "updatedAt": "2026-03-08T13:42:02.841Z",
+      "lastTestAt": "2026-03-13T08:57:46.857Z",
+      "lastTestStatus": "HTTP 403"
+    }
+  }
+}

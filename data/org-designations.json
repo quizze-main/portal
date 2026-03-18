@@ -1,0 +1,413 @@
+{
+  "designations": [
+    {
+      "id": 1,
+      "name": "Оптометрист",
+      "category": "optometrist",
+      "is_leader": false
+    },
+    {
+      "id": 2,
+      "name": "Оптик-мастер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 3,
+      "name": "Офтальмолог",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 4,
+      "name": "Крафтер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 5,
+      "name": "Детский врач-офтальмолог",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 6,
+      "name": "CSO",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 7,
+      "name": "CTO",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 8,
+      "name": "Product manager",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 9,
+      "name": "Хранитель знаний",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 10,
+      "name": "Аналитик",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 11,
+      "name": "Лидер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 12,
+      "name": "CEO",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 13,
+      "name": "Менеджер тех. заботы",
+      "category": "manager",
+      "is_leader": false
+    },
+    {
+      "id": 14,
+      "name": "HR Менеджер",
+      "category": "manager",
+      "is_leader": false
+    },
+    {
+      "id": 15,
+      "name": "Помощник CEO",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 16,
+      "name": "Бизнес ассистент",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 17,
+      "name": "CBDO",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 18,
+      "name": "Chief Style Officier",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 19,
+      "name": "Старший крафтер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 20,
+      "name": "Руководитель центрального склада",
+      "category": "leader",
+      "is_leader": true
+    },
+    {
+      "id": 21,
+      "name": "Категорийный менеджер",
+      "category": "manager",
+      "is_leader": false
+    },
+    {
+      "id": 22,
+      "name": "CFO",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 23,
+      "name": "Главнй бухгалтер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 24,
+      "name": "Финансовый контролер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 25,
+      "name": "Бухгалтер по заработной плате и кдп",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 26,
+      "name": "Бухгалтер первичной документации",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 27,
+      "name": "CIO",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 28,
+      "name": "Системный администратор",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 29,
+      "name": "Специалист технической поддержки",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 30,
+      "name": "Младший менеджер SMM",
+      "category": "manager",
+      "is_leader": false
+    },
+    {
+      "id": 31,
+      "name": "Junior project manager marketing",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 32,
+      "name": "Тильда-web-мастер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 33,
+      "name": "Head of SMM",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 34,
+      "name": "Тим-лид рекрутинга",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 35,
+      "name": "Рекрутер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 36,
+      "name": "Руководитель КЗО",
+      "category": "leader",
+      "is_leader": true
+    },
+    {
+      "id": 37,
+      "name": "Старший менеджер заботы| Онлайн",
+      "category": "senior_manager",
+      "is_leader": false
+    },
+    {
+      "id": 38,
+      "name": "Менеджер заботы| Онлайн",
+      "category": "manager",
+      "is_leader": false
+    },
+    {
+      "id": 39,
+      "name": "Кризис-менеджер",
+      "category": "manager",
+      "is_leader": false
+    },
+    {
+      "id": 40,
+      "name": "Крафтер/Мастер-оптик",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 41,
+      "name": "Мастер-оптик",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 42,
+      "name": "Оптометрист-медсестра",
+      "category": "optometrist",
+      "is_leader": false
+    },
+    {
+      "id": 43,
+      "name": "Заведущая складом",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 44,
+      "name": "Оператор склада",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 45,
+      "name": "Курьер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 46,
+      "name": "Старший менеджер заботы",
+      "category": "senior_manager",
+      "is_leader": false
+    },
+    {
+      "id": 47,
+      "name": "Руководитель клиники",
+      "category": "leader",
+      "is_leader": true
+    },
+    {
+      "id": 48,
+      "name": "Детский офтальмолог",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 49,
+      "name": "Оптометристы",
+      "category": "optometrist",
+      "is_leader": false
+    },
+    {
+      "id": 50,
+      "name": "Оптометрист/Менеджер заботы",
+      "category": "optometrist",
+      "is_leader": false
+    },
+    {
+      "id": 51,
+      "name": "Руководитель франшизы в Кирове",
+      "category": "leader",
+      "is_leader": true
+    },
+    {
+      "id": 52,
+      "name": "Врач-офтальмолог",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 53,
+      "name": "Руководитель франшизы в Набережных Челнах",
+      "category": "leader",
+      "is_leader": true
+    },
+    {
+      "id": 54,
+      "name": "Лидер партнерского канала",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 55,
+      "name": "Дизайнер",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 56,
+      "name": "Технический писатель",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 57,
+      "name": "СРМ автоматизатор",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 58,
+      "name": "Лидер команды продвижения",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 59,
+      "name": "Лидер команды маркетинга",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 60,
+      "name": "Маркетолог Калининграда",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 61,
+      "name": "Маркетолог Якутска",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 62,
+      "name": "Лидер команды заботы онлайн",
+      "category": "care_manager",
+      "is_leader": false
+    },
+    {
+      "id": 63,
+      "name": "Маркетинговый аналитик",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 64,
+      "name": "Лидер лояльности",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 65,
+      "name": "Руководитель клуба",
+      "category": "leader",
+      "is_leader": true
+    },
+    {
+      "id": 66,
+      "name": "СЕО Rus",
+      "category": "other",
+      "is_leader": false
+    },
+    {
+      "id": 67,
+      "name": "Менеджер заботы",
+      "category": "manager",
+      "is_leader": false
+    },
+    {
+      "id": 68,
+      "name": "Ассистент",
+      "category": "other",
+      "is_leader": false
+    }
+  ],
+  "_next_id": 69
+}

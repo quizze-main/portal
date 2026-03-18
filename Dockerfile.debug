@@ -1,0 +1,23 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# Build arguments
+ARG VITE_API_SECRET_KEY
+ARG VITE_OUTLINE_BASE_URL
+
+# Environment variables
+ENV VITE_API_SECRET_KEY=$VITE_API_SECRET_KEY
+ENV VITE_OUTLINE_BASE_URL=$VITE_OUTLINE_BASE_URL
+
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
+
+COPY ./ ./
+
+# Не собираем приложение - hot reload
+# RUN npm run build:debug
+
+EXPOSE 3000 5173 9229
+
+CMD ["npm", "run", "hot-reload"] 

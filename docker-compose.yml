@@ -1,0 +1,64 @@
+volumes:
+  redis_data:
+  postgres_data:
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: staff-focus-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-staff_focus}
+      POSTGRES_USER: ${POSTGRES_USER:-staff_focus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-staff_focus}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: staff-focus-redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    command:
+      [
+        "redis-server",
+        "--requirepass",
+        "${REDIS_PASSWORD}",
+        "--appendonly",
+        "yes",
+      ]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  staff-focus-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: staff-focus-app
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./.env:/app/.env
+      - ./public:/app/public
+      - ./package.json:/app/package.json
+      - ./server.js:/app/server.js
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tailwind.config.ts:/app/tailwind.config.ts
+      - ./postcss.config.js:/app/postcss.config.js
+      - ./index.html:/app/index.html
+    command: ["npm", "start"]

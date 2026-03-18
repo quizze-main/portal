@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>LoovIS Staff portal</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#4f46e5" />
+    
+    <!-- Apple iOS PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="StaffFocus" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <!-- Android PWA -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+      // Choose counter depending on domain (dev vs prod)
+      var YM_ID = (function(host){
+        return host.indexOf('dev-portal.loov.ru') !== -1 || host.indexOf('localhost') !== -1
+          ? 103524802  // DEV
+          : 103168261; // PROD
+      })(window.location.hostname);
+
+      ym(YM_ID, "init", {
+          clickmap:true,
+          trackLinks:true,
+          accurateTrackBounce:true,
+          webvisor:true,
+          trackHash:false, // не добавляем #hash в URL
+          defer:true       // не отправляем автоматический hit, ждём ручного ymHit()
+      });
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript><div><img src="https://mc.yandex.ru/watch/103168261" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html> 

@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "your-postman-id",
+		"name": "Frappe API Collection",
+		"description": "Collection for Frappe API requests using API key authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "api_key",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{api_key}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Get All Employees",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token {{api_key}}:{{api_secret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/resource/Employee?fields=[\"*\", \"user_id\", \"designation\"]",
+					"host": ["{{base_url}}"],
+					"path": ["api", "resource", "Employee"],
+					"query": [
+						{
+							"key": "fields",
+							"value": "[\"*\", \"user_id\", \"designation\"]"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Employee by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token {{api_key}}:{{api_secret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/resource/Employee/HR-EMP-00001?fields=[\"*\", \"user_id\", \"designation\"]",
+					"host": ["{{base_url}}"],
+					"path": ["api", "resource", "Employee", "HR-EMP-00001"],
+					"query": [
+						{
+							"key": "fields",
+							"value": "[\"*\", \"user_id\", \"designation\"]"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Employee's Reports To",
+			"request": {
+				"method": "GET", 
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token {{api_key}}:{{api_secret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/resource/Employee/{{employee_id}}?fields=[\"reports_to\"]",
+					"host": ["{{base_url}}"],
+					"path": ["api", "resource", "Employee", "{{employee_id}}"],
+					"query": [
+						{
+							"key": "fields",
+							"value": "[\"reports_to\"]"
+						}
+					]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://loovtest.erpnext.com/"
+		},
+		{
+			"key": "api_key",
+			"value": "123"
+		},
+		{
+			"key": "api_secret",
+			"value": "123"
+		}
+	]
+}

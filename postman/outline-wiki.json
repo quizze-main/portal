@@ -1,0 +1,137 @@
+{
+    "info": {
+      "_postman_id": "a17c38a4-0e89-4ac0-88c7-999999999999",
+      "name": "Outline Wiki API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Get Document Info",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "type": "text"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"id\": \"{{document_id}}\"\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/api/documents.info",
+            "host": ["{{base_url}}"],
+            "path": ["api", "documents.info"]
+          }
+        }
+      },
+      {
+        "name": "List Documents",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "type": "text"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"limit\": 10\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/api/documents.list",
+            "host": ["{{base_url}}"],
+            "path": ["api", "documents.list"]
+          }
+        }
+      },
+      {
+        "name": "Upload File",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{api_token}}",
+              "type": "text"
+            }
+          ],
+          "body": {
+            "mode": "formdata",
+            "formdata": [
+              {
+                "key": "file",
+                "type": "file",
+                "src": ""
+              }
+            ]
+          },
+          "url": {
+            "raw": "{{base_url}}/api/files.upload",
+            "host": ["{{base_url}}"],
+            "path": ["api", "files.upload"]
+          }
+        }
+      },
+      {
+        "name": "Create Document",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "type": "text"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Документ из Postman\",\n  \"text\": \"Привет, Outline!\",\n  \"collectionId\": \"{{collection_id}}\"\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/api/documents.create",
+            "host": ["{{base_url}}"],
+            "path": ["api", "documents.create"]
+          }
+        }
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "https://your-outline-instance"
+      },
+      {
+        "key": "api_token",
+        "value": "YOUR_API_TOKEN"
+      },
+      {
+        "key": "document_id",
+        "value": ""
+      },
+      {
+        "key": "collection_id",
+        "value": ""
+      }
+    ]
+  }
+  
