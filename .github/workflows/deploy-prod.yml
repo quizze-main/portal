@@ -41,6 +41,7 @@ jobs:
           --exclude 'node_modules' \
           --exclude '.env' \
           --exclude '*.log' \
+          --rsync-path="sudo rsync" \
           -e "ssh -o StrictHostKeyChecking=no" \
           ./ ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.DEPLOY_PATH }}
 
@@ -59,19 +60,19 @@ jobs:
           fi
 
           echo "🛑 Останавливаем текущие контейнеры..."
-          docker compose -f docker-compose.prod.yml down || true
+          sudo docker compose -f docker-compose.prod.yml down || true
 
           echo "🚀 Запускаем Portal..."
-          docker compose -f docker-compose.prod.yml up -d --build
+          sudo docker compose -f docker-compose.prod.yml up -d --build
 
           echo "⏳ Ждем запуска приложения..."
           sleep 15
 
           echo "📊 Статус контейнеров:"
-          docker compose -f docker-compose.prod.yml ps
+          sudo docker compose -f docker-compose.prod.yml ps
 
           echo "🧹 Очищаем старые образы..."
-          docker image prune -f
+          sudo docker image prune -f
 
           echo "✅ Деплой Portal завершен!"
         EOF
