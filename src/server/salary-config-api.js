@@ -13,7 +13,7 @@ const DATA_DIR = path.resolve(__dirname, '../../data');
 const CONFIG_FILE = path.join(DATA_DIR, 'salary-configs.json');
 
 // Validation constants
-const KEY_PATTERN = /^[a-zA-Z0-9_-]{1,100}$/;
+const KEY_PATTERN = /^[a-zA-Z0-9_-]{1,200}$/;
 const FORBIDDEN_KEYS = ['__proto__', 'constructor', 'prototype'];
 const MAX_KPI_COUNT = 30;
 const MAX_MATRIX_ROWS = 15;
@@ -182,16 +182,28 @@ function writeConfigs(configs) {
         try {
           for (const [key, cfg] of Object.entries(configs)) {
             if (!cfg || typeof cfg !== 'object' || !cfg.matrix) continue;
-            const parts = key.split('_');
-            const branchId = parts[0] || key;
-            const positionId = parts.slice(1).join('_') || 'default';
+            // Parse key: detect employee override keys (contain '_emp_')
+            const empIndex = key.indexOf('_emp_');
+            let branchId, positionId, employeeId;
+            if (empIndex !== -1) {
+              const posKey = key.substring(0, empIndex);
+              employeeId = key.substring(empIndex + 5);
+              const firstUnderscore = posKey.indexOf('_');
+              branchId = firstUnderscore > 0 ? posKey.substring(0, firstUnderscore) : posKey;
+              positionId = firstUnderscore > 0 ? posKey.substring(firstUnderscore + 1) : 'default';
+            } else {
+              const parts = key.split('_');
+              branchId = parts[0] || key;
+              positionId = parts.slice(1).join('_') || 'default';
+              employeeId = null;
+            }
             await query(`
-              INSERT INTO salary_configs (id, branch_id, position_id, base_salary, personal_plan, club_plan, matrix, kpis, club_levels, manager_levels, metadata)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+              INSERT INTO salary_configs (id, branch_id, position_id, employee_id, base_salary, personal_plan, club_plan, matrix, kpis, club_levels, manager_levels, metadata)
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
               ON CONFLICT (id) DO UPDATE SET
                 matrix = EXCLUDED.matrix, kpis = EXCLUDED.kpis,
-                base_salary = EXCLUDED.base_salary, updated_at = now()
-            `, [key, branchId, positionId, cfg.baseSalary ?? 0, cfg.personalPlan ?? null, cfg.clubPlan ?? null,
+                base_salary = EXCLUDED.base_salary, employee_id = EXCLUDED.employee_id, updated_at = now()
+            `, [key, branchId, positionId, employeeId, cfg.baseSalary ?? 0, cfg.personalPlan ?? null, cfg.clubPlan ?? null,
                 JSON.stringify(cfg.matrix), JSON.stringify(cfg.kpis || []),
                 JSON.stringify(cfg.clubLevels || []), JSON.stringify(cfg.managerLevels || []),
                 JSON.stringify({ managerAxisLabel: cfg.managerAxisLabel, clubAxisLabel: cfg.clubAxisLabel })]);
@@ -261,10 +273,12 @@ export function setupSalaryConfigRoutes(app) {
         return res.status(500).json({ ok: false, error: 'Failed to save config' });
       }
 
+      const isEmployeeOverride = key.includes('_emp_');
       loggerWithUser.info(req, `Salary config updated: ${key}`, {
         baseSalary: configData.baseSalary,
         personalPlan: configData.personalPlan,
         kpiCount: configData.kpis?.length,
+        employeeOverride: isEmployeeOverride,
       });
 
       return res.json({ ok: true });

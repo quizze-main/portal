@@ -21,7 +21,7 @@ import {
   type LevelDefinition,
   type KPIConfig,
 } from '@/data/salaryConfig';
-import { useSalaryConfig, useSalaryConfigMutation } from '@/hooks/useSalaryConfig';
+import { useSalaryConfig, useSalaryConfigs, useSalaryConfigMutation, useSalaryConfigDeleteMutation, useSalaryConfigSource } from '@/hooks/useSalaryConfig';
 import { useLinkedMetricValues } from '@/hooks/useLinkedMetricValues';
 import { useAxisMetricValues } from '@/hooks/useAxisMetricValues';
 import { useMotivationConfig } from '@/hooks/useMotivationConfig';
@@ -117,9 +117,15 @@ export default function SalaryCalculatorPage() {
     }));
   }, [employee?.custom_employee_shift_format_kind, employee?.designation, lockPositionToEmployee, selectedBranch]);
 
+  // Effective employee ID (null when "По должности" is selected)
+  const effectiveEmployeeId = selectedEmployeeId === GENERIC_EMPLOYEE_VALUE ? null : selectedEmployeeId;
+
   // Получаем конфигурацию из API с fallback на хардкод
-  const baseConfig = useSalaryConfig(selectedBranch, selectedPosition);
+  // Priority: employee override → position config → local default
+  const baseConfig = useSalaryConfig(selectedBranch, selectedPosition, effectiveEmployeeId);
+  const { isEmployeeOverride, hasEmployeeOverride } = useSalaryConfigSource(selectedBranch, selectedPosition, effectiveEmployeeId);
   const saveMutation = useSalaryConfigMutation();
+  const deleteMutation = useSalaryConfigDeleteMutation();
 
   // Активная конфигурация (edit draft или base)
   const config = isEditMode && editConfig ? editConfig : baseConfig;
@@ -170,8 +176,16 @@ export default function SalaryCalculatorPage() {
   const saveConfig = useCallback(() => {
     if (!editConfig) return;
     setSaveError(null);
-    const key = `${selectedBranch}_${selectedPosition}`;
-    const configToSave = { ...editConfig, branchId: selectedBranch, positionId: selectedPosition };
+    let key = `${selectedBranch}_${selectedPosition}`;
+    if (effectiveEmployeeId) {
+      key += `_emp_${effectiveEmployeeId}`;
+    }
+    const configToSave = {
+      ...editConfig,
+      branchId: selectedBranch,
+      positionId: selectedPosition,
+      ...(effectiveEmployeeId ? { employeeId: effectiveEmployeeId } : {}),
+    };
     saveMutation.mutate(
       { key, config: configToSave },
       {
@@ -184,12 +198,33 @@ export default function SalaryCalculatorPage() {
         },
       }
     );
-  }, [editConfig, selectedBranch, selectedPosition, saveMutation]);
+  }, [editConfig, selectedBranch, selectedPosition, effectiveEmployeeId, saveMutation]);
+
+  const { data: allServerConfigs } = useSalaryConfigs();
 
   const resetToDefaults = useCallback(() => {
-    const localDefault = getLocalConfig(selectedBranch, selectedPosition);
-    setEditConfig(JSON.parse(JSON.stringify(localDefault)));
-  }, [selectedBranch, selectedPosition]);
+    if (effectiveEmployeeId) {
+      // For employee override: reset to position-level config (not hardcoded)
+      const posKey = `${selectedBranch}_${selectedPosition}`;
+      const posConfig = allServerConfigs?.[posKey] as BranchPositionConfig | undefined;
+      setEditConfig(JSON.parse(JSON.stringify(posConfig ?? getLocalConfig(selectedBranch, selectedPosition))));
+    } else {
+      // For position-level: reset to hardcoded default
+      const localDefault = getLocalConfig(selectedBranch, selectedPosition);
+      setEditConfig(JSON.parse(JSON.stringify(localDefault)));
+    }
+  }, [selectedBranch, selectedPosition, effectiveEmployeeId, allServerConfigs]);
+
+  const deleteEmployeeOverride = useCallback(() => {
+    if (!effectiveEmployeeId) return;
+    const empKey = `${selectedBranch}_${selectedPosition}_emp_${effectiveEmployeeId}`;
+    deleteMutation.mutate(empKey, {
+      onSuccess: () => cancelEditMode(),
+      onError: (err) => {
+        setSaveError(err instanceof Error ? err.message : 'Ошибка удаления');
+      },
+    });
+  }, [effectiveEmployeeId, selectedBranch, selectedPosition, deleteMutation, cancelEditMode]);
 
   // Edit handlers
   const handleMatrixChange = useCallback((matrix: MotivationMatrixType) => {
@@ -295,13 +330,22 @@ export default function SalaryCalculatorPage() {
     }
   }, [availablePositions, employee?.designation, lockPositionToEmployee, selectedBranch, selectedPosition]);
 
-  // Exit edit mode when branch/position changes
+  // Exit edit mode when branch or employee changes
   useEffect(() => {
     if (isEditMode) {
       cancelEditMode();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedBranch, selectedPosition]);
+  }, [selectedBranch, selectedEmployeeId]);
+
+  // When position changes during edit mode (only for "По должности" mode) — reload config
+  useEffect(() => {
+    if (isEditMode && !effectiveEmployeeId) {
+      setEditConfig(JSON.parse(JSON.stringify(baseConfig)));
+      setSaveError(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPosition]);
 
   // Сбрасываем KPI при смене конфигурации + авто-выбор из метрик
   useEffect(() => {
@@ -455,7 +499,7 @@ export default function SalaryCalculatorPage() {
                         size="icon"
                         onClick={resetToDefaults}
                         className="h-8 w-8"
-                        title="Сбросить к дефолту"
+                        title={effectiveEmployeeId ? 'Сбросить к настройкам должности' : 'Сбросить к дефолту'}
                       >
                         <RotateCcw className="h-3.5 w-3.5" />
                       </Button>
@@ -546,7 +590,7 @@ export default function SalaryCalculatorPage() {
                 {/* Должность */}
                 <div className="flex flex-col gap-1 min-w-0">
                   <span className="text-xs text-muted-foreground">Должность</span>
-                  <Select value={selectedPosition} onValueChange={setSelectedPosition} disabled={isEditMode}>
+                  <Select value={selectedPosition} onValueChange={setSelectedPosition} disabled={isEditMode && !!effectiveEmployeeId}>
                     <SelectTrigger className="w-full h-9 bg-card text-sm">
                       <SelectValue className="truncate" />
                     </SelectTrigger>
@@ -574,7 +618,7 @@ export default function SalaryCalculatorPage() {
                 <Select
                   value={selectedEmployeeId}
                   onValueChange={handleEmployeeChange}
-                  disabled={branchEmployeesQuery.isLoading || isEditMode}
+                  disabled={branchEmployeesQuery.isLoading}
                 >
                   <SelectTrigger className="w-full h-9 bg-card text-sm">
                     <SelectValue className="truncate" />
@@ -590,6 +634,12 @@ export default function SalaryCalculatorPage() {
                     ))}
                   </SelectContent>
                 </Select>
+                {/* Config source indicator */}
+                {effectiveEmployeeId && (
+                  <span className={`text-[10px] ${hasEmployeeOverride ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                    {hasEmployeeOverride ? 'Индивидуальная настройка' : 'Используется настройка по должности'}
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -598,7 +648,9 @@ export default function SalaryCalculatorPage() {
         {/* Edit mode: config fields */}
         {isEditMode && editConfig && (
           <div className="bg-card rounded-2xl p-3 shadow-card border-0 mb-3 space-y-3">
-            <h3 className="text-sm font-medium text-foreground">Параметры</h3>
+            <h3 className="text-sm font-medium text-foreground">
+              {effectiveEmployeeId ? 'Индивидуальные настройки' : 'Настройки должности'}
+            </h3>
             <div className="grid grid-cols-3 gap-2">
               <div className="flex flex-col gap-1">
                 <span className="text-[10px] text-muted-foreground">Оклад</span>
@@ -635,6 +687,20 @@ export default function SalaryCalculatorPage() {
               onChange={handleKPIsChange}
               availableMetrics={enabledMetrics}
             />
+
+            {/* Delete employee override button */}
+            {effectiveEmployeeId && hasEmployeeOverride && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full text-destructive border-destructive/30 hover:bg-destructive/10"
+                onClick={deleteEmployeeOverride}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : null}
+                Удалить индивидуальную настройку
+              </Button>
+            )}
           </div>
         )}
 

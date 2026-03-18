@@ -54,8 +54,8 @@ class Logger {
     const sslVerify = this.env.OPENSEARCH_SSL_VERIFY !== 'false';
 
     if (!opensearchUrl) {
-      process.stderr.write('OPENSEARCH_URL не задан, логирование невозможно\n');
-      process.exit(1);
+      process.stderr.write('OPENSEARCH_URL не задан, логирование в OpenSearch отключено\n');
+      return;
     }
 
     try {
@@ -91,7 +91,8 @@ class Logger {
       if (error.meta && error.meta.body) {
         process.stderr.write(`Детали ошибки подключения: ${JSON.stringify(error.meta.body, null, 2)}\n`);
       }
-      process.exit(1);
+      process.stderr.write('OpenSearch недоступен, логирование в OpenSearch отключено\n');
+      this.os_client = null;
     }
   }
 
@@ -175,8 +176,8 @@ class Logger {
       this.opensearchErrorCount++;
       process.stdout.write(`WARN: OpenSearch ошибка подключения: ${error.message}\n`);
       if (this.opensearchErrorCount >= this.maxOpensearchErrors) {
-        process.stderr.write('OpenSearch отключен после множественных ошибок. Логирование невозможно.\n');
-        process.exit(1);
+        process.stderr.write('OpenSearch отключен после множественных ошибок. Продолжаем без OpenSearch.\n');
+        this.os_client = null;
       }
     }
   }

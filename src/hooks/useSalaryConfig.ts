@@ -18,18 +18,46 @@ export function useSalaryConfigs() {
 }
 
 /**
- * Получить конфигурацию зарплаты для конкретного филиала + должности.
- * Возвращает серверную конфигурацию с fallback на локальный хардкод.
- * Note: returns local config during loading phase, then switches to server config if available.
+ * Получить конфигурацию зарплаты для конкретного филиала + должности + (опционально) сотрудника.
+ * Приоритет: employee override → position config → local hardcoded default.
  */
-export function useSalaryConfig(branchId: string, positionId: string) {
+export function useSalaryConfig(branchId: string, positionId: string, employeeId?: string | null) {
   const { data: serverConfigs } = useSalaryConfigs();
 
   return useMemo(() => {
-    const key = `${branchId}_${positionId}`;
-    const serverConfig = serverConfigs?.[key] as BranchPositionConfig | undefined;
-    return serverConfig ?? getLocalConfig(branchId, positionId);
-  }, [branchId, positionId, serverConfigs]);
+    const posKey = `${branchId}_${positionId}`;
+
+    // 1. Try employee-specific override
+    if (employeeId) {
+      const empKey = `${posKey}_emp_${employeeId}`;
+      const empConfig = serverConfigs?.[empKey] as BranchPositionConfig | undefined;
+      if (empConfig) return empConfig;
+    }
+
+    // 2. Fallback to position-level config
+    const serverConfig = serverConfigs?.[posKey] as BranchPositionConfig | undefined;
+    if (serverConfig) return serverConfig;
+
+    // 3. Fallback to local hardcoded default
+    return getLocalConfig(branchId, positionId);
+  }, [branchId, positionId, employeeId, serverConfigs]);
+}
+
+/**
+ * Информация об источнике конфигурации (employee override vs position default).
+ * Используется для UI-индикации.
+ */
+export function useSalaryConfigSource(branchId: string, positionId: string, employeeId?: string | null) {
+  const { data: serverConfigs } = useSalaryConfigs();
+
+  return useMemo(() => {
+    if (!employeeId) {
+      return { isEmployeeOverride: false, hasEmployeeOverride: false };
+    }
+    const empKey = `${branchId}_${positionId}_emp_${employeeId}`;
+    const hasOverride = !!serverConfigs?.[empKey];
+    return { isEmployeeOverride: hasOverride, hasEmployeeOverride: hasOverride };
+  }, [branchId, positionId, employeeId, serverConfigs]);
 }
 
 /**
