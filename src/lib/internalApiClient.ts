@@ -3366,6 +3366,46 @@ class InternalApiClient {
     if (!response.ok) throw new Error(`Delete requirement error: ${response.status}`);
     return response.json();
   }
+
+  // ─── Schedule Integration ───
+
+  async getEmployeeScheduleSummary(employeeId: string, month: string) {
+    const response = await fetch(
+      `/api/shift-schedule/employee-summary?employee_id=${encodeURIComponent(employeeId)}&month=${encodeURIComponent(month)}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok) throw new Error(`Employee schedule summary error: ${response.status}`);
+    return response.json();
+  }
+
+  async getShiftScheduleSalaryData(branchId: string, month: string) {
+    const response = await fetch(
+      `/api/shift-schedule/salary-data?branch_id=${encodeURIComponent(branchId)}&month=${encodeURIComponent(month)}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok) throw new Error(`Salary schedule data error: ${response.status}`);
+    return response.json();
+  }
+
+  async getDayCrewmates(branchId: string, date: string): Promise<{ crew: DayCrewMember[]; date: string; branch_id: string }> {
+    const response = await fetch(
+      `/api/shift-schedule/day-crew?branch_id=${encodeURIComponent(branchId)}&date=${encodeURIComponent(date)}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok) throw new Error(`Day crew error: ${response.status}`);
+    return response.json();
+  }
+}
+
+export interface DayCrewMember {
+  employee_id: string;
+  employee_name: string;
+  image: string | null;
+  designation: string | null;
+  shift_type: string;
+  shift_number: number | null;
+  time_start: string | null;
+  time_end: string | null;
 }
 
 export const internalApiClient = new InternalApiClient();

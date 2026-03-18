@@ -2310,12 +2310,16 @@ export function setupInternalApiRoutes(app) {
     let predictedValue = undefined;
     let predictedCompletion = undefined;
     let dailyRate = undefined;
-    const effectiveDateCtx = dateCtx || buildDateContext(remainingWorkingDays);
-    const prediction = calculateForecast(metricCfg, fact, plan, effectiveDateCtx);
-    if (prediction) {
-      predictedValue = prediction.predictedValue;
-      predictedCompletion = prediction.predictedCompletion;
-      dailyRate = prediction.dailyRate;
+    try {
+      const effectiveDateCtx = dateCtx || buildDateContext(remainingWorkingDays);
+      const prediction = calculateForecast(metricCfg, fact, plan, effectiveDateCtx);
+      if (prediction) {
+        predictedValue = prediction.predictedValue;
+        predictedCompletion = prediction.predictedCompletion;
+        dailyRate = prediction.dailyRate;
+      }
+    } catch (err) {
+      console.warn(`[forecast-engine] Error for metric ${metricCfg?.id}: ${err.message}`);
     }
 
     return {
@@ -3548,6 +3552,18 @@ export function setupInternalApiRoutes(app) {
         loggerWithUser.warn(req, 'manager-breakdown: failed to fetch employees', { error: err.message, storeId });
       }
 
+      // Calculate remaining working days for forecast/predictive fields
+      let _breakdownRemainingWorkingDays = 0;
+      try {
+        const [pYear, pMonth] = String(period).split('-').map(Number);
+        const monthEnd = new Date(pYear, pMonth, 0); // last day of month
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (monthEnd >= today) {
+          _breakdownRemainingWorkingDays = getWorkingDaysInRange(today, monthEnd);
+        }
+      } catch (_) { /* ignore */ }
+
       // 2. Load metric configs + plans
       const metricsConfig = await readDashboardMetricsConfig();
       const allMetrics = metricsConfig.metrics || [];
@@ -3725,6 +3741,12 @@ export function setupInternalApiRoutes(app) {
 
           const percent = plan && plan > 0 && fact != null ? Math.round((fact / plan) * 10000) / 100 : null;
 
+          // Enrich with reserve/loss/forecast/predicted via _buildMetricResponse
+          const effectiveFact = fact ?? 0;
+          const effectivePlan = plan ?? 0;
+          const lossOrOver = _calculateLossOrOver(metric, effectiveFact, effectivePlan, null, null);
+          const enriched = _buildMetricResponse(metric, effectiveFact, effectivePlan, null, lossOrOver, '', '', _breakdownRemainingWorkingDays);
+
           return {
             employee_id: emp.employee_id,
             employee_name: emp.employee_name,
@@ -3732,6 +3754,18 @@ export function setupInternalApiRoutes(app) {
             plan,
             fact,
             percent,
+            // Derived fields for KPI card parity
+            reserve: enriched.reserve,
+            reserveUnit: enriched.reserveUnit,
+            loss: enriched.loss,
+            forecast: enriched.forecast,
+            forecastValue: enriched.forecastValue,
+            forecastUnit: enriched.forecastUnit,
+            forecastLabel: enriched.forecastLabel,
+            status: enriched.status,
+            predictedValue: enriched.predictedValue,
+            predictedCompletion: enriched.predictedCompletion,
+            dailyRate: enriched.dailyRate,
           };
         });
 
@@ -3805,6 +3839,12 @@ export function setupInternalApiRoutes(app) {
 
             const percent = plan && plan > 0 && fact != null ? Math.round((fact / plan) * 10000) / 100 : null;
 
+            // Enrich with reserve/loss/forecast/predicted via _buildMetricResponse
+            const effectiveFact = fact ?? 0;
+            const effectivePlan = plan ?? 0;
+            const lossOrOver = _calculateLossOrOver(metric, effectiveFact, effectivePlan, null, null);
+            const enriched = _buildMetricResponse(metric, effectiveFact, effectivePlan, null, lossOrOver, '', '', _breakdownRemainingWorkingDays);
+
             return {
               employee_id: emp.employee_id,
               employee_name: emp.employee_name,
@@ -3812,6 +3852,18 @@ export function setupInternalApiRoutes(app) {
               plan,
               fact,
               percent,
+              // Derived fields for KPI card parity
+              reserve: enriched.reserve,
+              reserveUnit: enriched.reserveUnit,
+              loss: enriched.loss,
+              forecast: enriched.forecast,
+              forecastValue: enriched.forecastValue,
+              forecastUnit: enriched.forecastUnit,
+              forecastLabel: enriched.forecastLabel,
+              status: enriched.status,
+              predictedValue: enriched.predictedValue,
+              predictedCompletion: enriched.predictedCompletion,
+              dailyRate: enriched.dailyRate,
             };
           });
 

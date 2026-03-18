@@ -6,6 +6,8 @@ import crypto from 'crypto';
 import logger, { loggerWithUser } from './logger.js';
 import { requireAuth } from './requireAuth.js';
 import { isDbConnected, query } from './db.js';
+import { getEmployeeScheduleSummary, getBranchSalaryData } from './shift-schedule-helpers.js';
+import * as orgData from './org-data.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -600,6 +602,104 @@ export function setupShiftScheduleRoutes(app) {
     } catch (err) {
       loggerWithUser.error(req, 'staffing-requirements DELETE error', { error: err.message });
       res.status(500).json({ error: 'Failed to delete staffing requirement' });
+    }
+  });
+
+  // ─── Schedule Integration Endpoints ───
+
+  // GET /api/shift-schedule/employee-summary?employee_id=X&month=YYYY-MM
+  app.get('/api/shift-schedule/employee-summary', requireAuth, async (req, res) => {
+    try {
+      const { employee_id, month } = req.query;
+      if (!employee_id || !month) {
+        return res.status(400).json({ error: 'employee_id and month (YYYY-MM) required' });
+      }
+      const [y, m] = month.split('-').map(Number);
+      if (!y || !m) return res.status(400).json({ error: 'Invalid month format, use YYYY-MM' });
+
+      const lastDay = new Date(y, m, 0).getDate();
+      const dateFrom = `${month}-01`;
+      const dateTo = `${month}-${String(lastDay).padStart(2, '0')}`;
+
+      const summary = await getEmployeeScheduleSummary(employee_id, dateFrom, dateTo);
+      res.json({ summary, month, employee_id });
+    } catch (err) {
+      loggerWithUser.error(req, 'employee-summary GET error', { error: err.message });
+      res.status(500).json({ error: 'Failed to get employee schedule summary' });
+    }
+  });
+
+  // GET /api/shift-schedule/salary-data?branch_id=X&month=YYYY-MM
+  app.get('/api/shift-schedule/salary-data', requireAuth, async (req, res) => {
+    try {
+      const { branch_id, month } = req.query;
+      if (!branch_id || !month) {
+        return res.status(400).json({ error: 'branch_id and month (YYYY-MM) required' });
+      }
+      const [y, m] = month.split('-').map(Number);
+      if (!y || !m) return res.status(400).json({ error: 'Invalid month format, use YYYY-MM' });
+
+      const lastDay = new Date(y, m, 0).getDate();
+      const monthStart = `${month}-01`;
+      const monthEnd = `${month}-${String(lastDay).padStart(2, '0')}`;
+
+      const data = await getBranchSalaryData(branch_id, monthStart, monthEnd);
+      res.json({ data, month, branch_id });
+    } catch (err) {
+      loggerWithUser.error(req, 'salary-data GET error', { error: err.message });
+      res.status(500).json({ error: 'Failed to get salary schedule data' });
+    }
+  });
+
+  // GET /api/shift-schedule/day-crew?branch_id=X&date=YYYY-MM-DD
+  // Returns employees working on a specific date (shift_type: work or extra_shift)
+  app.get('/api/shift-schedule/day-crew', requireAuth, async (req, res) => {
+    try {
+      const { branch_id, date } = req.query;
+      if (!branch_id || !date) {
+        return res.status(400).json({ error: 'branch_id and date (YYYY-MM-DD) required' });
+      }
+
+      // Get all shift entries for this date
+      const entries = await readEntries(branch_id, date, date);
+      const workingEntries = entries.filter(e =>
+        e.shift_type === 'work' || e.shift_type === 'extra_shift'
+      );
+
+      if (workingEntries.length === 0) {
+        return res.json({ crew: [], date, branch_id });
+      }
+
+      // Resolve employee names
+      let employeeMap = {};
+      try {
+        const employees = await orgData.getEmployeesByStoreIds([String(branch_id)]);
+        for (const emp of employees) {
+          employeeMap[emp.name] = {
+            employee_name: emp.employee_name,
+            image: emp.image || null,
+            designation: emp.designation || null,
+          };
+        }
+      } catch (err) {
+        loggerWithUser.warn(req, 'day-crew: failed to resolve employee names', { error: err.message });
+      }
+
+      const crew = workingEntries.map(e => ({
+        employee_id: e.employee_id,
+        employee_name: employeeMap[e.employee_id]?.employee_name || e.employee_id,
+        image: employeeMap[e.employee_id]?.image || null,
+        designation: employeeMap[e.employee_id]?.designation || null,
+        shift_type: e.shift_type,
+        shift_number: e.shift_number || null,
+        time_start: e.time_start || null,
+        time_end: e.time_end || null,
+      }));
+
+      res.json({ crew, date, branch_id });
+    } catch (err) {
+      loggerWithUser.error(req, 'day-crew GET error', { error: err.message });
+      res.status(500).json({ error: 'Failed to get day crew data' });
     }
   });
 }

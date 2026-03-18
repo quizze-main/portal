@@ -7,20 +7,23 @@
  * Uses existing plan-prorate.js helpers for working/calendar days counting.
  */
 
-import { isWorkingDay, getWorkingDaysInRange, getCalendarDaysInRange, parseLocalDate } from './plan-prorate.js';
+import { isWorkingDay, getWorkingDaysInRange, getCalendarDaysInRange, parseLocalDate, getScheduleWorkingDaysInRange } from './plan-prorate.js';
 import { isDbConnected, query } from './db.js';
 
 /**
  * Calculate dynamic daily plan for an absolute metric.
+ * When employeeId is provided and method is 'working_days', uses actual
+ * shift schedule data (falling back to Mon-Fri if no schedule exists).
  *
  * @param {number} periodPlan       — total plan for the period (e.g. month)
  * @param {number} factSoFar        — accumulated fact from period start to today
  * @param {Date|string} today       — current date
  * @param {Date|string} periodEnd   — last day of the period
  * @param {'working_days'|'calendar_days'} method — which days to count
- * @returns {{ dailyPlan: number, remainingDays: number, remainingPlan: number, completionPercent: number }}
+ * @param {string} [employeeId]     — if provided, uses shift schedule for working days
+ * @returns {Promise<{ dailyPlan: number, remainingDays: number, remainingPlan: number, completionPercent: number }>}
  */
-export function dynamicDailyPlan(periodPlan, factSoFar, today, periodEnd, method = 'working_days') {
+export async function dynamicDailyPlan(periodPlan, factSoFar, today, periodEnd, method = 'working_days', employeeId) {
   const todayDate = typeof today === 'string' ? parseLocalDate(today) : today;
   const endDate = typeof periodEnd === 'string' ? parseLocalDate(periodEnd) : periodEnd;
 
@@ -28,9 +31,14 @@ export function dynamicDailyPlan(periodPlan, factSoFar, today, periodEnd, method
   const tomorrow = new Date(todayDate);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const remaining = method === 'working_days'
-    ? getWorkingDaysInRange(tomorrow, endDate)
-    : getCalendarDaysInRange(tomorrow, endDate);
+  let remaining;
+  if (method === 'working_days' && employeeId) {
+    remaining = await getScheduleWorkingDaysInRange(tomorrow, endDate, employeeId);
+  } else if (method === 'working_days') {
+    remaining = getWorkingDaysInRange(tomorrow, endDate);
+  } else {
+    remaining = getCalendarDaysInRange(tomorrow, endDate);
+  }
 
   const remainingPlan = Math.max(0, periodPlan - factSoFar);
   const completionPercent = periodPlan > 0 ? Math.round((factSoFar / periodPlan) * 10000) / 100 : 0;
@@ -178,7 +186,7 @@ export async function getDynamicPlan(metricId, { branchId, employeeId, period } 
   const today = new Date().toISOString().slice(0, 10);
   const method = def.plan_prorate_method || 'working_days';
 
-  const result = dynamicDailyPlan(planValue, factSoFar, today, end, method);
+  const result = await dynamicDailyPlan(planValue, factSoFar, today, end, method, employeeId);
 
   return {
     metricId,

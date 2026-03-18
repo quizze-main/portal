@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { KPIDonutChart } from './KPIDonutChart';
 import { FullWidthKPIMetric } from './KPIFullWidthCard';
 import { MetricProgressBar } from './MetricProgressBar';
-import { formatFull, formatWithUnit, formatReserveFull, calculateMetricStatus } from '@/lib/formatters';
+import { formatFull, formatReserveFull, calculateMetricStatus } from '@/lib/formatters';
 
 // Status-based styling — subtle, modern
 const getStatusStyles = (status: 'good' | 'warning' | 'critical') => {
@@ -113,26 +113,26 @@ export function KPICompactCard({ metric, onClick }: KPICompactCardProps) {
         </div>
 
         {/* Row 2 / Col 1: Forecast label */}
-        <div className="flex items-baseline justify-center">
+        <div className="flex items-start justify-center pt-0.5">
           <span className="text-muted-foreground leading-none text-[clamp(10px,1.3vw,11px)]">
-            {isDeviation ? 'Откл.' : 'Прогноз'}
+            {isDeviation ? 'Отклонение' : 'Прогноз'}
           </span>
         </div>
 
-        {/* Row 2 / Col 2: Plan + Reserve/Loss */}
-        <div className="flex items-baseline justify-between gap-1 min-w-0 text-[clamp(10px,1.3vw,11px)] leading-none">
-          <span className="text-muted-foreground whitespace-nowrap shrink-0">
-            План: {formatWithUnit(planDisplay, metric.unit)}
+        {/* Row 2 / Col 2: Plan + Reserve/Loss (stacked) */}
+        <div className="flex flex-col gap-0.5 min-w-0 text-[clamp(10px,1.3vw,11px)] leading-none">
+          <span className="text-muted-foreground whitespace-nowrap">
+            План: {formatFull(planDisplay, metric.unit)}
           </span>
 
           {hasReserve && (
-            <span className={cn("font-semibold whitespace-nowrap truncate ml-auto", reserveColor)}>
+            <span className={cn("font-semibold whitespace-nowrap", reserveColor)}>
               Запас: {formatReserveFull(metric.reserve!, metric.reserveUnit ?? metric.unit)}
             </span>
           )}
 
           {hasLoss && (
-            <span className="font-semibold whitespace-nowrap truncate text-red-500 ml-auto">
+            <span className="font-semibold whitespace-nowrap text-red-500">
               Потери: {formatFull(metric.loss! > 0 ? -metric.loss! : metric.loss!, '₽')}
             </span>
           )}

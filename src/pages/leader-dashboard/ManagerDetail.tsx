@@ -143,6 +143,16 @@ export function ManagerDetailContent({
       status: m.status === 'neutral' ? 'warning' : m.status,
       color: m.color,
       forecastLabel: m.forecastLabel === 'remaining' ? 'forecast' : m.forecastLabel,
+      // Derived fields for KPI card parity with dashboard
+      reserve: m.reserve,
+      reserveUnit: m.reserveUnit,
+      loss: m.loss,
+      forecast: m.forecast,
+      forecastValue: m.forecastValue,
+      forecastUnit: m.forecastUnit,
+      predictedValue: m.predictedValue,
+      predictedCompletion: m.predictedCompletion,
+      dailyRate: m.dailyRate,
     }));
   }, [metrics]);
 

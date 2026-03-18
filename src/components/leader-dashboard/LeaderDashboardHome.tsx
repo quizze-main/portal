@@ -32,8 +32,8 @@ import {
 import { ChevronDown, ClipboardEdit, MapPin, Target } from "lucide-react";
 import { useWidgets } from "@/hooks/useWidgets";
 import { ChartWidget } from "@/components/leader-dashboard/ChartWidget";
-import type { ChartWidgetConfig } from "@/lib/internalApiClient";
-import type { RankingWidgetConfig } from "@/lib/internalApiClient";
+import { useQuery } from "@tanstack/react-query";
+import { internalApiClient, type ChartWidgetConfig, type RankingWidgetConfig } from "@/lib/internalApiClient";
 import { SetPlanSheet } from "./SetPlanSheet";
 import { PlanFactSheet } from "./PlanFactSheet";
 import { MetricDetailSheet } from "./MetricDetailSheet";
@@ -41,6 +41,9 @@ import { ManagerDetailSheet } from "./ManagerDetailSheet";
 import { ReviewsSheet } from "./ReviewsSheet";
 import { AttentionDealsSheet } from "./AttentionDealsSheet";
 import { MetricQuickChart } from "./MetricQuickChart";
+import { StaffingOverviewWidget } from "@/components/shift-schedule/StaffingOverviewWidget";
+import { useShiftSchedule } from "@/hooks/useShiftSchedule";
+import { useStaffingRequirements, useCoverage } from "@/hooks/useStaffingRequirements";
 
 /**
  * Порт "1 в 1" главного дашборда из loovis-sandbox, но:
@@ -397,6 +400,35 @@ export function LeaderDashboardHome() {
   const dateFrom = dateRange?.from ? formatYmd(dateRange.from) : undefined;
   const dateTo = dateRange?.to ? formatYmd(dateRange.to) : undefined;
 
+  // ── Staffing coverage data (for single branch only) ──
+  const staffingBranchId = effectiveSelectedBranchIds.length === 1 ? effectiveSelectedBranchIds[0] : null;
+  const staffingMonth = useMemo(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }, []);
+  const { entries: staffingEntries } = useShiftSchedule(staffingBranchId, staffingMonth);
+  const { requirements: staffingRequirements } = useStaffingRequirements(staffingBranchId);
+
+  // Employees for coverage — reuse from store
+  const staffingEmployeesQuery = useQuery({
+    queryKey: ['staffingCoverageEmployees', staffingBranchId],
+    queryFn: async () => {
+      if (!staffingBranchId) return [];
+      const store = storeOptions.find(s => s.store_id === staffingBranchId);
+      if (!store?.department_id) return [];
+      return internalApiClient.getEmployeesByStores({ departmentIds: [store.department_id] });
+    },
+    enabled: !!staffingBranchId,
+    staleTime: 5 * 60_000,
+  });
+
+  const staffingCoverage = useCoverage(
+    staffingMonth,
+    staffingRequirements,
+    staffingEntries,
+    staffingEmployeesQuery.data || [],
+  );
+
   const handlePeriodChange = useCallback((p: FilterPeriod) => {
     setFilterPeriod(p);
     setDateRange(rangeForPeriod(p));
@@ -586,6 +618,17 @@ export function LeaderDashboardHome() {
                     isEditMode={isEditMode}
                     editDraft={missionDraft ?? undefined}
                     onEditDraftChange={setMissionDraft}
+                  />
+                );
+              }
+
+              // ── Staffing Coverage ──
+              if (sectionId === 'staffing') {
+                if (!staffingBranchId || staffingCoverage.length === 0) return null;
+                return (
+                  <StaffingOverviewWidget
+                    coverageData={staffingCoverage}
+                    month={staffingMonth}
                   />
                 );
               }
@@ -785,6 +828,7 @@ function EditModeWidgetWrapper({ title, widgetId, isExpanded, onToggle, children
 
 const SECTION_LABELS: Record<string, string> = {
   mission: 'Миссия',
+  staffing: 'Покрытие смен',
 };
 
 // ── Sections DnD orchestrator ──
@@ -836,6 +880,7 @@ function SectionsDnd({
       }
       ids.push(w.id);
     }
+    ids.push('staffing');
     return ids;
   }, [topMetrics, enabledWidgets, isMultiBranch, branchCount]);
 
