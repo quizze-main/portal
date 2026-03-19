@@ -1019,23 +1019,39 @@ export function SalaryCalculator({
           )}
 
           {forecastError && !isForecastLoading && (
-            <div className="text-center py-6">
-              <p className="text-sm text-destructive mb-2">{forecastError}</p>
-              {onForecastRequest && (
+            <div className="text-center py-4">
+              <p className="text-xs text-muted-foreground mb-2">{forecastError}</p>
+              <div className="flex items-center justify-center gap-2">
+                {onForecastRequest && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => { isButtonClickRef.current = true; onForecastRequest(); }}
+                  >
+                    Повторить
+                  </Button>
+                )}
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
-                  onClick={() => { isButtonClickRef.current = true; onForecastRequest(); }}
+                  onClick={() => setMode('plan')}
                 >
-                  Повторить
+                  Ручной расчет
                 </Button>
-              )}
+              </div>
             </div>
           )}
 
           {!forecastData && !isForecastLoading && !forecastError && (
-            <div className="text-center py-8 text-sm text-muted-foreground">
-              Данные прогноза недоступны
+            <div className="text-center py-6">
+              <p className="text-xs text-muted-foreground mb-2">Данные прогноза недоступны</p>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setMode('plan')}
+              >
+                Ручной расчет
+              </Button>
             </div>
           )}
 

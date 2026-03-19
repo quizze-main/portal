@@ -141,7 +141,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "revenue_closed",
@@ -195,7 +197,9 @@
       "externalHeaders": {},
       "jsonPathFact": "",
       "jsonPathPlan": "",
-      "color": "#3B82F6"
+      "color": "#3B82F6",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "frames_count",
@@ -230,7 +234,9 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "conversion_rate",
@@ -265,7 +271,9 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "csi",
@@ -300,7 +308,9 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "avg_glasses_price",
@@ -335,7 +345,9 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "margin_rate",
@@ -378,7 +390,9 @@
       "externalMethod": "GET",
       "externalHeaders": {},
       "jsonPathFact": "",
-      "jsonPathPlan": ""
+      "jsonPathPlan": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "avg_repaires_price",
@@ -413,7 +427,9 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "test",
@@ -511,7 +527,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "2",
@@ -601,7 +619,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "amo_leads_p10241466_s81063298",
@@ -656,7 +676,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "amo_leads_p10241466_s81062894",
@@ -717,7 +739,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "amo_leads_total",
@@ -802,7 +826,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "1",
@@ -847,7 +873,9 @@
       "lossMode": "auto",
       "lossFormula": "",
       "jsonPathLoss": "",
-      "fieldMappings": []
+      "fieldMappings": [],
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "123",
@@ -892,7 +920,9 @@
       "lossMode": "auto",
       "lossFormula": "",
       "jsonPathLoss": "",
-      "fieldMappings": []
+      "fieldMappings": [],
+      "forecastMethod": null,
+      "forecastFormula": ""
     }
   ],
   "widgets": [
@@ -1042,15 +1072,6 @@
         "subjectType": "store",
         "isAggregated": false
       }
-    },
-    {
-      "id": "metric_selector_chart",
-      "type": "metric_selector_chart",
-      "name": "График метрики",
-      "enabled": true,
-      "order": 800,
-      "parentId": null,
-      "config": {}
     },
     {
       "id": "chart_1773472017784",

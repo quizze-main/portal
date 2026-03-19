@@ -174,11 +174,6 @@ export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCar
               <span className="text-muted-foreground whitespace-nowrap">
                 К концу мес: {formatFull(Math.round(metric.predictedValue), metric.unit)}
               </span>
-              {metric.dailyRate != null && (
-                <span className="text-muted-foreground/70 whitespace-nowrap text-[clamp(10px,1.2vw,11px)]">
-                  ({formatFull(Math.round(metric.dailyRate), metric.unit)}/день)
-                </span>
-              )}
             </div>
           )}
         </div>

@@ -143,13 +143,14 @@ export function setupInternalApiRoutes(app) {
   // Server-side version of getDashboardPositionCategory (mirrors src/lib/roleUtils.ts)
   const _getDashboardPositionCategory = (designation) => {
     const d = String(designation || '').toLowerCase().replace(/ё/g, 'е');
-    if (d.includes('руководитель')) return 'leader';
-    if (d.includes('старш') && d.includes('менеджер')) return 'senior_manager';
+    if (d.includes('руководитель') || d.includes('директор')) return 'leader';
+    if (d.includes('старш') && (d.includes('менеджер') || d.includes('продавец'))) return 'senior_manager';
     if (d.includes('оптометрист')) return 'optometrist';
     if (d.includes('5/2')) return 'manager_5_2';
     if (d.includes('2/2')) return 'manager_2_2';
     if (d.includes('универсал')) return 'universal_manager';
-    if (d.includes('менеджер')) return 'manager';
+    if (d.includes('менеджер') || d.includes('продавец') || d.includes('консультант')) return 'manager';
+    if (d.includes('кассир')) return 'other';
     return 'other';
   };
 

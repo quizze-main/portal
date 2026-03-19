@@ -13,8 +13,24 @@ import { query, withTransaction, isDbConnected } from './db.js';
 import { DATA_DIR, readJsonFile, readJsonRaw, writeJsonFile, withFileLock } from './json-storage.js';
 
 const EMPLOYEES_PATH = path.join(DATA_DIR, 'org-employees.json');
+const KARI_EMPLOYEES_PATH = path.join(DATA_DIR, 'kari-employees.json');
 const DEPARTMENTS_PATH = path.join(DATA_DIR, 'org-departments.json');
 const DESIGNATIONS_PATH = path.join(DATA_DIR, 'org-designations.json');
+
+/**
+ * Read employees from both org-employees.json and kari-employees.json,
+ * merging by ID (Kari data overrides base data for matching IDs).
+ */
+async function readMergedEmployees() {
+  const base = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const kari = await readJsonFile(KARI_EMPLOYEES_PATH, 'employees');
+  if (kari.length === 0) return base;
+
+  const byId = new Map();
+  for (const e of base) byId.set(e.id, e);
+  for (const e of kari) byId.set(e.id, e); // Kari overrides
+  return Array.from(byId.values());
+}
 
 // ─── Field mapping helpers ──────────────────────────────────────────────────
 
@@ -99,7 +115,7 @@ export async function findEmployeeByTgUsername(tgUsername) {
     }
   }
   // JSON fallback
-  const employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const employees = await readMergedEmployees();
   const found = employees.filter(e => e.tg_username === tgUsername && e.status === 'Active');
   if (found.length === 0) return { data: [] };
   return { data: [mapEmployeeRow(found[0])] };
@@ -124,7 +140,7 @@ export async function findEmployeeById(employeeId) {
       console.warn('DB findEmployeeById failed, fallback to JSON', err.message);
     }
   }
-  const employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const employees = await readMergedEmployees();
   const found = employees.find(e => e.id === employeeId);
   return { data: found ? mapEmployeeRow(found) : null };
 }
@@ -169,7 +185,7 @@ export async function searchEmployees({ queryStr, department, limit = 100 }) {
     }
   }
   // JSON fallback
-  let employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  let employees = await readMergedEmployees();
   employees = employees.filter(e => e.status === 'Active');
   if (department) employees = employees.filter(e => e.department === department);
   if (queryStr) {
@@ -193,7 +209,7 @@ export async function getEmployeesByStoreIds(storeIds, { limit = 200, onlyManage
       const placeholders = storeIds.map((_, i) => `$${i + 1}`).join(',');
       let managerFilter = '';
       if (onlyManagers) {
-        managerFilter = `AND (e.designation ILIKE '%руководитель%' OR e.designation ILIKE '%менеджер%')`;
+        managerFilter = `AND e.designation ILIKE '%менеджер%' AND e.designation NOT ILIKE '%руководитель%'`;
       }
 
       const result = await query(
@@ -226,14 +242,14 @@ export async function getEmployeesByStoreIds(storeIds, { limit = 200, onlyManage
     }
   }
 
-  let employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  let employees = await readMergedEmployees();
   employees = employees.filter(e =>
     e.status === 'Active' &&
     (deptIdsForStores.has(e.department_id) || deptIdsForStores.has(e.department))
   );
 
   if (onlyManagers) {
-    employees = employees.filter(e => /руководитель|менеджер/i.test(e.designation || ''));
+    employees = employees.filter(e => /менеджер/i.test(e.designation || '') && !/руководитель/i.test(e.designation || ''));
   }
 
   employees.sort((a, b) => (a.employee_name || '').localeCompare(b.employee_name || ''));
@@ -263,7 +279,7 @@ export async function getEmployeesByDepartmentId(departmentId) {
       console.warn('DB getEmployeesByDepartmentId failed, fallback to JSON', err.message);
     }
   }
-  const employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const employees = await readMergedEmployees();
   const filtered = employees
     .filter(e => e.department === departmentId && e.status === 'Active')
     .sort((a, b) => (a.employee_name || '').localeCompare(b.employee_name || ''));
@@ -290,7 +306,7 @@ export async function getEmployeeManager(employeeId) {
     }
   }
   // JSON fallback: two lookups
-  const employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const employees = await readMergedEmployees();
   const emp = employees.find(e => e.id === employeeId);
   if (!emp || !emp.reports_to) return { data: null };
   const manager = employees.find(e => e.id === emp.reports_to);
@@ -538,7 +554,7 @@ export async function getAllActiveEmployees() {
       console.warn('DB getAllActiveEmployees failed, fallback to JSON', err.message);
     }
   }
-  const employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const employees = await readMergedEmployees();
   return employees
     .filter(e => e.status === 'Active')
     .sort((a, b) => (a.employee_name || '').localeCompare(b.employee_name || ''))
@@ -561,7 +577,7 @@ export async function getEmployeeItigrisId(employeeId) {
       console.warn('DB getEmployeeItigrisId failed, fallback to JSON', err.message);
     }
   }
-  const employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const employees = await readMergedEmployees();
   const emp = employees.find(e => e.id === employeeId);
   return emp ? emp.itigris_user_id || null : null;
 }
@@ -592,7 +608,7 @@ export async function getEmployeesWithExternalIds() {
       console.warn('DB getEmployeesWithExternalIds failed, fallback to JSON', err.message);
     }
   }
-  const employees = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const employees = await readMergedEmployees();
   return {
     data: employees
       .filter(e => e.status === 'Active' && e.itigris_user_id)
@@ -675,7 +691,7 @@ export async function getDepartmentTree() {
     }
   }
   const deptRaw = await readJsonFile(DEPARTMENTS_PATH, 'departments');
-  const empRaw = await readJsonFile(EMPLOYEES_PATH, 'employees');
+  const empRaw = await readMergedEmployees();
   const departments = deptRaw.filter(d => d.enabled !== false).map(mapDepartmentRow);
   const employees = empRaw.filter(e => e.status === 'Active').map(mapAdminEmployeeRow);
   return { departments, employees };

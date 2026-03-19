@@ -226,6 +226,9 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
     }
   }, [tokens.length]);
 
+  // Picker reset key — forces the Select to remount after each pick
+  const [pickerKey, setPickerKey] = useState(0);
+
   // Validate: check for unknown metric references
   const unknownRefs = useMemo(() => {
     const metricIds = new Set(metrics.map(m => m.id));
@@ -380,7 +383,7 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
 
       {/* Controls row 1: metric selector + accessor toggle + operators */}
       <div className="flex flex-wrap items-center gap-1.5">
-        <Select value="" onValueChange={v => { if (v) addMetric(v); }}>
+        <Select key={pickerKey} onValueChange={v => { if (v) { addMetric(v); setPickerKey(k => k + 1); } }}>
           <SelectTrigger className="h-7 text-xs w-[160px]">
             <SelectValue placeholder="+ Метрика" />
           </SelectTrigger>

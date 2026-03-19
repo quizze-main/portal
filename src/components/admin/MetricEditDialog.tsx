@@ -741,10 +741,10 @@ const MetricEditDialog: React.FC<MetricEditDialogProps> = ({
       {/* V7: Forecast prediction settings */}
       <div className="space-y-2 pt-2 border-t">
         <label className="text-xs font-semibold text-muted-foreground block">Прогноз на конец месяца</label>
-        <Select value={form.forecastMethod || ''} onValueChange={v => updateField('forecastMethod', v)}>
+        <Select value={form.forecastMethod || 'auto'} onValueChange={v => updateField('forecastMethod', v === 'auto' ? '' : v)}>
           <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Авто (по типу метрики)" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Авто (по типу метрики)</SelectItem>
+            <SelectItem value="auto">Авто (по типу метрики)</SelectItem>
             <SelectItem value="linear">Линейная экстраполяция</SelectItem>
             <SelectItem value="custom">Своя формула</SelectItem>
             <SelectItem value="disabled">Отключено</SelectItem>

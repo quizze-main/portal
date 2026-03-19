@@ -61,7 +61,7 @@ export interface MetricFormData {
   lossFormula: string;
   jsonPathLoss: string;
   // V7: Forecast prediction
-  forecastMethod: 'linear' | 'custom' | 'disabled' | '';
+  forecastMethod: 'linear' | 'custom' | 'disabled' | 'auto' | '';
   forecastFormula: string;
 }
 
@@ -100,7 +100,7 @@ export const emptyForm: MetricFormData = {
   lossMode: 'auto',
   lossFormula: '',
   jsonPathLoss: '',
-  forecastMethod: '',
+  forecastMethod: 'auto',
   forecastFormula: '',
 };
 
@@ -152,7 +152,7 @@ export function toForm(m: DashboardMetricConfig): MetricFormData {
     lossMode: m.lossMode || (m.source === 'tracker' ? 'tracker' : 'disabled'),
     lossFormula: m.lossFormula || '',
     jsonPathLoss: m.jsonPathLoss || '',
-    forecastMethod: m.forecastMethod || '',
+    forecastMethod: m.forecastMethod || 'auto',
     forecastFormula: m.forecastFormula || '',
   };
 }

@@ -74,6 +74,41 @@ import { useFieldMappingEditor } from '@/hooks/useFieldMappingEditor';
 import { FormulaEditor } from './FormulaEditor';
 import ApiExplorerDialog from './ApiExplorerDialog';
 
+// ─── Error Boundary ───
+
+class WizardErrorBoundary extends React.Component<
+  { children: React.ReactNode; onReset?: () => void },
+  { error: Error | null }
+> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="p-6 text-center space-y-3">
+          <p className="text-sm text-destructive font-medium">Ошибка отображения</p>
+          <p className="text-xs text-muted-foreground break-all">{this.state.error.message}</p>
+          <button
+            type="button"
+            className="text-xs text-primary hover:underline"
+            onClick={() => {
+              this.setState({ error: null });
+              this.props.onReset?.();
+            }}
+          >
+            Попробовать снова
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // ─── Types ───
 
 interface MetricCreationWizardProps {
@@ -897,10 +932,10 @@ const MetricCreationWizard: React.FC<MetricCreationWizardProps> = ({
       {/* V7: Forecast prediction */}
       <div className="space-y-2 pt-2 border-t">
         <label className="text-xs font-semibold text-muted-foreground block">Прогноз на конец месяца</label>
-        <Select value={form.forecastMethod || ''} onValueChange={v => updateField('forecastMethod', v)}>
+        <Select value={form.forecastMethod || 'auto'} onValueChange={v => updateField('forecastMethod', v === 'auto' ? '' : v)}>
           <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Авто (по типу метрики)" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Авто (по типу метрики)</SelectItem>
+            <SelectItem value="auto">Авто (по типу метрики)</SelectItem>
             <SelectItem value="linear">Линейная экстраполяция</SelectItem>
             <SelectItem value="custom">Своя формула</SelectItem>
             <SelectItem value="disabled">Отключено</SelectItem>
@@ -1229,16 +1264,18 @@ const MetricCreationWizard: React.FC<MetricCreationWizardProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        {renderStepIndicator()}
+        <WizardErrorBoundary onReset={() => setStep(1)}>
+          {renderStepIndicator()}
 
-        <div className="flex-1 min-h-0 overflow-y-auto pr-2">
-          {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
-          {step === 3 && renderStep3()}
-          {step === 4 && renderStep4()}
-        </div>
+          <div className="flex-1 min-h-0 overflow-y-auto pr-2">
+            {step === 1 && renderStep1()}
+            {step === 2 && renderStep2()}
+            {step === 3 && renderStep3()}
+            {step === 4 && renderStep4()}
+          </div>
 
-        {renderFooter()}
+          {renderFooter()}
+        </WizardErrorBoundary>
       </DialogContent>
     </Dialog>
   );

@@ -401,9 +401,11 @@ export default function SalaryCalculatorPage() {
     }
   }, [branchEmployees, selectedBranch, availablePositions]);
 
-  const itigrisUserId = selectedEmployee?.custom_itigris_user_id
-    ?? employee?.custom_itigris_user_id
-    ?? null;
+  // When a specific employee is selected, use ONLY their itigris ID (no fallback to current user).
+  // When in generic mode ("По должности"), use the current logged-in user's ID.
+  const itigrisUserId = effectiveEmployeeId
+    ? (selectedEmployee?.custom_itigris_user_id ?? null)
+    : (employee?.custom_itigris_user_id ?? null);
   const canForecast = Boolean(itigrisUserId && selectedStoreOption?.store_id);
 
   const {

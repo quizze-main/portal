@@ -187,7 +187,12 @@ app.use((req, res, next) => {
             token: token ? `${token.substring(0, 10)}...` : 'null',
             url: req.url
         });
-        req.user = null;
+        if (process.env.NODE_ENV === 'production') {
+            req.user = null;
+        } else {
+            // Dev fallback: don't block on expired/invalid tokens
+            req.user = { tg_username: 'fedulovdm', employeename: 'fedulovdm', tg_chat_id: 'fedulovdm', demo: false };
+        }
     }
     next();
 });

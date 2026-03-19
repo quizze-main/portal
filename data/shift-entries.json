@@ -2547,6 +2547,20 @@
       "created_by": "fedulovdm",
       "created_at": "2026-03-17T17:32:51.383Z",
       "updated_at": "2026-03-17T17:32:51.383Z"
+    },
+    {
+      "id": "20c8cd7a-8079-4dc7-96a5-57595b3aae98",
+      "employee_id": "HR-EMP-00015",
+      "branch_id": "1000000052",
+      "date": "2026-03-03",
+      "shift_type": "work",
+      "shift_number": 1,
+      "time_start": null,
+      "time_end": null,
+      "note": "",
+      "created_by": "fedulovdm",
+      "created_at": "2026-03-19T16:55:51.205Z",
+      "updated_at": "2026-03-19T16:56:01.982Z"
     }
   ]
 }
