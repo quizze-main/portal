@@ -62,10 +62,10 @@ jobs:
           # Update VERSION in .env
           SHORT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
           BRANCH="${{ github.event.inputs.branch }}"
-          sed -i '/^VERSION=/d' .env
-          sed -i '/^SHOW_VERSION=/d' .env
-          echo "VERSION=${BRANCH}@${SHORT_HASH}" >> .env
-          echo "SHOW_VERSION=true" >> .env
+          sudo sed -i '/^VERSION=/d' .env
+          sudo sed -i '/^SHOW_VERSION=/d' .env
+          echo "VERSION=${BRANCH}@${SHORT_HASH}" | sudo tee -a .env > /dev/null
+          echo "SHOW_VERSION=true" | sudo tee -a .env > /dev/null
           echo "📝 Set VERSION=${BRANCH}@${SHORT_HASH}"
 
           echo "🛑 Останавливаем текущие контейнеры..."
