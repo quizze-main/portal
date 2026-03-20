@@ -47,7 +47,7 @@ jobs:
 
     - name: Deploy
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
           set -e
 
           echo "🚀 Начинаем деплой Portal Dev..."
