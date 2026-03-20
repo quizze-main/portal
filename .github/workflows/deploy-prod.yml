@@ -59,6 +59,15 @@ jobs:
             exit 1
           fi
 
+          # Update VERSION in .env
+          SHORT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
+          BRANCH="${{ github.event.inputs.branch }}"
+          sed -i '/^VERSION=/d' .env
+          sed -i '/^SHOW_VERSION=/d' .env
+          echo "VERSION=${BRANCH}@${SHORT_HASH}" >> .env
+          echo "SHOW_VERSION=false" >> .env
+          echo "📝 Set VERSION=${BRANCH}@${SHORT_HASH}"
+
           echo "🛑 Останавливаем текущие контейнеры..."
           sudo docker compose -f docker-compose.prod.yml down || true
 

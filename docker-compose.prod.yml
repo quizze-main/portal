@@ -77,6 +77,8 @@ services:
       - REDIS_URL=${REDIS_URL}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - DATABASE_URL=postgresql://${POSTGRES_USER:-staff_focus}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-staff_focus}
+      - VERSION=${VERSION}
+      - SHOW_VERSION=${SHOW_VERSION}
     ports:
       - "${PORT}:${PORT}"
     restart: unless-stopped

@@ -351,6 +351,17 @@ app.get('/api/version', (req, res) => {
     });
 });
 
+// Deploy version endpoint (no auth required)
+app.get('/api/deploy-version', (req, res) => {
+    const version = env.VERSION || 'unknown';
+    const showVersion = env.SHOW_VERSION === 'true';
+
+    res.json({
+        version,
+        showVersion
+    });
+});
+
 // Cache bust endpoint для принудительного обновления кеша
 app.post('/api/cache-bust', (req, res) => {
     res.json({
