@@ -133,7 +133,7 @@ export function KPICompactCard({ metric, onClick }: KPICompactCardProps) {
 
           {hasLoss && (
             <span className="font-semibold whitespace-nowrap text-red-500">
-              Потери: {formatFull(metric.loss! > 0 ? -metric.loss! : metric.loss!, '₽')}
+              Потери: {formatFull(metric.loss! > 0 ? -metric.loss! : metric.loss!, metric.unit)}
             </span>
           )}
         </div>

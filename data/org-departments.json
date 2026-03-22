@@ -9,124 +9,31 @@
       "enabled": true
     },
     {
-      "id": "Change - LR",
-      "department_name": "Change",
-      "parent_id": "Loov - LR",
-      "store_id": null,
-      "is_group": 1,
-      "enabled": true
-    },
-    {
-      "id": "Dispatch - LG",
-      "department_name": "Dispatch",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Human Resources - LG",
-      "department_name": "Human Resources",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Legal - LG",
-      "department_name": "Legal",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
       "id": "Loov - LR",
-      "department_name": "Loov",
+      "department_name": "Демо",
       "parent_id": "All Departments",
       "store_id": null,
       "is_group": 1,
-      "enabled": true
-    },
-    {
-      "id": "Management - LG",
-      "department_name": "Management",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Marketing - LG",
-      "department_name": "Marketing",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Operations - LG",
-      "department_name": "Operations",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Production - LG",
-      "department_name": "Production",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Purchase - LG",
-      "department_name": "Purchase",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Quality Management - LG",
-      "department_name": "Quality Management",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Research & Development - LG",
-      "department_name": "Research & Development",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:12:29.483Z"
     },
     {
       "id": "Run - LR",
-      "department_name": "Run",
+      "department_name": "Kari",
       "parent_id": "Loov - LR",
       "store_id": null,
       "is_group": 1,
-      "enabled": true
-    },
-    {
-      "id": "Sales - LG",
-      "department_name": "Sales",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:12:52.177Z"
     },
     {
       "id": "Казань клуб - LR",
-      "department_name": "Казань клуб",
+      "department_name": "Казань ТЦ Мега",
       "parent_id": "Клуб заботы - LR",
       "store_id": "1000000006",
       "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:13:19.337Z"
     },
     {
       "id": "Калининград - LR",
@@ -138,43 +45,30 @@
     },
     {
       "id": "Калининград клиника - LR",
-      "department_name": "Калининград клиника",
+      "department_name": "Калининград 1",
       "parent_id": "Калининград - LR",
       "store_id": "1000000007",
       "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:15:06.719Z"
     },
     {
       "id": "Калининград клуб - LR",
-      "department_name": "Калининград клуб",
+      "department_name": "Калининград 2",
       "parent_id": "Калининград - LR",
       "store_id": "1000000009",
       "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Клуб заботы - L",
-      "department_name": "Клуб заботы",
-      "parent_id": "ТЕСТОВЫЕ - L",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:15:13.994Z"
     },
     {
       "id": "Клуб заботы - LR",
-      "department_name": "Клуб заботы",
+      "department_name": "Магазины",
       "parent_id": "Run - LR",
       "store_id": null,
       "is_group": 1,
-      "enabled": true
-    },
-    {
-      "id": "Команда - CH - LR",
-      "department_name": "Команда",
-      "parent_id": "Change - LR",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:13:06.905Z"
     },
     {
       "id": "Команда - Run - LR",
@@ -182,14 +76,6 @@
       "parent_id": "Run - LR",
       "store_id": null,
       "is_group": 1,
-      "enabled": true
-    },
-    {
-      "id": "Команда заботы  - L",
-      "department_name": "Команда заботы ",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
       "enabled": true
     },
     {
@@ -201,44 +87,13 @@
       "enabled": true
     },
     {
-      "id": "Москва - LR",
-      "department_name": "Москва",
-      "parent_id": "Клуб заботы - LR",
-      "store_id": null,
-      "is_group": 1,
-      "enabled": true
-    },
-    {
       "id": "Москва клуб заботы 0-1 - LR",
-      "department_name": "Москва клуб заботы 0-1 ",
+      "department_name": "Comciti Москва",
       "parent_id": "Клуб заботы - LR",
       "store_id": "1000000052",
       "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Мск - тест - LR",
-      "department_name": "Мск - тест123213 0-1",
-      "parent_id": "ТЕСТОВЫЕ - L",
-      "store_id": "1000000052",
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Операции - CH - LR",
-      "department_name": "Операции - CH",
-      "parent_id": "Change - LR",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Продажи - CH - LR",
-      "department_name": "Продажи - CH",
-      "parent_id": "Change - LR",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:13:59.406Z"
     },
     {
       "id": "Продажи - Run - LR",
@@ -246,14 +101,6 @@
       "parent_id": "Run - LR",
       "store_id": null,
       "is_group": 1,
-      "enabled": true
-    },
-    {
-      "id": "Продвижение - CH - LR",
-      "department_name": "Продвижение - CH ",
-      "parent_id": "Change - LR",
-      "store_id": null,
-      "is_group": false,
       "enabled": true
     },
     {
@@ -265,81 +112,18 @@
       "enabled": true
     },
     {
-      "id": "Радиус МСК - LR",
-      "department_name": "Радиус МСК",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Радиус СПБ - LR",
-      "department_name": "Радиус СПБ",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Санкт-Петербург  - L",
-      "department_name": "Санкт-Петербург ",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Санкт-Петербург - LR",
-      "department_name": "Санкт-Петербург",
-      "parent_id": "ТЕСТОВЫЕ - L",
-      "store_id": null,
-      "is_group": 1,
-      "enabled": true
-    },
-    {
       "id": "Санкт-Петербург клиника - LR",
-      "department_name": "Санкт-Петербург клиника",
+      "department_name": "Санкт-Петербург Мега",
       "parent_id": "Клуб заботы - LR",
       "store_id": "1000000008",
       "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Санкт-Петербург клиника 0-1 - LR",
-      "department_name": "Спб клиника 0-1",
-      "parent_id": "ТЕСТОВЫЕ - L",
-      "store_id": "1000000008",
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Стиль - CH - LR",
-      "department_name": "Стиль",
-      "parent_id": "Change - LR",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "ТЕСТОВЫЕ - L",
-      "department_name": "ТЕСТОВЫЕ",
-      "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": 1,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:19:10.838Z"
     },
     {
       "id": "Технологии  - LR",
       "department_name": "Технологии ",
       "parent_id": "All Departments",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
-      "id": "Технологии - CH - LR",
-      "department_name": "Технологии - CH",
-      "parent_id": "Change - LR",
       "store_id": null,
       "is_group": false,
       "enabled": true
@@ -361,14 +145,6 @@
       "enabled": true
     },
     {
-      "id": "Франшиза - CH - LR",
-      "department_name": "Франшиза - CH",
-      "parent_id": "Change - LR",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
-    },
-    {
       "id": "Юристы - Run - LR",
       "department_name": "Юристы - Run",
       "parent_id": "Run - LR",
@@ -378,35 +154,30 @@
     },
     {
       "id": "Якутск клиника - LR",
-      "department_name": "Якутск клиника",
+      "department_name": "Якутск ТЦ Зимняя вишня",
       "parent_id": "Якутский регион - LR",
       "store_id": "1000000042",
       "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:14:17.064Z"
     },
     {
       "id": "Якутск клуб - LR",
-      "department_name": "Якутск клуб",
+      "department_name": "Якутск 1",
       "parent_id": "Якутский регион - LR",
       "store_id": "1000000043",
       "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:19:25.539Z"
     },
     {
       "id": "Якутский регион - LR",
-      "department_name": "Якутский регион",
+      "department_name": "Якутск регион",
       "parent_id": "Клуб заботы - LR",
       "store_id": null,
       "is_group": 1,
-      "enabled": true
-    },
-    {
-      "id": "Офис - KR",
-      "department_name": "Офис",
-      "parent_id": "Kari - KR",
-      "store_id": null,
-      "is_group": false,
-      "enabled": true
+      "enabled": true,
+      "updated_at": "2026-03-20T08:14:50.539Z"
     }
   ]
 }

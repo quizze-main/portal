@@ -2,7 +2,7 @@
   "metrics": [
     {
       "id": "revenue_created",
-      "name": "Выручка СЗ",
+      "name": "Выручка созданные",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "forecast",
@@ -139,7 +139,7 @@
         }
       ],
       "fieldMappings": [],
-      "lossMode": "disabled",
+      "lossMode": "tracker",
       "lossFormula": "",
       "jsonPathLoss": "",
       "forecastMethod": null,
@@ -147,7 +147,7 @@
     },
     {
       "id": "revenue_closed",
-      "name": "Выручка ЗЗ",
+      "name": "Выручка закрытые",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "forecast",
@@ -203,7 +203,7 @@
     },
     {
       "id": "frames_count",
-      "name": "Кол-во ФЛ",
+      "name": "Кол-во трафика",
       "unit": "шт",
       "forecastUnit": "%",
       "forecastLabel": "forecast",
@@ -236,7 +236,13 @@
       "lossFormula": "",
       "jsonPathLoss": "",
       "forecastMethod": null,
-      "forecastFormula": ""
+      "forecastFormula": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "color": "#3B82F6"
     },
     {
       "id": "conversion_rate",
@@ -314,7 +320,7 @@
     },
     {
       "id": "avg_glasses_price",
-      "name": "Ср. стоимость очков",
+      "name": "Средний чек",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "deviation",
@@ -347,7 +353,13 @@
       "lossFormula": "",
       "jsonPathLoss": "",
       "forecastMethod": null,
-      "forecastFormula": ""
+      "forecastFormula": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "color": "#3B82F6"
     },
     {
       "id": "margin_rate",
@@ -396,7 +408,7 @@
     },
     {
       "id": "avg_repaires_price",
-      "name": "Ср. стоимость ремонтов",
+      "name": "Ср. стоимость сертификатов",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "deviation",
@@ -429,7 +441,13 @@
       "lossFormula": "",
       "jsonPathLoss": "",
       "forecastMethod": null,
-      "forecastFormula": ""
+      "forecastFormula": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "color": "#3B82F6"
     },
     {
       "id": "test",
@@ -760,7 +778,7 @@
       "jsonPathPlan": "",
       "manualData": [],
       "color": "#3B82F6",
-      "enabled": true,
+      "enabled": false,
       "order": 9,
       "visibleToPositions": [
         "leader"
@@ -894,7 +912,7 @@
       "jsonPathPlan": "",
       "manualData": [],
       "color": "#3B82F6",
-      "enabled": true,
+      "enabled": false,
       "order": -1,
       "visibleToPositions": [],
       "dataSourceId": null,
@@ -1105,6 +1123,20 @@
           "metricCode": "revenue_created",
           "formula": "{revenue_created} + {revenue_closed}"
         }
+      }
+    },
+    {
+      "id": "chart_1773995168207",
+      "type": "chart",
+      "name": "Все метрики",
+      "enabled": true,
+      "order": 1100,
+      "parentId": null,
+      "config": {
+        "metricSeries": [],
+        "subjectType": "store",
+        "isAggregated": true,
+        "isMetricSelector": true
       }
     }
   ]

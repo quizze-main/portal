@@ -163,7 +163,7 @@ export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCar
 
               {metric.loss !== undefined && (
                 <span className="font-semibold whitespace-nowrap truncate text-red-500 leading-none">
-                  Потери: {formatFull(metric.loss > 0 ? -metric.loss : metric.loss, '₽')}
+                  Потери: {formatFull(metric.loss > 0 ? -metric.loss : metric.loss, metric.unit)}
                 </span>
               )}
             </div>

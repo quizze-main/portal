@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
+import { lazy, Suspense } from 'react';
 import { Dashboard } from "./pages/Dashboard";
 import { KnowledgeBase } from "./pages/KnowledgeBase";
 import { KnowledgeDetail } from "./pages/KnowledgeDetail";
@@ -32,6 +33,9 @@ import ShiftSchedulePage from "./pages/ShiftSchedule";
 import { BurgerMenu } from "./components/BurgerMenu";
 import AdminSalary from "./pages/AdminSalary";
 import { RequireAccountant } from "./components/RequireAccountant";
+
+const LandingPage = lazy(() => import('./pages/Landing'));
+const LandingModuleDetailPage = lazy(() => import('./pages/LandingModuleDetail'));
 
 const queryClient = new QueryClient();
 
@@ -343,68 +347,84 @@ const App = () => {
         <Toaster />
         <Sonner />
         <ThemeProvider>
-          <EmployeeProvider>
-            <InAppSse />
-            <YandexMetrikaUserId />
-            <BrowserRouter>
-              <SwipeBack />
-              <YandexMetrikaPageHit />
-              <TelegramStartParamHandler />
-              <StartAfterAuthNavigator />
-              <AppShell>
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/reviews" element={<Reviews />} />
-                    <Route
-                      path="/dashboard/reviews-detail"
-                      element={
-                        <RequireClubManager>
-                          <LeaderReviewsDetail />
-                        </RequireClubManager>
-                      }
-                    />
-                    <Route
-                      path="/dashboard/metric/:metricId"
-                      element={
-                        <RequireClubManager>
-                          <LeaderMetricDetail />
-                        </RequireClubManager>
-                      }
-                    />
-                    <Route
-                      path="/dashboard/manager/:managerId"
-                      element={
-                        <RequireClubManager>
-                          <LeaderManagerDetail />
-                        </RequireClubManager>
-                      }
-                    />
-                    <Route
-                      path="/dashboard/optometrist/:optometristId"
-                      element={
-                        <RequireClubManager>
-                          <OptometristDetail />
-                        </RequireClubManager>
-                      }
-                    />
-                    <Route path="/knowledge" element={<KnowledgeBase />} />
-                    <Route path="/knowledge/collection/:id" element={<KnowledgeDetail />} />
-                    <Route path="/knowledge/:id" element={<KnowledgeDetail />} />
-                    <Route path="/salary" element={<Navigate to="/calculator" replace />} />
-                    <Route path="/calculator" element={<RequireSalaryCalculator><SalaryCalculatorPage /></RequireSalaryCalculator>} />
-                    <Route path="/calculator/:branchId" element={<RequireSalaryCalculator><BranchCalculatorPage /></RequireSalaryCalculator>} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/all-tasks" element={<AllTasks />} />
-                    <Route path="/attention-deals" element={<AttentionDeals />} />
-                    <Route path="/admin" element={<RequireClubManager><Admin /></RequireClubManager>} />
-                    <Route path="/admin/salary" element={<RequireAccountant><AdminSalary /></RequireAccountant>} />
-                    <Route path="/manual-data" element={<RequireClubManager><ManualDataEntry /></RequireClubManager>} />
-                    <Route path="/shift-schedule" element={<ShiftSchedulePage />} />
-                  </Routes>
-              </AppShell>
-            </BrowserRouter>
-            <InstallAppInstructionModal />
-          </EmployeeProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Landing pages — outside EmployeeProvider, no auth required */}
+              <Route path="/landing" element={
+                <Suspense fallback={<div className="min-h-screen" />}>
+                  <LandingPage />
+                </Suspense>
+              } />
+              <Route path="/landing/module/:slug" element={
+                <Suspense fallback={<div className="min-h-screen" />}>
+                  <LandingModuleDetailPage />
+                </Suspense>
+              } />
+              {/* All other routes — wrapped in EmployeeProvider + AppShell */}
+              <Route path="/*" element={
+                <EmployeeProvider>
+                  <InAppSse />
+                  <YandexMetrikaUserId />
+                  <SwipeBack />
+                  <YandexMetrikaPageHit />
+                  <TelegramStartParamHandler />
+                  <StartAfterAuthNavigator />
+                  <AppShell>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/reviews" element={<Reviews />} />
+                      <Route
+                        path="/dashboard/reviews-detail"
+                        element={
+                          <RequireClubManager>
+                            <LeaderReviewsDetail />
+                          </RequireClubManager>
+                        }
+                      />
+                      <Route
+                        path="/dashboard/metric/:metricId"
+                        element={
+                          <RequireClubManager>
+                            <LeaderMetricDetail />
+                          </RequireClubManager>
+                        }
+                      />
+                      <Route
+                        path="/dashboard/manager/:managerId"
+                        element={
+                          <RequireClubManager>
+                            <LeaderManagerDetail />
+                          </RequireClubManager>
+                        }
+                      />
+                      <Route
+                        path="/dashboard/optometrist/:optometristId"
+                        element={
+                          <RequireClubManager>
+                            <OptometristDetail />
+                          </RequireClubManager>
+                        }
+                      />
+                      <Route path="/knowledge" element={<KnowledgeBase />} />
+                      <Route path="/knowledge/collection/:id" element={<KnowledgeDetail />} />
+                      <Route path="/knowledge/:id" element={<KnowledgeDetail />} />
+                      <Route path="/salary" element={<Navigate to="/calculator" replace />} />
+                      <Route path="/calculator" element={<RequireSalaryCalculator><SalaryCalculatorPage /></RequireSalaryCalculator>} />
+                      <Route path="/calculator/:branchId" element={<RequireSalaryCalculator><BranchCalculatorPage /></RequireSalaryCalculator>} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/all-tasks" element={<AllTasks />} />
+                      <Route path="/attention-deals" element={<AttentionDeals />} />
+                      <Route path="/admin" element={<RequireClubManager><Admin /></RequireClubManager>} />
+                      <Route path="/admin/salary" element={<RequireAccountant><AdminSalary /></RequireAccountant>} />
+                      <Route path="/manual-data" element={<RequireClubManager><ManualDataEntry /></RequireClubManager>} />
+                      <Route path="/shift-schedule" element={<ShiftSchedulePage />} />
+                    </Routes>
+                  </AppShell>
+                  <InstallAppInstructionModal />
+                </EmployeeProvider>
+              } />
+            </Routes>
+          </BrowserRouter>
         </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>

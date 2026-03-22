@@ -8,13 +8,13 @@ import { BRANCHES } from './branchData';
  * Frappe store IDs are the real IDs from the Loovis/Frappe API used for data filtering.
  */
 export const BRANCH_TO_STORE_ID: Record<string, string> = {
-  moscow_club: '1000000008',
-  spb_clinic: '1000000052',
+  moscow_club: '1000000052',
+  spb_clinic: '1000000008',
   kaliningrad_club: '1000000009',
-  kaliningrad_clinic: '1000000006',
-  yakutsk_club: '1000000053',
-  yakutsk_clinic: '1000000054',
-  kazan_club: '1000000055',
+  kaliningrad_clinic: '1000000007',
+  yakutsk_club: '1000000043',
+  yakutsk_clinic: '1000000042',
+  kazan_club: '1000000006',
 };
 
 // Reverse mapping: Frappe store ID → BRANCHES slug

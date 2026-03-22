@@ -2249,8 +2249,8 @@ export function setupInternalApiRoutes(app) {
     const isPercentage = valueType === 'percentage' || unitFromPostfix === '%';
     const unit = unitFromPostfix ?? metricCfg.unit;
 
-    const reserve = lossOrOver > 0 ? Math.ceil(lossOrOver) : undefined;
-    const loss = lossOrOver < 0 ? Math.ceil(Math.abs(lossOrOver)) : undefined;
+    let reserve = lossOrOver > 0 ? Math.ceil(lossOrOver) : undefined;
+    let loss = lossOrOver < 0 ? Math.ceil(Math.abs(lossOrOver)) : undefined;
     const reserveUnit = metricCfg.id === 'conversion_rate' && reserve !== undefined ? '₽' : undefined;
 
     // Determine calculation mode: V2 metricType takes precedence, fallback to forecastLabel
@@ -2321,6 +2321,13 @@ export function setupInternalApiRoutes(app) {
       }
     } catch (err) {
       console.warn(`[forecast-engine] Error for metric ${metricCfg?.id}: ${err.message}`);
+    }
+
+    // For auto lossMode, recalculate reserve/loss using predicted end-of-month value
+    if (metricCfg.lossMode === 'auto' && predictedValue != null) {
+      const predictedLossOrOver = predictedValue - plan;
+      reserve = predictedLossOrOver > 0 ? Math.ceil(predictedLossOrOver) : undefined;
+      loss = predictedLossOrOver < 0 ? Math.ceil(Math.abs(predictedLossOrOver)) : undefined;
     }
 
     return {
@@ -2580,7 +2587,6 @@ export function setupInternalApiRoutes(app) {
             const fact = _toNumber(data?.fact_value) ?? 0;
             const plan = _toNumber(data?.plan_value) ?? 0;
             const forecastRaw = _toNumber(data?.forecast_value);
-            const lossOrOver = _toNumber(data?.loss_or_overperformance) ?? 0;
             const valueType = data?.value_type ? String(data.value_type) : '';
             const valuePostfixType = data?.value_postfix_type ? String(data.value_postfix_type) : '';
 
@@ -2592,6 +2598,17 @@ export function setupInternalApiRoutes(app) {
               const resolved = resolvePlan(metric.id, storeId, null, period, allMetricPlans);
               if (resolved !== null) effectivePlan = resolved;
             }
+
+            // Respect metric lossMode config (previously tracker value was always used)
+            let lossOrOver = 0;
+            const lossMode = metric.lossMode || 'disabled';
+            if (lossMode === 'tracker') {
+              lossOrOver = _toNumber(data?.loss_or_overperformance) ?? 0;
+            } else if (lossMode !== 'disabled') {
+              // 'auto', 'formula', 'jsonpath' — delegate to existing function
+              lossOrOver = _calculateLossOrOver(metric, fact, effectivePlan, data, null);
+            }
+
             return _buildMetricResponse(metric, fact, effectivePlan, forecastRaw, lossOrOver, valueType, valuePostfixType, _remainingWorkingDays);
           });
       }
