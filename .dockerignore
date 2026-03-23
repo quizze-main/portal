@@ -23,8 +23,9 @@ build
 # CI/CD
 .github
 
-# Vendor/external
+# Vendor/external (but keep src for imports)
 _vendor
+!_vendor/loovis-sandbox/src
 
 # Documentation (except needed for app)
 *.md
