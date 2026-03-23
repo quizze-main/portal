@@ -61,6 +61,11 @@
       "sourceType": "github",
       "computedHash": "0c58e456ce22214d35ad381093c1f2aa510f5b3129f2abebdf1f5ec5e691b23d"
     },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "computedHash": "e3ba3d760c5f4cc43b02a91fb8924f726c7818f95cc35d79d0a606ca622b72f5"
+    },
     "surprise-me": {
       "source": "bytedance/deer-flow",
       "sourceType": "github",
