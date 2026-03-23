@@ -33,6 +33,7 @@ import ShiftSchedulePage from "./pages/ShiftSchedule";
 import { BurgerMenu } from "./components/BurgerMenu";
 import AdminSalary from "./pages/AdminSalary";
 import { RequireAccountant } from "./components/RequireAccountant";
+import { DeployVersionBadge } from "./components/DeployVersionBadge";
 
 const LandingPage = lazy(() => import('./pages/Landing'));
 const LandingModuleDetailPage = lazy(() => import('./pages/LandingModuleDetail'));
@@ -424,6 +425,7 @@ const App = () => {
                 </EmployeeProvider>
               } />
             </Routes>
+          <DeployVersionBadge />
           </BrowserRouter>
         </ThemeProvider>
       </TooltipProvider>
