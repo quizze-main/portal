@@ -1,3 +1,6 @@
+# Docker Compose для использования образа из GitHub Container Registry
+# Используется вместо локальной сборки на сервере
+
 volumes:
   redis_data:
   postgres_data:
@@ -24,21 +27,7 @@ services:
       - portal-network
 
   staff-focus-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        COMMIT_HASH: ${COMMIT_HASH:-unknown}
-        SHORT_HASH: ${SHORT_HASH:-unknown}
-        COMMIT_TIME: ${COMMIT_TIME:-unknown}
-        BUILD_TIME: ${BUILD_TIME:-unknown}
-        VITE_API_SECRET_KEY: ${VITE_API_SECRET_KEY}
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
-        VITE_OUTLINE_BASE_URL: ${VITE_OUTLINE_BASE_URL}
-        VITE_FRAPPE_BASE_URL: ${VITE_FRAPPE_BASE_URL}
-        VITE_TG_BOT_USERNAME: ${VITE_TG_BOT_USERNAME}
-        YANDEX_TREKER_AUTH_TOKEN: ${YANDEX_TREKER_AUTH_TOKEN}
-        X_ORG_ID: ${X_ORG_ID}
+    image: ghcr.io/quizze-main/portal:${IMAGE_TAG:-latest}
     container_name: staff-focus-app-${CONTAINER_SUFFIX:-prod}
     environment:
       - NODE_ENV=production
@@ -89,7 +78,6 @@ services:
       retries: 3
       start_period: 40s
     command: ["npm", "run", "start:prod"]
-    volumes: []  # Переопределяем volumes, убирая все mount'ы
     depends_on:
       redis:
         condition: service_healthy

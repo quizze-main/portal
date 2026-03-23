@@ -1,4 +1,4 @@
-name: Deploy to Prod
+name: Deploy to Dev
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       branch:
         description: 'Branch to deploy'
         required: true
-        default: 'main'
+        default: 'dev'
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
         id: vars
         run: |
           SHORT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
-          echo "image_tag=prod-${SHORT_HASH}" >> $GITHUB_OUTPUT
+          echo "image_tag=dev-${SHORT_HASH}" >> $GITHUB_OUTPUT
           echo "short_hash=${SHORT_HASH}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
@@ -48,8 +48,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.image_tag }}
-            ghcr.io/${{ github.repository }}:prod-latest
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:dev-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -86,10 +85,10 @@ jobs:
 
       - name: Set deployment variables
         run: |
-          echo "DEPLOY_PATH=${{ vars.DEPLOY_PATH }}" >> $GITHUB_ENV
+          echo "DEPLOY_PATH=${{ vars.DEPLOY_PATH_DEV }}" >> $GITHUB_ENV
           echo "SSH_USER=${{ vars.SSH_USER }}" >> $GITHUB_ENV
           echo "SSH_HOST=${{ vars.SSH_HOST }}" >> $GITHUB_ENV
-          echo "DOMAIN=${{ vars.DOMAIN }}" >> $GITHUB_ENV
+          echo "DOMAIN=${{ vars.DOMAIN_DEV }}" >> $GITHUB_ENV
           echo "SHORT_HASH=$(echo '${{ github.sha }}' | cut -c1-7)" >> $GITHUB_ENV
           echo "IMAGE_TAG=${{ needs.build.outputs.image_tag }}" >> $GITHUB_ENV
 
@@ -113,7 +112,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
             set -e
 
-            echo "🚀 Начинаем деплой Portal..."
+            echo "🚀 Начинаем деплой Portal Dev..."
 
             cd ${{ env.DEPLOY_PATH }}
 
@@ -129,7 +128,7 @@ jobs:
             sudo sed -i '/^SHOW_VERSION=/d' .env
             sudo sed -i '/^IMAGE_TAG=/d' .env
             echo "VERSION=${BRANCH}@${SHORT_HASH}" | sudo tee -a .env > /dev/null
-            echo "SHOW_VERSION=false" | sudo tee -a .env > /dev/null
+            echo "SHOW_VERSION=true" | sudo tee -a .env > /dev/null
             echo "IMAGE_TAG=${{ env.IMAGE_TAG }}" | sudo tee -a .env > /dev/null
             echo "📝 Set VERSION=${BRANCH}@${SHORT_HASH}, IMAGE_TAG=${{ env.IMAGE_TAG }}"
 
@@ -142,7 +141,7 @@ jobs:
             echo "🛑 Останавливаем текущие контейнеры..."
             sudo docker compose -f docker-compose.ghcr.yml down || sudo docker compose -f docker-compose.prod.yml down || true
 
-            echo "🚀 Запускаем Portal..."
+            echo "🚀 Запускаем Portal Dev..."
             sudo docker compose -f docker-compose.ghcr.yml up -d
 
             echo "⏳ Ждем запуска приложения..."
@@ -154,5 +153,5 @@ jobs:
             echo "🧹 Очищаем старые образы..."
             sudo docker image prune -f
 
-            echo "✅ Деплой Portal завершен!"
+            echo "✅ Деплой Portal Dev завершен!"
           EOF
