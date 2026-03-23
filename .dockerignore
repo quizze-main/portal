@@ -1,7 +1,6 @@
 node_modules
 npm-debug.log
 .gitignore
-README.md
 .nyc_output
 coverage
 .DS_Store
@@ -13,5 +12,45 @@ build
 .parcel-cache
 .vscode
 .idea
-*.log 
+*.log
 .env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+
+# Vendor/external
+_vendor
+
+# Documentation (except needed for app)
+*.md
+!README.md
+
+# Tests
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+
+# Development files
+.claude
+.agents
+docker-compose.local.yml
+docker-compose.dev.yml
+docker-compose.demo.yml
+docker-compose.migrate.yml
+docker-compose.infra.yml
+Dockerfile.debug
+Dockerfile.Migration
+traefik
+postman
+presentation
+opensearch-config
+migration-input
+migrations
+data
