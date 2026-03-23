@@ -1,4 +1,4 @@
-name: Deploy to Prod
+name: Deploy to Dev
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       branch:
         description: 'Branch to deploy'
         required: true
-        default: 'main'
+        default: 'dev'
 
 jobs:
   deploy:
@@ -25,10 +25,10 @@ jobs:
 
     - name: Set deployment variables
       run: |
-        echo "DEPLOY_PATH=${{ vars.DEPLOY_PATH }}" >> $GITHUB_ENV
+        echo "DEPLOY_PATH=${{ vars.DEPLOY_PATH_DEV }}" >> $GITHUB_ENV
         echo "SSH_USER=${{ vars.SSH_USER }}" >> $GITHUB_ENV
         echo "SSH_HOST=${{ vars.SSH_HOST }}" >> $GITHUB_ENV
-        echo "DOMAIN=${{ vars.DOMAIN }}" >> $GITHUB_ENV
+        echo "DOMAIN=${{ vars.DOMAIN_DEV }}" >> $GITHUB_ENV
 
     - name: Debug connection
       run: |
@@ -50,7 +50,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
           set -e
 
-          echo "🚀 Начинаем деплой Portal..."
+          echo "🚀 Начинаем деплой Portal Dev..."
 
           cd ${{ env.DEPLOY_PATH }}
 
@@ -65,13 +65,13 @@ jobs:
           sudo sed -i '/^VERSION=/d' .env
           sudo sed -i '/^SHOW_VERSION=/d' .env
           echo "VERSION=${BRANCH}@${SHORT_HASH}" | sudo tee -a .env > /dev/null
-          echo "SHOW_VERSION=false" | sudo tee -a .env > /dev/null
+          echo "SHOW_VERSION=true" | sudo tee -a .env > /dev/null
           echo "📝 Set VERSION=${BRANCH}@${SHORT_HASH}"
 
           echo "🛑 Останавливаем текущие контейнеры..."
           sudo docker compose -f docker-compose.prod.yml down || true
 
-          echo "🚀 Запускаем Portal..."
+          echo "🚀 Запускаем Portal Dev..."
           sudo docker compose -f docker-compose.prod.yml up -d --build
 
           echo "⏳ Ждем запуска приложения..."
@@ -83,5 +83,5 @@ jobs:
           echo "🧹 Очищаем старые образы..."
           sudo docker image prune -f
 
-          echo "✅ Деплой Portal завершен!"
+          echo "✅ Деплой Portal Dev завершен!"
         EOF

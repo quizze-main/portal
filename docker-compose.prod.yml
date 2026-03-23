@@ -2,18 +2,26 @@ volumes:
   redis_data:
   postgres_data:
 
+networks:
+  portal-network:
+    external: true
+
 services:
   postgres:
     extends:
       file: ./docker-compose.yml
       service: postgres
-    container_name: staff-focus-postgres-prod
+    container_name: staff-focus-postgres-${CONTAINER_SUFFIX:-prod}
+    networks:
+      - portal-network
 
   redis:
     extends:
       file: ./docker-compose.yml
       service: redis
-    container_name: staff-focus-redis-prod
+    container_name: staff-focus-redis-${CONTAINER_SUFFIX:-prod}
+    networks:
+      - portal-network
 
   staff-focus-app:
     build:
@@ -31,7 +39,7 @@ services:
         VITE_TG_BOT_USERNAME: ${VITE_TG_BOT_USERNAME}
         YANDEX_TREKER_AUTH_TOKEN: ${YANDEX_TREKER_AUTH_TOKEN}
         X_ORG_ID: ${X_ORG_ID}
-    container_name: staff-focus-app-prod
+    container_name: staff-focus-app-${CONTAINER_SUFFIX:-prod}
     environment:
       - NODE_ENV=production
       - PORT=${PORT}
@@ -64,18 +72,13 @@ services:
       - LOG_LEVEL=${LOG_LEVEL}
       - TRACKER_API_URL=${TRACKER_API_URL}
       - TRACKER_API_TOKEN=${TRACKER_API_TOKEN}
-      - OPENSEARCH_SEND_LOGS=${OPENSEARCH_SEND_LOGS}
-      - OPENSEARCH_URL=${OPENSEARCH_URL}
-      - OPENSEARCH_USERNAME=${OPENSEARCH_USERNAME}
-      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
-      - OPENSEARCH_BACKEND_INDEX_PREFIX=${OPENSEARCH_BACKEND_INDEX_PREFIX}
-      - OPENSEARCH_FRONTEND_INDEX_PREFIX=${OPENSEARCH_FRONTEND_INDEX_PREFIX}
-      - OPENSEARCH_SSL_VERIFY=${OPENSEARCH_SSL_VERIFY}
       - VICTORIA_LOGS_SEND_LOGS=${VICTORIA_LOGS_SEND_LOGS}
       - VICTORIA_LOGS_URL=${VICTORIA_LOGS_URL}
       - REDIS_URL=${REDIS_URL}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - DATABASE_URL=postgresql://${POSTGRES_USER:-staff_focus}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-staff_focus}
+      - VERSION=${VERSION}
+      - SHOW_VERSION=${SHOW_VERSION}
     ports:
       - "${PORT}:${PORT}"
     restart: unless-stopped
@@ -92,3 +95,5 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+    networks:
+      - portal-network

@@ -39,6 +39,7 @@ ENV YANDEX_TREKER_AUTH_TOKEN=${YANDEX_TREKER_AUTH_TOKEN}
 ENV X_ORG_ID=${X_ORG_ID}
 
 # Сборка фронтенда (создаст папку dist)
+ENV NODE_OPTIONS="--max-old-space-size=1536"
 RUN npm run build
 
 # Создание директории для статических файлов
