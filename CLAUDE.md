@@ -30,7 +30,10 @@ npm run start:prod       # Build + Production server
 
 ### Production Deployment
 
-**ВАЖНО:** Деплой на прод ТОЛЬКО через агента `deploy-prod`.
+**ВАЖНО:**
+- Деплой на прод ТОЛЬКО через агента `deploy-prod`
+- Деплой на dev ТОЛЬКО через агента `deploy-dev`
+- Проверка сборки (build) ТОЛЬКО через Docker: `docker compose -f docker-compose.prod.yml build`
 
 - **SSH:** `quizze_prod`
 - **Путь:** `/opt/portal-prod`
