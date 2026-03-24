@@ -45,13 +45,11 @@ docker-compose.local.yml
 docker-compose.dev.yml
 docker-compose.demo.yml
 docker-compose.migrate.yml
-docker-compose.infra.yml
 Dockerfile.debug
 Dockerfile.Migration
 traefik
 postman
 presentation
-opensearch-config
 migration-input
 migrations
 /data

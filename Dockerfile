@@ -38,6 +38,9 @@ ENV VITE_TG_BOT_USERNAME=${VITE_TG_BOT_USERNAME}
 ENV YANDEX_TREKER_AUTH_TOKEN=${YANDEX_TREKER_AUTH_TOKEN}
 ENV X_ORG_ID=${X_ORG_ID}
 
+# Generate Prisma client
+RUN npx prisma generate
+
 # Сборка фронтенда (создаст папку dist)
 ENV NODE_OPTIONS="--max-old-space-size=1536"
 RUN npm run build

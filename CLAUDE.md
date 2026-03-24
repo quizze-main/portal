@@ -77,7 +77,7 @@ All external API calls are proxied through the Express server. Frontend NEVER ca
 | Module | Purpose |
 |--------|---------|
 | `internal-api.js` | Main BFF routing layer (~1500 lines). All `/api/*` endpoints. Uses `frappeApiRequest()` helper for Frappe calls. |
-| `logger.js` | Dual logging: OpenSearch (monthly indices) + VictoriaLogs (exponential backoff with full jitter). Auto-disables after 10 consecutive failures. |
+| `logger.js` | Dual logging: PostgreSQL (`app_logs` table) + VictoriaLogs (exponential backoff with full jitter). Auto-disables after 10 consecutive failures. |
 | `telegram.js` | Telegram Bot webhook handler. Commands: `/start`, `/help`, `/clearcache`. Auto-detects ngrok for dev. |
 | `external-api.js` | External webhook receiver. Telegram message aggregation (1.2s batching window), SMS gateway. Uses `EXTERNAL_API_KEY` auth. |
 | `realtime.js` | Server-Sent Events (SSE) for push notifications. Per-chat-id client tracking, 25s heartbeat. |
@@ -187,7 +187,7 @@ Three format generations (all supported for backward compat):
 ### Logging Architecture
 
 **Dual logging system** (`src/server/logger.js`):
-- **OpenSearch**: Monthly indices (`{prefix}-YYYY-MM`), auto-disables after 10 errors
+- **PostgreSQL**: Logs stored in `app_logs` table, auto-disables after 10 errors
 - **VictoriaLogs**: JSON line protocol at `/insert/jsonline`
   - Exponential backoff with full jitter: `min(CAP, BASE * FACTOR^n) * random()`
   - Configurable via env: `VICTORIA_LOGS_TIMEOUT_MS`, `VICTORIA_LOGS_BACKOFF_BASE_MS`, `VICTORIA_LOGS_BACKOFF_FACTOR`, `VICTORIA_LOGS_BACKOFF_CAP_MS`
@@ -203,7 +203,7 @@ Three format generations (all supported for backward compat):
 | Loovis Tracker | `TRACKER_API_URL`, `TRACKER_API_TOKEN` | Leader dashboard metrics (revenue, CSI, conversion), manager rankings |
 | Telegram Bot | `TELEGRAM_BOT_TOKEN` | Webhook commands, deep linking to tasks/knowledge |
 | Yandex Tracker | `YANDEX_TREKER_AUTH_TOKEN`, `X_ORG_ID` | Feedback form → issue creation |
-| OpenSearch | `OPENSEARCH_URL`, `OPENSEARCH_USERNAME`, `OPENSEARCH_PASSWORD` | Backend log storage |
+| PostgreSQL Logs | `DATABASE_URL`, `PG_LOGS_ENABLED` | Backend log storage (table `app_logs`) |
 | VictoriaLogs | `VICTORIA_LOGS_URL` | Backend log storage (alternative) |
 
 ## Common Development Patterns
@@ -270,7 +270,7 @@ Create `.env` from `env.example`, run `npm run generate-api-key`, fill in remain
 - `DEMO_PIN` — Demo mode PIN code
 - `ALLOWED_ORIGINS` — CORS whitelist
 - `PORT` — Server port (default: 3000)
-- `OPENSEARCH_URL`, `OPENSEARCH_USERNAME`, `OPENSEARCH_PASSWORD` — Log storage
+- `PG_LOGS_ENABLED` — Enable/disable PostgreSQL logging (default: true)
 - `VICTORIA_LOGS_URL`, `VICTORIA_LOGS_SEND_LOGS` — Alternative log storage
 - `YANDEX_TREKER_AUTH_TOKEN`, `X_ORG_ID` — Yandex Tracker feedback
 

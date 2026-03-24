@@ -1,10 +1,8 @@
-import { Client } from '@opensearch-project/opensearch';
+import { query, isDbConnected } from './db.js';
 
 class Logger {
   constructor() {
     this.env = process.env || {};
-    this.os_client = null;
-    this.indexPrefix = this.env.OPENSEARCH_BACKEND_INDEX_PREFIX || 'staff-portal-local-backend';
     this.isDevelopment = this.env.NODE_ENV === 'local';
     this.victoriaLogsEnabled = this.env.VICTORIA_LOGS_SEND_LOGS !== 'false';
     this.victoriaLogsBaseUrl = this.env.VICTORIA_LOGS_URL || '';
@@ -16,9 +14,6 @@ class Logger {
     } else {
       this.victoriaLogsUrl = null;
     }
-    this.opensearchEnabled = this.env.OPENSEARCH_SEND_LOGS !== 'false';
-    this.opensearchErrorCount = 0;
-    this.maxOpensearchErrors = 10; // Максимальное количество ошибок перед отключением
     this.victoriaErrorCount = 0;
     this.maxVictoriaErrors = 10;
     this.victoriaLogsTimeoutMs = Number(this.env.VICTORIA_LOGS_TIMEOUT_MS) || 5000;
@@ -27,8 +22,12 @@ class Logger {
     this.victoriaBackoffCapMs = Number(this.env.VICTORIA_LOGS_BACKOFF_CAP_MS) || 3600000;
     this.victoriaBackoffIndex = 0;
     this.victoriaNextAttemptAt = 0;
-    
-    // Настройка уровня логирования
+
+    // PostgreSQL logging
+    this.pgLogsEnabled = this.env.PG_LOGS_ENABLED !== 'false';
+    this.pgErrorCount = 0;
+    this.maxPgErrors = 10;
+
     this.logLevel = this.env.LOG_LEVEL || 'info';
     this.logLevels = {
       'debug': 0,
@@ -36,64 +35,6 @@ class Logger {
       'warn': 2,
       'error': 3
     };
-    
-    // Инициализируем OpenSearch асинхронно только если он включен
-    if (this.opensearchEnabled) {
-      this.initializeOpenSearch().catch(error => {
-        console.error('Ошибка инициализации OpenSearch:', error.message);
-      });
-    } else {
-      console.log('ℹ️ OpenSearch отключен (OPENSEARCH_SEND_LOGS=false)');
-    }
-  }
-
-  async initializeOpenSearch() {
-    const opensearchUrl = this.env.OPENSEARCH_URL;
-    const username = this.env.OPENSEARCH_USERNAME;
-    const password = this.env.OPENSEARCH_PASSWORD;
-    const sslVerify = this.env.OPENSEARCH_SSL_VERIFY !== 'false';
-
-    if (!opensearchUrl) {
-      process.stderr.write('OPENSEARCH_URL не задан, логирование в OpenSearch отключено\n');
-      return;
-    }
-
-    try {
-      let normalizedUrl = opensearchUrl;
-      if (!normalizedUrl.includes('/_cluster') && !normalizedUrl.includes('/_cat')) {
-        normalizedUrl = normalizedUrl.endsWith('/') ? normalizedUrl : normalizedUrl + '/';
-      }
-      this.os_client = new Client({
-        node: normalizedUrl,
-        auth: {
-          username: username || 'admin',
-          password: password || 'admin'
-        },
-        ssl: {
-          rejectUnauthorized: sslVerify
-        },
-        maxRetries: 3,
-        requestTimeout: 30000,
-        sniffOnStart: false,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        apiVersion: '2.11.0'
-      });
-      await this.os_client.ping();
-      try {
-        await this.os_client.info();
-      } catch (error) {
-        // Не выводим предупреждение
-      }
-    } catch (error) {
-      process.stderr.write(`Не удалось подключиться к OpenSearch: ${error.message}\n`);
-      if (error.meta && error.meta.body) {
-        process.stderr.write(`Детали ошибки подключения: ${JSON.stringify(error.meta.body, null, 2)}\n`);
-      }
-      process.stderr.write('OpenSearch недоступен, логирование в OpenSearch отключено\n');
-      this.os_client = null;
-    }
   }
 
   getTimestamp() {
@@ -102,7 +43,7 @@ class Logger {
 
   formatLogMessage(level, message, data = {}) {
     const { tg_username, employeename, tg_chat_id, ...payloadData } = data;
-    
+
     const logEntry = {
       timestamp: this.getTimestamp(),
       level: level.toUpperCase(),
@@ -111,73 +52,41 @@ class Logger {
       environment: this.env.NODE_ENV || 'local',
       payload: payloadData
     };
-    
-    // Явно поднимаем tg_username, employeename, tg_chat_id на верхний уровень, если есть
+
     if (tg_username) logEntry.tg_username = tg_username;
     if (employeename) logEntry.employeename = employeename;
     if (tg_chat_id) logEntry.tg_chat_id = tg_chat_id;
-    
+
     return logEntry;
   }
 
-  async sendToOpenSearch(logEntry) {
-    if (!this.os_client) return;
-    if (!this.opensearchEnabled) return;
+  async sendToPostgres(logEntry) {
+    if (!this.pgLogsEnabled) return;
+    if (!isDbConnected()) return;
+    if (this.pgErrorCount >= this.maxPgErrors) return;
+
     try {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const indexName = `${this.indexPrefix}-${year}.${month}`;
-      try {
-        const opensearchUrl = this.env.OPENSEARCH_URL;
-        const username = this.env.OPENSEARCH_USERNAME || 'admin';
-        const password = this.env.OPENSEARCH_PASSWORD || 'admin';
-        const apiEndpoints = [
-          `${opensearchUrl}/${indexName}/_doc`,
-          `${opensearchUrl}/_doc/${indexName}`,
-          `${opensearchUrl}/api/index_patterns/${indexName}/_doc`,
-          `${opensearchUrl.replace('/app', '')}/${indexName}/_doc`
-        ];
-        let response = null;
-        let lastError = null;
-        for (const endpoint of apiEndpoints) {
-          try {
-            response = await fetch(endpoint, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`
-              },
-              body: JSON.stringify(logEntry)
-            });
-            if (response.ok) {
-              break;
-            } else {
-              lastError = `${response.status} ${response.statusText}`;
-            }
-          } catch (error) {
-            lastError = error.message;
-          }
-        }
-        if (response.ok) {
-          return;
-        } else {
-          // Не выводим предупреждение
-        }
-      } catch (httpError) {
-        // Не выводим предупреждение
-      }
-      const result = await this.os_client.index({
-        index: indexName,
-        body: logEntry,
-        refresh: false
-      });
+      await query(
+        `INSERT INTO app_logs (timestamp, level, message, service, environment, payload, tg_username, employeename, tg_chat_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [
+          logEntry.timestamp,
+          logEntry.level,
+          logEntry.message,
+          logEntry.service,
+          logEntry.environment,
+          JSON.stringify(logEntry.payload || {}),
+          logEntry.tg_username || null,
+          logEntry.employeename || null,
+          logEntry.tg_chat_id || null,
+        ]
+      );
+      this.pgErrorCount = 0;
     } catch (error) {
-      this.opensearchErrorCount++;
-      process.stdout.write(`WARN: OpenSearch ошибка подключения: ${error.message}\n`);
-      if (this.opensearchErrorCount >= this.maxOpensearchErrors) {
-        process.stderr.write('OpenSearch отключен после множественных ошибок. Продолжаем без OpenSearch.\n');
-        this.os_client = null;
+      this.pgErrorCount++;
+      process.stdout.write(`WARN: PostgreSQL log error: ${error.message}\n`);
+      if (this.pgErrorCount >= this.maxPgErrors) {
+        process.stderr.write('PostgreSQL logging disabled after multiple errors.\n');
       }
     }
   }
@@ -202,11 +111,11 @@ class Logger {
       this.victoriaBackoffIndex = 0;
       this.victoriaNextAttemptAt = 0;
       if (!response.ok) {
-        throw new Error(`VictoriaLogs HTTP ошибка: ${response.status} ${response.statusText}`);
+        throw new Error(`VictoriaLogs HTTP error: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
       this.victoriaErrorCount++;
-      process.stdout.write(`WARN: VictoriaLogs ошибка подключения: ${error.message}\n`);
+      process.stdout.write(`WARN: VictoriaLogs connection error: ${error.message}\n`);
       const delayMs = this.getVictoriaBackoffDelayMs();
       this.victoriaNextAttemptAt = Date.now() + delayMs;
       this.victoriaBackoffIndex += 1;
@@ -221,37 +130,33 @@ class Logger {
       this.victoriaBackoffCapMs,
       this.victoriaBackoffBaseMs * (this.victoriaBackoffFactor ** exponent)
     );
-    // Full jitter: random delay between 0 and maxDelay
     return Math.floor(Math.random() * maxDelay);
   }
 
   formatConsoleMessage(level, message, data) {
     const timestamp = this.getTimestamp();
     const levelUpper = level.toUpperCase();
-    
-    // Цветовые коды для разных уровней
+
     const colors = {
-      debug: '\x1b[36m',   // Cyan
-      info: '\x1b[32m',    // Green
-      warn: '\x1b[33m',    // Yellow
-      error: '\x1b[31m',   // Red
-      reset: '\x1b[0m'     // Reset
+      debug: '\x1b[36m',
+      info: '\x1b[32m',
+      warn: '\x1b[33m',
+      error: '\x1b[31m',
+      reset: '\x1b[0m'
     };
-    
+
     const color = colors[level] || colors.info;
     const reset = colors.reset;
-    
+
     let consoleMessage = `[${timestamp}] ${color}[${levelUpper}]${reset} ${message}`;
-    
-    // Для debug уровня выводим все данные
+
     if (level === 'debug') {
       if (Object.keys(data).length > 0) {
         consoleMessage += `\n  Data: ${JSON.stringify(data, null, 2)}`;
       }
       return consoleMessage;
     }
-    
-    // Для ошибок добавляем дополнительную информацию
+
     if (level === 'error' && data.error) {
       consoleMessage += `\n  Error: ${data.error.message}`;
       if (data.error.stack) {
@@ -261,34 +166,31 @@ class Logger {
         consoleMessage += `\n  Type: ${data.error.name}`;
       }
     }
-    
-    // Добавляем контекстную информацию для ошибок
+
     if (level === 'error' && Object.keys(data).length > 0) {
       const contextData = { ...data };
-      delete contextData.error; // Убираем error, так как он уже обработан выше
-      
+      delete contextData.error;
+
       if (Object.keys(contextData).length > 0) {
         consoleMessage += `\n  Context: ${JSON.stringify(contextData, null, 2)}`;
       }
     }
-    
+
     return consoleMessage;
   }
 
   async log(level, message, data = {}) {
-    // Проверяем уровень логирования
     const currentLevel = this.logLevels[level] || 1;
     const configuredLevel = this.logLevels[this.logLevel] || 1;
-    
+
     if (currentLevel < configuredLevel) {
-      return; // Пропускаем логи ниже настроенного уровня
+      return;
     }
-    
+
     const logEntry = this.formatLogMessage(level, message, data);
-    
-    // Логирование в консоль
+
     const consoleMessage = this.formatConsoleMessage(level, message, data);
-    
+
     switch (level) {
       case 'error':
         console.error(consoleMessage);
@@ -303,11 +205,13 @@ class Logger {
         console.log(consoleMessage);
     }
 
-    // Отправка в OpenSearch
-    await this.sendToOpenSearch(logEntry);
-    // Отправка в VictoriaLogs
+    // Send to PostgreSQL (fire-and-forget)
+    this.sendToPostgres(logEntry).catch((error) => {
+      process.stdout.write(`WARN: PostgreSQL log send error: ${error.message}\n`);
+    });
+    // Send to VictoriaLogs (fire-and-forget)
     this.sendToVictoriaLogs(logEntry).catch((error) => {
-      process.stdout.write(`WARN: VictoriaLogs ошибка отправки: ${error.message}\n`);
+      process.stdout.write(`WARN: VictoriaLogs send error: ${error.message}\n`);
     });
   }
 
@@ -327,17 +231,14 @@ class Logger {
     await this.log('debug', message, data);
   }
 
-  // Метод для получения текущего уровня логирования
   getLogLevel() {
     return this.logLevel;
   }
 
-  // Метод для проверки, включен ли debug режим
   isDebugEnabled() {
     return this.logLevels[this.logLevel] <= this.logLevels['debug'];
   }
 
-  // Методы для логирования HTTP запросов
   async logRequest(req, res, duration) {
     const logData = {
       method: req.method,
@@ -353,7 +254,6 @@ class Logger {
     await this.log(level, `${req.method} ${req.url} - ${res.statusCode} (${duration}ms)`, logData);
   }
 
-  // Методы для логирования API запросов
   async logApiRequest(service, endpoint, status, duration, data = {}) {
     const logData = {
       service,
@@ -367,7 +267,6 @@ class Logger {
     await this.log(level, `API ${service}: ${endpoint} - ${status} (${duration}ms)`, logData);
   }
 
-  // Методы для логирования ошибок
   async logError(error, context = {}) {
     const logData = {
       error: {
@@ -384,10 +283,8 @@ class Logger {
   }
 }
 
-// Создаем единственный экземпляр логгера
 const logger = new Logger();
 
-// Универсальный логгер для Express, автоматически добавляет user-поля из req.user
 export function logWithUser(req, level, message, data = {}) {
   const userFields = req && req.user
     ? {
@@ -399,7 +296,6 @@ export function logWithUser(req, level, message, data = {}) {
   logger[level](message, { ...userFields, ...data });
 }
 
-// Создаем объект loggerWithUser с методами info, error, warn, debug
 export const loggerWithUser = {
   info: (req, message, data = {}) => logWithUser(req, 'info', message, data),
   error: (req, message, data = {}) => logWithUser(req, 'error', message, data),
@@ -407,4 +303,4 @@ export const loggerWithUser = {
   debug: (req, message, data = {}) => logWithUser(req, 'debug', message, data)
 };
 
-export default logger; 
+export default logger;

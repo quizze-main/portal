@@ -1,0 +1,737 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum MetricType {
+  absolute
+  averaged
+  percentage
+  computed
+}
+
+enum ValueType {
+  currency
+  count
+  percentage
+  ratio
+  duration
+  score
+}
+
+enum AggregationMethod {
+  sum
+  weighted_average
+  simple_average
+  last
+  min
+  max
+}
+
+enum PlanPeriod {
+  day
+  week
+  month
+  quarter
+  year
+}
+
+enum PlanProrateMethod {
+  working_days
+  calendar_days
+  none
+}
+
+enum WidgetType {
+  kpi_forecast
+  kpi_deviation
+}
+
+enum SourceType {
+  event
+  tracker
+  external_api
+  manual
+  computed
+}
+
+enum EntityType {
+  branch
+  employee
+  department
+  designation
+  custom
+  client
+}
+
+enum PlanScope {
+  network
+  branch
+  employee
+  client
+}
+
+enum PeriodType {
+  day
+  week
+  dekada
+  month
+  quarter
+  year
+}
+
+enum ShiftType {
+  work
+  day_off
+  vacation
+  sick
+  extra_shift
+  day_off_lieu
+  absent
+}
+
+enum ShiftPatternType {
+  two_two    @map("2/2")
+  five_two   @map("5/2")
+  custom
+}
+
+enum LossMode {
+  auto
+  formula
+  jsonpath
+  disabled
+  tracker
+}
+
+enum DashboardWidgetType {
+  ranking
+}
+
+// ─── Dimension Tables ────────────────────────────────────────────────────────
+
+model DimBranch {
+  id        String   @id
+  name      String
+  code      String?
+  city      String?
+  region    String?
+  timezone  String   @default("Europe/Moscow")
+  enabled   Boolean  @default(true)
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  // From migration 012
+  networkId String?     @map("network_id")
+  storeId   String?     @map("store_id")
+  network   OrgNetwork? @relation(fields: [networkId], references: [id])
+
+  employees      DimEmployee[]
+  clients        DimClient[]
+  departments    OrgDepartment[]
+  shiftEntries   ShiftEntry[]
+
+  @@map("dim_branches")
+}
+
+model DimEmployee {
+  id          String   @id
+  name        String
+  branchId    String?  @map("branch_id")
+  department  String?
+  designation String?
+  frappeUser  String?  @map("frappe_user")
+  tgChatId    String?  @map("tg_chat_id")
+  enabled     Boolean  @default(true)
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  // From migration 012
+  employeeName String?  @map("employee_name")
+  firstName    String?  @map("first_name")
+  tgUsername   String?  @map("tg_username")
+  itigrisUserId String? @map("itigris_user_id")
+  reportsTo    String?  @map("reports_to")
+  companyEmail String?  @map("company_email")
+  imageUrl     String?  @map("image_url")
+  dateOfBirth  DateTime? @map("date_of_birth") @db.Date
+  dateOfJoining DateTime? @map("date_of_joining") @db.Date
+  gender       String?
+  shiftFormat  String?  @map("shift_format")
+  status       String   @default("Active")
+  frappeId     String?  @map("frappe_id")
+  departmentId String?  @map("department_id")
+
+  branch       DimBranch?      @relation(fields: [branchId], references: [id])
+  reportsToEmp DimEmployee?    @relation("EmployeeReportsTo", fields: [reportsTo], references: [id])
+  subordinates DimEmployee[]   @relation("EmployeeReportsTo")
+  orgDepartment OrgDepartment? @relation(fields: [departmentId], references: [id])
+
+  clients           DimClient[]
+  shiftEntries      ShiftEntry[]
+  rbacEmployeeRoles RbacEmployeeRole[]
+  rbacStoreAccess   RbacStoreAccess[]
+  userSettings      UserSetting[]
+
+  @@index([branchId], map: "idx_emp_branch")
+  @@index([designation], map: "idx_emp_designation")
+  @@index([tgUsername], map: "idx_emp_tg_username")
+  @@index([frappeId], map: "idx_emp_frappe_id")
+  @@index([status], map: "idx_emp_status")
+  @@index([reportsTo], map: "idx_emp_reports_to")
+  @@index([departmentId], map: "idx_emp_department_id")
+  @@map("dim_employees")
+}
+
+model DimClient {
+  id         String   @id
+  externalId String?  @map("external_id")
+  sourceId   String?  @map("source_id")
+  name       String
+  branchId   String?  @map("branch_id")
+  employeeId String?  @map("employee_id")
+  clientType String?  @map("client_type")
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  branch   DimBranch?   @relation(fields: [branchId], references: [id])
+  employee DimEmployee? @relation(fields: [employeeId], references: [id])
+
+  @@index([branchId], map: "idx_clients_branch")
+  @@index([sourceId, externalId], map: "idx_clients_source")
+  @@map("dim_clients")
+}
+
+// ─── Metric Catalog ──────────────────────────────────────────────────────────
+
+model MetricDefinition {
+  id                String            @id
+  name              String
+  description       String?
+  unit              String            @default("")
+
+  metricType        MetricType        @map("metric_type")
+  valueType         ValueType         @map("value_type")
+  aggregationMethod AggregationMethod @default(sum) @map("aggregation_method")
+
+  planPeriod        PlanPeriod?       @default(month) @map("plan_period")
+  planProrateMethod PlanProrateMethod? @default(working_days) @map("plan_prorate_method")
+
+  widgetType        WidgetType?       @default(kpi_forecast) @map("widget_type")
+  forecastLabel     String?           @default("forecast") @map("forecast_label")
+  forecastUnit      String?           @default("%") @map("forecast_unit")
+  color             String?           @default("#3B82F6")
+  decimalPlaces     Int               @default(0) @map("decimal_places")
+  displayOrder      Int               @default(0) @map("display_order")
+  parentId          String?           @map("parent_id")
+
+  thresholdCritical Decimal?          @map("threshold_critical")
+  thresholdGood     Decimal?          @map("threshold_good")
+
+  sourceType        SourceType        @map("source_type")
+  dataSourceId      String?           @map("data_source_id")
+  trackerCode       String?           @map("tracker_code")
+
+  externalPath      String?           @map("external_path")
+  externalMethod    String?           @default("GET") @map("external_method")
+  externalQueryParams Json?           @default("[]") @map("external_query_params")
+  externalBody      Json?             @map("external_body")
+  jsonPathFact      String?           @map("json_path_fact")
+  jsonPathPlan      String?           @map("json_path_plan")
+
+  formula           String?
+  formulaDependencies String[]        @default([]) @map("formula_dependencies")
+
+  enabled           Boolean           @default(true)
+  visibleToPositions String[]         @default([]) @map("visible_to_positions")
+
+  bindings          Json              @default("[]")
+
+  // From migration 009
+  lossMode          LossMode?         @default(disabled) @map("loss_mode")
+  lossFormula       String?           @map("loss_formula")
+  jsonPathLoss      String?           @map("json_path_loss")
+
+  metadata          Json              @default("{}")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @default(now()) @map("updated_at")
+
+  parent            MetricDefinition?  @relation("MetricParent", fields: [parentId], references: [id])
+  children          MetricDefinition[] @relation("MetricParent")
+
+  fieldMappings     MetricFieldMapping[]
+  plans             MetricPlan[]
+  snapshots         MetricSnapshot[]
+  manualData        ManualMetricData[]
+
+  @@map("metric_definitions")
+}
+
+model MetricFieldMapping {
+  id           Int        @id @default(autoincrement())
+  metricId     String?    @map("metric_id")
+  dataSourceId String?    @map("data_source_id")
+  apiField     String     @map("api_field")
+  entityType   EntityType @map("entity_type")
+  label        String?
+  values       Json       @default("{}")
+
+  metric       MetricDefinition? @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  @@unique([metricId, dataSourceId, apiField, entityType])
+  @@index([metricId], map: "idx_fm_metric")
+  @@index([dataSourceId], map: "idx_fm_source")
+  @@map("metric_field_mappings")
+}
+
+// ─── Plans ───────────────────────────────────────────────────────────────────
+
+model MetricPlan {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  metricId  String   @map("metric_id")
+  scope     PlanScope
+  scopeId   String   @map("scope_id")
+  period    String
+  planValue Decimal  @map("plan_value")
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  metric    MetricDefinition @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  @@unique([metricId, scope, scopeId, period])
+  @@index([metricId, period], map: "idx_plans_metric")
+  @@index([scope, scopeId], map: "idx_plans_scope")
+  @@map("metric_plans")
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+model Event {
+  id           BigInt    @id @default(autoincrement())
+  eventType    String    @map("event_type")
+  eventTime    DateTime  @map("event_time")
+  receivedAt   DateTime  @default(now()) @map("received_at")
+
+  branchId     String?   @map("branch_id")
+  employeeId   String?   @map("employee_id")
+  clientId     String?   @map("client_id")
+
+  sourceId     String    @map("source_id")
+  externalId   String?   @map("external_id")
+
+  metricValues Json      @default("{}") @map("metric_values")
+  rawPayload   Json?     @map("raw_payload")
+
+  processed    Boolean   @default(false)
+  processedAt  DateTime? @map("processed_at")
+
+  @@index([eventType, eventTime], map: "idx_events_type_time")
+  @@index([branchId, eventTime], map: "idx_events_branch")
+  @@index([employeeId, eventTime], map: "idx_events_employee")
+  @@index([clientId, eventTime], map: "idx_events_client")
+  @@index([sourceId, externalId], map: "idx_events_dedup")
+  @@index([receivedAt], map: "idx_events_received")
+  @@map("events")
+}
+
+model EventType {
+  id          String   @id
+  name        String
+  description String?
+  schema      Json?
+  sourceTypes String[] @default([]) @map("source_types")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("event_types")
+}
+
+// ─── Snapshots ───────────────────────────────────────────────────────────────
+
+model MetricSnapshot {
+  id          BigInt     @id @default(autoincrement())
+  metricId    String     @map("metric_id")
+  branchId    String?    @map("branch_id")
+  employeeId  String?    @map("employee_id")
+  clientId    String?    @map("client_id")
+  periodType  PeriodType @map("period_type")
+  periodKey   String     @map("period_key")
+  factValue   Decimal    @default(0) @map("fact_value")
+  planValue   Decimal?   @map("plan_value")
+  sampleCount Int        @default(0) @map("sample_count")
+  source      String     @default("aggregated")
+  computedAt  DateTime   @default(now()) @map("computed_at")
+
+  metric      MetricDefinition @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  @@unique([metricId, branchId, employeeId, clientId, periodType, periodKey])
+  @@index([metricId, periodType, periodKey], map: "idx_snap_metric")
+  @@index([branchId, periodType, periodKey], map: "idx_snap_branch")
+  @@map("metric_snapshots")
+}
+
+model ManualMetricData {
+  id         Int      @id @default(autoincrement())
+  metricId   String   @map("metric_id")
+  period     String
+  branchId   String?  @map("branch_id")
+  employeeId String?  @map("employee_id")
+  clientId   String?  @map("client_id")
+  factValue  Decimal  @default(0) @map("fact_value")
+  planValue  Decimal  @default(0) @map("plan_value")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  metric     MetricDefinition @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  @@unique([metricId, period, branchId, employeeId, clientId])
+  @@index([metricId, period], map: "idx_manual_metric")
+  @@map("manual_metric_data")
+}
+
+// ─── Data Sources ────────────────────────────────────────────────────────────
+
+model DataSource {
+  id               String    @id
+  label            String
+  baseUrl          String?   @map("base_url")
+  authType         String    @default("none") @map("auth_type")
+  authConfig       Json      @default("{}") @map("auth_config")
+  paginationType   String    @default("none") @map("pagination_type")
+  paginationConfig Json      @default("{}") @map("pagination_config")
+  healthCheckPath  String    @default("/") @map("health_check_path")
+  healthCheckMethod String   @default("GET") @map("health_check_method")
+  timeoutMs        Int       @default(10000) @map("timeout_ms")
+  enabled          Boolean   @default(true)
+  builtIn          Boolean   @default(false) @map("built_in")
+  sourceOrigin     String    @default("manual") @map("source_origin")
+
+  adapterType      String?   @map("adapter_type")
+  adapterConfig    Json      @default("{}") @map("adapter_config")
+  webhookSecret    String?   @map("webhook_secret")
+  pollIntervalS    Int?      @map("poll_interval_s")
+  lastPollAt       DateTime? @map("last_poll_at")
+
+  fieldMappings    Json      @default("[]") @map("field_mappings")
+  lastTestAt       DateTime? @map("last_test_at")
+  lastTestStatus   String?   @map("last_test_status")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @default(now()) @map("updated_at")
+
+  @@map("data_sources")
+}
+
+model AdapterRegistry {
+  id              String   @id
+  name            String
+  description     String?
+  version         String   @default("1.0.0")
+  inputSchema     Json?    @map("input_schema")
+  outputSchema    Json?    @map("output_schema")
+  supportedEvents String[] @default([]) @map("supported_events")
+  defaultMappings Json     @default("{}") @map("default_mappings")
+  adapterCode     String?  @map("adapter_code")
+  aiGenerated     Boolean  @default(false) @map("ai_generated")
+  aiPrompt        String?  @map("ai_prompt")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @map("updated_at")
+
+  @@map("adapter_registry")
+}
+
+// ─── Salary ──────────────────────────────────────────────────────────────────
+
+model SalaryConfig {
+  id               String   @id
+  branchId         String   @map("branch_id")
+  positionId       String   @map("position_id")
+  baseSalary       Decimal  @map("base_salary")
+  personalPlan     Decimal? @map("personal_plan")
+  clubPlan         Decimal? @map("club_plan")
+  matrix           Json
+  kpis             Json     @default("[]")
+  clubLevels       Json?    @default("[]") @map("club_levels")
+  managerLevels    Json?    @default("[]") @map("manager_levels")
+  managerAxisLabel String?  @map("manager_axis_label")
+  clubAxisLabel    String?  @map("club_axis_label")
+  metadata         Json     @default("{}")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @map("updated_at")
+
+  // From migration 016
+  employeeId       String?  @map("employee_id")
+
+  @@unique([branchId, positionId, employeeId], map: "salary_configs_branch_pos_emp")
+  @@map("salary_configs")
+}
+
+model SalarySession {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branchId    String   @map("branch_id")
+  period      String
+  clubPercent Decimal? @map("club_percent")
+  employees   Json     @default("[]")
+  createdBy   String?  @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  @@index([branchId, period], map: "idx_salary_sessions_branch")
+  @@map("salary_sessions")
+}
+
+// ─── Analytics Views Refresh Log ─────────────────────────────────────────────
+
+model MaterializedViewRefreshLog {
+  viewName    String    @id @map("view_name")
+  lastRefresh DateTime? @map("last_refresh")
+  durationMs  Int?      @map("duration_ms")
+  rowCount    Int?      @map("row_count")
+
+  @@map("_materialized_view_refresh_log")
+}
+
+// ─── Dashboard Widgets ───────────────────────────────────────────────────────
+
+model DashboardWidget {
+  id           String              @id
+  type         DashboardWidgetType
+  name         String
+  enabled      Boolean             @default(true)
+  displayOrder Int                 @default(0) @map("display_order")
+  parentId     String?             @map("parent_id")
+  config       Json                @default("{}")
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @default(now()) @map("updated_at")
+
+  @@map("dashboard_widgets")
+}
+
+// ─── Shift Schedule ──────────────────────────────────────────────────────────
+
+model ShiftEntry {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  employeeId  String    @map("employee_id")
+  branchId    String    @map("branch_id")
+  date        DateTime  @db.Date
+  shiftType   ShiftType @map("shift_type")
+  shiftNumber Int?      @map("shift_number") @db.SmallInt
+  timeStart   DateTime? @map("time_start") @db.Time()
+  timeEnd     DateTime? @map("time_end") @db.Time()
+  note        String    @default("")
+  createdBy   String?   @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
+
+  employee    DimEmployee @relation(fields: [employeeId], references: [id])
+  branch      DimBranch   @relation(fields: [branchId], references: [id])
+
+  @@unique([employeeId, date])
+  @@index([branchId, date], map: "idx_shift_branch_date")
+  @@index([employeeId, date], map: "idx_shift_employee_date")
+  @@map("shift_entries")
+}
+
+model ShiftTemplate {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  patternType ShiftPatternType @map("pattern_type")
+  cycleDays   Json             @map("cycle_days")
+  branchId    String?          @map("branch_id")
+  createdBy   String?          @map("created_by")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @default(now()) @map("updated_at")
+
+  @@map("shift_templates")
+}
+
+// ─── Org Structure ───────────────────────────────────────────────────────────
+
+model OrgNetwork {
+  id        String   @id
+  name      String
+  enabled   Boolean  @default(true)
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  branches  DimBranch[]
+
+  @@map("org_networks")
+}
+
+model OrgDesignation {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  category  String?
+  isLeader  Boolean  @default(false) @map("is_leader")
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("org_designations")
+}
+
+model OrgDepartment {
+  id             String   @id
+  departmentName String   @map("department_name")
+  branchId       String?  @map("branch_id")
+  parentId       String?  @map("parent_id")
+  storeId        String?  @map("store_id")
+  isGroup        Boolean  @default(false) @map("is_group")
+  enabled        Boolean  @default(true)
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
+
+  branch         DimBranch?     @relation(fields: [branchId], references: [id])
+  parent         OrgDepartment? @relation("DepartmentParent", fields: [parentId], references: [id])
+  children       OrgDepartment[] @relation("DepartmentParent")
+  employees      DimEmployee[]
+  storeAccess    RbacStoreAccess[]
+
+  @@index([branchId], map: "idx_org_dept_branch")
+  @@index([storeId], map: "idx_org_dept_store")
+  @@index([parentId], map: "idx_org_dept_parent")
+  @@map("org_departments")
+}
+
+// ─── RBAC ────────────────────────────────────────────────────────────────────
+
+model RbacRole {
+  id          String  @id
+  name        String?
+  description String?
+  level       Int     @default(0)
+
+  employeeRoles RbacEmployeeRole[]
+
+  @@map("rbac_roles")
+}
+
+model RbacEmployeeRole {
+  employeeId String   @map("employee_id")
+  roleId     String   @map("role_id")
+  source     String   @default("manual")
+  grantedBy  String?  @map("granted_by")
+  grantedAt  DateTime @default(now()) @map("granted_at")
+
+  employee   DimEmployee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  role       RbacRole    @relation(fields: [roleId], references: [id])
+
+  @@unique([employeeId, roleId])
+  @@index([employeeId], map: "idx_rbac_emp_roles_emp")
+  @@map("rbac_employee_roles")
+}
+
+model RbacStoreAccess {
+  employeeId   String  @map("employee_id")
+  storeId      String  @map("store_id")
+  departmentId String? @map("department_id")
+  source       String  @default("manual")
+
+  employee     DimEmployee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  department   OrgDepartment? @relation(fields: [departmentId], references: [id])
+
+  @@unique([employeeId, storeId])
+  @@index([employeeId], map: "idx_rbac_store_emp")
+  @@index([storeId], map: "idx_rbac_store_store")
+  @@map("rbac_store_access")
+}
+
+model RbacFeatureFlag {
+  id         Int     @id @default(autoincrement())
+  flagName   String  @map("flag_name")
+  scopeType  String  @default("store_id") @map("scope_type")
+  scopeValue String  @map("scope_value")
+  enabled    Boolean @default(true)
+
+  @@unique([flagName, scopeType, scopeValue])
+  @@index([flagName], map: "idx_ff_flag")
+  @@map("rbac_feature_flags")
+}
+
+model UserSetting {
+  employeeId String   @map("employee_id")
+  variant    String   @default("shared")
+  settings   Json     @default("{}")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  employee   DimEmployee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, variant])
+  @@index([employeeId], map: "idx_user_settings_emp")
+  @@map("user_settings")
+}
+
+// ─── Sync Tracking ───────────────────────────────────────────────────────────
+
+model SyncState {
+  entityType  String    @id @map("entity_type")
+  lastSync    DateTime? @map("last_sync")
+  recordCount Int       @default(0) @map("record_count")
+  metadata    Json      @default("{}")
+
+  @@map("sync_state")
+}
+
+model SyncLog {
+  id               Int      @id @default(autoincrement())
+  entityType       String   @map("entity_type")
+  action           String
+  status           String   @default("success")
+  recordsProcessed Int      @default(0) @map("records_processed")
+  recordsCreated   Int      @default(0) @map("records_created")
+  recordsUpdated   Int      @default(0) @map("records_updated")
+  recordsErrors    Int      @default(0) @map("records_errors")
+  details          Json     @default("{}")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([entityType, createdAt(sort: Desc)], map: "idx_sync_log_entity")
+  @@map("sync_log")
+}
+
+// ─── Staffing Requirements ───────────────────────────────────────────────────
+
+model StaffingRequirement {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branchId      String   @map("branch_id")
+  designation   String
+  dayOfWeek     Int?     @map("day_of_week") @db.SmallInt
+  requiredCount Int      @default(1) @map("required_count") @db.SmallInt
+  createdBy     String?  @map("created_by")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @map("updated_at")
+
+  @@unique([branchId, designation, dayOfWeek], map: "staffing_req_branch_desig_dow")
+  @@map("staffing_requirements")
+}
+
+// ─── App Logs (replaces OpenSearch) ──────────────────────────────────────────
+
+model AppLog {
+  id          BigInt   @id @default(autoincrement())
+  timestamp   DateTime @default(now())
+  level       String
+  message     String
+  service     String   @default("staff-focus-app")
+  environment String   @default("production")
+  payload     Json     @default("{}")
+  tgUsername  String?  @map("tg_username")
+  employeeName String? @map("employeename")
+  tgChatId    String?  @map("tg_chat_id")
+
+  @@index([timestamp(sort: Desc)])
+  @@index([level])
+  @@index([tgChatId])
+  @@index([tgUsername])
+  @@map("app_logs")
+}

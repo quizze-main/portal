@@ -104,16 +104,26 @@ const integrations = [
     },
   },
   {
-    id: 'opensearch',
-    name: 'OpenSearch',
+    id: 'pg_logs',
+    name: 'PostgreSQL Logs',
     category: 'logging',
-    envVars: ['OPENSEARCH_URL', 'OPENSEARCH_USERNAME', 'OPENSEARCH_PASSWORD'],
+    envVars: ['DATABASE_URL'],
     check: async () => {
-      const url = env.OPENSEARCH_URL;
-      const user = env.OPENSEARCH_USERNAME;
-      const pass = env.OPENSEARCH_PASSWORD;
-      if (!url || !user || !pass) return { ok: false, message: 'Missing env vars' };
-      return { ok: true, message: 'Env configured (no live check)' };
+      const dbUrl = env.DATABASE_URL;
+      if (!dbUrl) return { ok: false, message: 'DATABASE_URL not configured' };
+      try {
+        const { query, isDbConnected } = await import('./db.js');
+        if (!isDbConnected()) return { ok: false, message: 'DB not connected' };
+        const start = Date.now();
+        const result = await query(
+          `SELECT COUNT(*) AS cnt FROM app_logs WHERE timestamp > now() - INTERVAL '1 hour'`
+        );
+        const latency = Date.now() - start;
+        const cnt = parseInt(result?.rows?.[0]?.cnt || 0);
+        return { ok: true, message: `OK | ${cnt} logs in last hour`, latency };
+      } catch (e) {
+        return { ok: false, message: `DB error: ${e.message}` };
+      }
     },
   },
   {
