@@ -8,7 +8,7 @@
  */
 
 import { isWorkingDay, getWorkingDaysInRange, getCalendarDaysInRange, parseLocalDate, getScheduleWorkingDaysInRange } from './plan-prorate.js';
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 
 /**
  * Calculate dynamic daily plan for an absolute metric.

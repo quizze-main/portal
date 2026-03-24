@@ -5349,7 +5349,7 @@ export function setupInternalApiRoutes(app) {
   // Client dimension — search clients
   app.get('/api/admin/clients/search', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.json({ data: [] });
 
       const { q = '', branch_id, limit = 20 } = req.query;
@@ -5384,7 +5384,7 @@ export function setupInternalApiRoutes(app) {
   // List clients (paginated)
   app.get('/api/admin/clients', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.json({ data: [], total: 0 });
 
       const limit = Math.min(parseInt(req.query.limit) || 50, 200);
@@ -5424,7 +5424,7 @@ export function setupInternalApiRoutes(app) {
   // Save/update custom adapter in registry
   app.post('/api/admin/adapters', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.status(503).json({ error: 'Database not connected' });
 
       const { id, name, description, version, supportedEvents, adapterCode, aiGenerated, aiPrompt } = req.body;
@@ -5453,7 +5453,7 @@ export function setupInternalApiRoutes(app) {
   // Delete custom adapter
   app.delete('/api/admin/adapters/:id', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.status(503).json({ error: 'Database not connected' });
 
       // Prevent deleting built-in adapters

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import logger, { loggerWithUser } from './logger.js';
 import { requireAuth } from './requireAuth.js';
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { getEmployeeScheduleSummary, getBranchSalaryData } from './shift-schedule-helpers.js';
 import * as orgData from './org-data.js';
 

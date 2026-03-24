@@ -5,7 +5,7 @@
  * Streams large datasets to avoid memory issues.
  */
 
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { aggregate } from './aggregation-engine.js';
 
 /** UTF-8 BOM for Excel compatibility with Cyrillic */

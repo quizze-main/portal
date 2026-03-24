@@ -1,4 +1,4 @@
-import { query, isDbConnected } from './db.js';
+import { isPrismaConnected, getPrisma } from './prisma.js';
 
 class Logger {
   constructor() {
@@ -62,25 +62,24 @@ class Logger {
 
   async sendToPostgres(logEntry) {
     if (!this.pgLogsEnabled) return;
-    if (!isDbConnected()) return;
+    if (!isPrismaConnected()) return;
     if (this.pgErrorCount >= this.maxPgErrors) return;
 
     try {
-      await query(
-        `INSERT INTO app_logs (timestamp, level, message, service, environment, payload, tg_username, employeename, tg_chat_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-        [
-          logEntry.timestamp,
-          logEntry.level,
-          logEntry.message,
-          logEntry.service,
-          logEntry.environment,
-          JSON.stringify(logEntry.payload || {}),
-          logEntry.tg_username || null,
-          logEntry.employeename || null,
-          logEntry.tg_chat_id || null,
-        ]
-      );
+      const prisma = getPrisma();
+      await prisma.appLog.create({
+        data: {
+          timestamp: new Date(logEntry.timestamp),
+          level: logEntry.level,
+          message: logEntry.message,
+          service: logEntry.service,
+          environment: logEntry.environment,
+          payload: logEntry.payload || {},
+          tgUsername: logEntry.tg_username || null,
+          employeeName: logEntry.employeename || null,
+          tgChatId: logEntry.tg_chat_id || null,
+        }
+      });
       this.pgErrorCount = 0;
     } catch (error) {
       this.pgErrorCount++;

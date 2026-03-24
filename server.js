@@ -285,7 +285,7 @@ import { setupDataSourceRoutes, initializeDataSources, readConfig as readDataSou
 import { setupMetricPlansRoutes } from './src/server/metric-plans-api.js';
 import { setDynamicIntegrations } from './src/server/health-checks.js';
 import { initRedisCache, closeRedisCache, isRedisConnected } from './src/server/cache.js';
-import { initDatabase, closeDatabase, isDbConnected } from './src/server/db.js';
+import { initPrisma, closePrisma, isPrismaConnected } from './src/server/prisma.js';
 import { setupSalaryAdminRoutes } from './src/server/salary-admin.js';
 import { setupShiftScheduleRoutes } from './src/server/shift-schedule-api.js';
 import { startPollingScheduler, stopPollingScheduler } from './src/server/adapters/polling-scheduler.js';
@@ -337,7 +337,7 @@ app.get('/health', (req, res) => {
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         redis: isRedisConnected() ? 'connected' : 'disconnected',
-        postgres: isDbConnected() ? 'connected' : 'disconnected'
+        postgres: isPrismaConnected() ? 'connected' : 'disconnected'
     });
 });
 
@@ -680,10 +680,9 @@ initializeDataSources().then(async () => {
 });
 
 // Инициализация PostgreSQL
-initDatabase().then((connected) => {
+initPrisma().then((connected) => {
   if (connected) {
-    logger.info('PostgreSQL database initialized');
-    // Start background schedulers after DB is ready
+    logger.info('PostgreSQL database initialized (Prisma)');
     startPollingScheduler();
     startViewRefreshScheduler();
   }
@@ -706,7 +705,7 @@ const gracefulShutdown = async (signal) => {
   stopPollingScheduler();
   stopViewRefreshScheduler();
   await closeRedisCache();
-  await closeDatabase();
+  await closePrisma();
   process.exit(0);
 };
 

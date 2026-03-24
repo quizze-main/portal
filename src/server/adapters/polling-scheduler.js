@@ -5,7 +5,7 @@
  * Events are ingested through the standard event ingestion pipeline.
  */
 
-import { isDbConnected, query } from '../db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from '../prisma.js';
 import { getAdapter } from './adapter-loader.js';
 import { ingestEvents } from '../event-ingestion.js';
 

@@ -7,7 +7,7 @@
  * Dual-persistence: PostgreSQL primary, JSON file fallback.
  */
 import path from 'path';
-import { query, isDbConnected } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { DATA_DIR, readJsonRaw, writeJsonFile, withFileLock } from './json-storage.js';
 
 const SETTINGS_PATH = path.join(DATA_DIR, 'user-settings.json');

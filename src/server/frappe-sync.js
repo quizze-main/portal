@@ -12,7 +12,7 @@
  * - FRAPPE_SYNC_INTERVAL_HOURS=6  — interval for auto-sync
  */
 import path from 'path';
-import { query, isDbConnected } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { DATA_DIR, writeJsonFile, readJsonRaw, withFileLock } from './json-storage.js';
 
 const FRAPPE_BASE_URL = process.env.FRAPPE_BASE_URL;
