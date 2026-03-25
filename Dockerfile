@@ -3,7 +3,7 @@ FROM node:20-slim
 WORKDIR /app
 
 # Установка git для получения информации о коммите
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git openssl && rm -rf /var/lib/apt/lists/*
 
 # Установка зависимостей (включая dev)
 COPY package*.json ./
@@ -37,9 +37,6 @@ ENV VITE_FRAPPE_BASE_URL=${VITE_FRAPPE_BASE_URL}
 ENV VITE_TG_BOT_USERNAME=${VITE_TG_BOT_USERNAME}
 ENV YANDEX_TREKER_AUTH_TOKEN=${YANDEX_TREKER_AUTH_TOKEN}
 ENV X_ORG_ID=${X_ORG_ID}
-
-# Generate Prisma client
-RUN npx prisma generate
 
 # Сборка фронтенда (создаст папку dist)
 ENV NODE_OPTIONS="--max-old-space-size=1536"

@@ -33,7 +33,7 @@ services:
       service: postgres
     container_name: staff-focus-postgres-local
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - traefik-network
 
@@ -63,6 +63,8 @@ services:
     container_name: staff-focus-app
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-staff_focus}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-staff_focus}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.staff-focus-app.rule=Host(`${HOST}`)"

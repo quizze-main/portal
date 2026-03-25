@@ -3,13 +3,39 @@
  * Drop-in replacement for db.js with identical lifecycle API.
  * Provides both Prisma Client API and raw SQL compatibility via rawQuery().
  */
-import { PrismaClient } from '../../generated/prisma/client.js';
+import { execSync } from 'child_process';
+import pg from 'pg';
 
 let prisma = null;
 let connected = false;
 
 /**
+ * Generate Prisma Client and run pending migrations at runtime.
+ * Both `prisma generate` and `prisma migrate deploy` are safe to re-run.
+ */
+function runPrismaSetup() {
+  try {
+    console.log('Generating Prisma Client...');
+    execSync('npx prisma generate', {
+      stdio: 'inherit',
+      env: process.env,
+    });
+    console.log('Running Prisma migrations...');
+    execSync('npx prisma migrate deploy', {
+      stdio: 'inherit',
+      env: process.env,
+    });
+    console.log('Prisma setup complete');
+  } catch (error) {
+    console.error('Prisma setup failed:', error.message);
+    throw error;
+  }
+}
+
+/**
  * Initialize Prisma Client and connect to PostgreSQL.
+ * Runs pending migrations before connecting.
+ * Uses @prisma/adapter-pg for Prisma v7 client engine.
  * @returns {Promise<boolean>} true if connected
  */
 export async function initPrisma() {
@@ -21,10 +47,18 @@ export async function initPrisma() {
   }
 
   try {
-    prisma = new PrismaClient({
-      datasourceUrl: DATABASE_URL,
-      log: process.env.NODE_ENV === 'local' ? ['warn', 'error'] : ['error'],
-    });
+    // Generate client + run pending migrations at runtime
+    runPrismaSetup();
+
+    // Dynamic imports — generated client only exists after prisma generate
+    const { PrismaClient } = await import('@prisma/client');
+    const { PrismaPg } = await import('@prisma/adapter-pg');
+
+    // Create pg Pool for the adapter
+    const pool = new pg.Pool({ connectionString: DATABASE_URL });
+    const adapter = new PrismaPg(pool);
+
+    prisma = new PrismaClient({ adapter });
 
     await prisma.$connect();
     connected = true;

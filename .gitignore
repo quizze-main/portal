@@ -45,4 +45,3 @@ redis-data/*
 # If you need to ignore other vendor folders, do it more specifically.
 # _vendor/
 
-/generated/prisma

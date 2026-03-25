@@ -22,10 +22,4 @@ echo "   Commit: $SHORT_HASH"
 echo "   Build time: $BUILD_TIME"
 echo "   API KEY: $VITE_API_SECRET_KEY"
 
-# Run Prisma migrations if DATABASE_URL is set
-if [ -n "$DATABASE_URL" ]; then
-  echo "📦 Running Prisma migrations..."
-  npx prisma migrate deploy 2>&1 || echo "⚠️ Prisma migrate failed, continuing..."
-fi
-
 exec npm start 
