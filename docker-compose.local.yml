@@ -3,30 +3,6 @@ volumes:
   postgres_data:
 
 services:
-  traefik:
-    image: traefik:v2.10
-    container_name: traefik-local
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.file.directory=/etc/traefik"
-      - "--providers.file.watch=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      - "--providers.docker.exposedbydefault=false"
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080" # Traefik dashboard
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
-      - ./certs:/certs:ro
-    networks:
-      - traefik-network
-
   postgres:
     extends:
       file: ./docker-compose.yml
@@ -35,7 +11,7 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - traefik-network
+      - app-network
 
   redis:
     extends:
@@ -43,7 +19,7 @@ services:
       service: redis
     container_name: staff-focus-redis-local
     networks:
-      - traefik-network
+      - app-network
 
   staff-focus-app:
     extends:
@@ -65,16 +41,10 @@ services:
       - .env
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-staff_focus}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-staff_focus}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.staff-focus-app.rule=Host(`${HOST}`)"
-      - "traefik.http.routers.staff-focus-app.entrypoints=websecure"
-      - "traefik.http.routers.staff-focus-app.tls=true"
-      - "traefik.http.services.staff-focus-app.loadbalancer.server.port=${PORT}"
     ports:
       - "${PORT}:${PORT}"
-      - "5173:5173" # Vite dev server port
-      - "9229:9229" # Node.js debug port
+      - "5173:5173"
+      - "9229:9229"
     volumes:
       - ./src:/app/src
       - ./.env:/app/.env
@@ -87,7 +57,7 @@ services:
       - ./tailwind.config.ts:/app/tailwind.config.ts
       - ./postcss.config.js:/app/postcss.config.js
     networks:
-      - traefik-network
+      - app-network
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:${PORT}/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
       interval: 10s
@@ -96,36 +66,6 @@ services:
       start_period: 30s
     command: ["npm", "run", "hot-reload"]
 
-  ngrok:
-    image: ngrok/ngrok:latest
-    container_name: staff-focus-ngrok
-    command: http staff-focus-app:${PORT} --log=stdout --log-level=info
-    ports:
-      - "4040:4040"
-    environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-    networks:
-      - traefik-network
-    restart: unless-stopped
-
-  webhook-setup:
-    build: .
-    container_name: staff-focus-webhook-setup
-    volumes:
-      - ./src:/app/src
-      - ./.env:/app/.env
-      - ./public:/app/public
-      - ./package.json:/app/package.json
-      - ./scripts:/app/scripts
-    environment:
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-    entrypoint: []
-    command: node scripts/setup-telegram-webhook.js
-    depends_on:
-      - ngrok
-    networks:
-      - traefik-network
-
 networks:
-  traefik-network:
-    driver: bridge 
+  app-network:
+    driver: bridge

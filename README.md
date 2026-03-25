@@ -231,7 +231,7 @@ src/
 - **Frontend**: React + Vite + TypeScript
 - **Backend**: Express.js сервер с API и Telegram Web App
 - **Интеграция**: Frappe ERP API
-- **Инфраструктура**: Docker + Traefik + HTTPS
+- **Инфраструктура**: Docker
 
 ### Дополнительные API Endpoints
 

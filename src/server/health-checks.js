@@ -155,18 +155,6 @@ const integrations = [
     },
   },
   {
-    id: 'ngrok',
-    name: 'ngrok',
-    category: 'dev',
-    envVars: ['NODE_ENV', 'SHOW_DEV_TO_PUBLIC'],
-    check: async () => {
-      const isLocal = env.NODE_ENV === 'local';
-      const showDev = env.SHOW_DEV_TO_PUBLIC === 'true';
-      if (!isLocal && !showDev) return { ok: false, message: 'Not in local/dev mode' };
-      return { ok: true, message: `NODE_ENV=${env.NODE_ENV || '(unset)'}, SHOW_DEV_TO_PUBLIC=${env.SHOW_DEV_TO_PUBLIC || '(unset)'}` };
-    },
-  },
-  {
     id: 'org_database',
     name: 'Org Structure DB',
     category: 'core',

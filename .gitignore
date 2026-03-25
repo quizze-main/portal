@@ -21,7 +21,6 @@ dist-ssr
 
 # Docker
 letsencrypt/
-certs/
 
 # Editor directories and files
 .vscode/*

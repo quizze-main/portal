@@ -33,13 +33,6 @@ const corsOptions = {
       return callback(null, true);
     }
     
-    // Проверяем ngrok URLs (паттерн: https://*.ngrok-free.app)
-    const ngrokPattern = /^https:\/\/.*\.ngrok-free\.app$/;
-    if (ngrokPattern.test(origin)) {
-      logger.info('CORS: ngrok origin allowed', { origin });
-      return callback(null, true);
-    }
-    
     logger.warn('CORS blocked origin', { origin });
     callback(new Error('Not allowed by CORS'));
   },

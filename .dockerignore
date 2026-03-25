@@ -47,7 +47,6 @@ docker-compose.demo.yml
 docker-compose.migrate.yml
 Dockerfile.debug
 Dockerfile.Migration
-traefik
 postman
 presentation
 migration-input
