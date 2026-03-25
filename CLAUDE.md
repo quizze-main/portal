@@ -58,6 +58,21 @@ npm run setup-webhook    # Настройка Telegram webhook
 
 Note: No unit test framework is configured. Testing is manual via `npm run test-api` and health checks.
 
+### Database Migrations (Prisma)
+
+Миграции управляются через Prisma ORM и запускаются автоматически при старте приложения (`initPrisma()` в `src/server/prisma.js`):
+1. `prisma generate` — генерация Prisma Client
+2. `prisma migrate deploy` — применение pending миграций
+
+**Любые изменения схемы БД делать ТОЛЬКО через Prisma CLI:**
+```bash
+npx prisma migrate dev --name <описание>   # Создать новую миграцию (dev)
+npx prisma migrate deploy                   # Применить миграции (prod)
+npm run prisma:studio                       # GUI для просмотра данных
+```
+
+**НЕ создавать** SQL-файлы миграций вручную. Prisma сам генерирует миграции из `prisma/schema.prisma`.
+
 ## Architecture
 
 ### BFF (Backend for Frontend) Pattern
