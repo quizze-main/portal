@@ -1,9 +1,10 @@
 import {
-  BarChart3, LineChart, TrendingUp, Star,
+  BarChart3, LineChart, TrendingUp,
   Wallet, CalendarDays, User,
-  CheckSquare, AlertTriangle, ClipboardList,
-  BookOpen, FileText,
-  Link, MessageCircle, Shield,
+  CheckSquare, ClipboardList,
+  BookOpen,
+  Link, MessageCircle, Shield, Settings,
+  Building2, Network, Users,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -12,6 +13,22 @@ export interface ModuleFeature {
   description: string;
   bullets?: string[];
   mockupType?: string;
+}
+
+export interface PersonaUseCase {
+  persona: 'employee' | 'branch_manager' | 'network_director';
+  personaLabel: string;
+  icon: LucideIcon;
+  headline: string;
+  description: string;
+  bullets: string[];
+}
+
+export interface BusinessMetrics {
+  profitLabel: string;
+  savingsLabel: string;
+  profitDescription: string;
+  savingsDescription: string;
 }
 
 export interface ModuleData {
@@ -26,6 +43,8 @@ export interface ModuleData {
   heroDescription: string;
   features: ModuleFeature[];
   relatedModules: string[];
+  personaUseCases: PersonaUseCase[];
+  metrics: BusinessMetrics;
 }
 
 export const MODULE_CATEGORIES = [
@@ -89,7 +108,51 @@ export const MODULES: ModuleData[] = [
         mockupType: 'dynamics-chart',
       },
     ],
-    relatedModules: ['manager-dashboard', 'forecasting', 'customer-reviews'],
+    relatedModules: ['manager-dashboard', 'forecasting', 'plan-fact'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Вижу, где я в рейтинге',
+        description: 'Менеджер открывает дашборд и видит своё место среди коллег. Понимает, какие метрики подтянуть, чтобы вырасти в рейтинге и заработать больше.',
+        bullets: [
+          'Свои KPI на фоне команды',
+          'Понятные цели на день и месяц',
+          'Мотивация через прозрачную конкуренцию',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Контролирую филиал без сводок',
+        description: 'Утром открывает дашборд — и сразу видит: кто из менеджеров на плане, где просадка по конверсии, какие метрики требуют внимания. Никаких ручных сводок.',
+        bullets: [
+          'Рейтинг менеджеров в реальном времени',
+          'Выявление слабых мест до конца месяца',
+          'Быстрые решения на основе данных',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Вся сеть на одном экране',
+        description: 'Видит сводку по всем филиалам: где выручка растёт, где падает, какие филиалы отстают. Принимает стратегические решения, а не тонет в отчётах.',
+        bullets: [
+          'Сравнение филиалов между собой',
+          'Тренды по сети за любой период',
+          'Аномалии видны сразу — без запросов',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: '+5% к выручке',
+      savingsLabel: '−2 часа/день',
+      profitDescription: 'Руководители видят точки роста и корректируют стратегию, пока есть время',
+      savingsDescription: 'Не нужно собирать данные из 5 систем и делать сводки вручную',
+    },
   },
   {
     slug: 'manager-dashboard',
@@ -124,6 +187,50 @@ export const MODULES: ModuleData[] = [
       },
     ],
     relatedModules: ['leader-dashboard', 'salary-calculator', 'forecasting'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Знаю, сколько осталось до плана',
+        description: 'Менеджер видит свой прогресс в цифрах: что уже сделано, сколько осталось. Не нужно спрашивать у руководителя — всё перед глазами.',
+        bullets: [
+          'Персональные KPI обновляются автоматически',
+          'Прогресс-бары показывают путь к цели',
+          'Сравнение с прошлым месяцем мотивирует',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Каждый менеджер на виду',
+        description: 'Видит, кто из команды на плане, а кому нужна помощь. Не ждёт конца месяца — реагирует сразу.',
+        bullets: [
+          'Мониторинг каждого менеджера по KPI',
+          'Быстрая идентификация проблемных зон',
+          'Объективная база для 1-on-1 бесед',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Менеджеры работают прозрачно',
+        description: 'Видит агрегированные показатели менеджеров по всем филиалам. Понимает, где процессы работают, а где нужно вмешаться.',
+        bullets: [
+          'Рейтинги менеджеров по всей сети',
+          'Корреляция мотивации и результатов',
+          'Данные для принятия кадровых решений',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: '+10% эффективность',
+      savingsLabel: '−30 мин/день',
+      profitDescription: 'Менеджеры видят свой результат и работают целенаправленнее',
+      savingsDescription: 'Руководитель не тратит время на подготовку индивидуальных сводок',
+    },
   },
   {
     slug: 'forecasting',
@@ -157,44 +264,132 @@ export const MODULES: ModuleData[] = [
         mockupType: 'forecast-detail',
       },
     ],
-    relatedModules: ['leader-dashboard', 'manager-dashboard', 'data-entry'],
-  },
-  {
-    slug: 'customer-reviews',
-    name: 'Отзывы клиентов',
-    category: 'Аналитика и KPI',
-    icon: Star,
-    color: 'bg-amber-500',
-    iconColor: 'text-white',
-    tagline: 'Негатив → точка роста. Реагируйте быстро',
-    heroTitle: 'Каждый отзыв — возможность стать лучше',
-    heroDescription: 'Собираем отзывы из всех источников и выделяем те, которые требуют внимания. Негативный отзыв — это не проблема, а сигнал к действию.',
-    features: [
+    relatedModules: ['leader-dashboard', 'manager-dashboard', 'plan-fact'],
+    personaUseCases: [
       {
-        title: 'Все отзывы в одном месте',
-        description: 'Все отзывы агрегируются автоматически, с акцентом на негативные — чтобы вы могли отреагировать первым.',
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Понимаю, выполню ли план',
+        description: 'Менеджер видит прогноз по своим показателям: если темп хороший — спокоен, если нет — знает, что нужно ускориться.',
         bullets: [
-          'Агрегация из нескольких источников',
-          'Фильтрация по тональности и рейтингу',
-          'Привязка к конкретному филиалу',
+          'Прогноз зарплаты на основе текущего темпа',
+          'Цветовая индикация: зелёный / жёлтый / красный',
+          'Понимание, на что нажать именно сейчас',
         ],
-        mockupType: 'reviews-list',
       },
       {
-        title: 'Тренды удовлетворённости',
-        description: 'Следите за тем, как меняется настроение клиентов. Рост негатива — повод разобраться.',
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Вижу риски на 10-й день, а не на 30-й',
+        description: 'Прогноз показывает, выполнит ли филиал план. Если конверсия падает — это видно за 3 недели до конца месяца.',
         bullets: [
-          'CSI по филиалам и менеджерам',
-          'Динамика за выбранный период',
-          'Детализация до конкретного отзыва',
+          'Раннее предупреждение о невыполнении',
+          'Детализация по каждому менеджеру',
+          'Время на корректировку стратегии',
         ],
-        mockupType: 'reviews-trend',
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Прогноз по всей сети',
+        description: 'Видит сводный прогноз выполнения плана по каждому филиалу. Принимает решения, пока ещё есть время повлиять.',
+        bullets: [
+          'Сводный прогноз по всем филиалам',
+          'Перераспределение ресурсов в слабые точки',
+          'Стратегическое планирование на основе данных',
+        ],
       },
     ],
-    relatedModules: ['leader-dashboard', 'manager-dashboard', 'task-management'],
+    metrics: {
+      profitLabel: '+8% выполнение плана',
+      savingsLabel: '−20% потерь',
+      profitDescription: 'Ранние корректировки позволяют добирать план до конца месяца',
+      savingsDescription: 'Меньше ситуаций, когда проблема обнаруживается слишком поздно',
+    },
   },
 
   // ── Мотивация и HR ──
+  {
+    slug: 'shift-schedule',
+    name: 'Графики смен',
+    category: 'Мотивация и HR',
+    icon: CalendarDays,
+    color: 'bg-teal-500',
+    iconColor: 'text-white',
+    tagline: 'Визуальное планирование без Excel',
+    heroTitle: 'Графики смен без головной боли',
+    heroDescription: 'Забудьте про Excel-таблицы. Визуальный календарь с шаблонами и контролем укомплектованности — планирование за минуты.',
+    features: [
+      {
+        title: 'Визуальный календарь',
+        description: 'Месячный календарь, где видно, кто когда работает. Перетаскивайте смены, применяйте шаблоны.',
+        bullets: [
+          'Месячное представление с цветовой кодировкой',
+          'Шаблоны смен (2/2, 5/2 и кастомные)',
+          'Контроль укомплектованности',
+        ],
+        mockupType: 'shift-calendar',
+      },
+      {
+        title: 'Связь с мотивацией',
+        description: 'График смен автоматически влияет на расчёт зарплаты. Про-рейтинг плана корректируется под реальный график.',
+        bullets: [
+          'Автоматический про-рейтинг',
+          'Учёт фактических рабочих дней',
+          'Интеграция с калькулятором',
+        ],
+        mockupType: 'shift-salary',
+      },
+    ],
+    relatedModules: ['salary-calculator', 'employee-profile', 'task-management'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Вижу свой график и команду',
+        description: 'Открываю календарь и вижу, когда работаю. План зарплаты автоматически подстраивается под мой реальный график.',
+        bullets: [
+          'Свой график всегда под рукой',
+          'Автоматический перерасчёт плана',
+          'Честное сравнение с коллегами',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Планирую за минуты, а не часы',
+        description: 'Шаблоны смен, визуальный календарь, контроль укомплектованности. Составить график на месяц — 15 минут вместо полдня.',
+        bullets: [
+          'Шаблоны 2/2, 5/2 и кастомные',
+          'Контроль минимальной укомплектованности',
+          'Автоматическая связь с расчётом зарплаты',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Укомплектованность по всей сети',
+        description: 'Видит сводку по укомплектованности всех филиалов. Планирование кадров на основе данных, а не звонков директорам.',
+        bullets: [
+          'Обзор графиков по всем филиалам',
+          'Контроль переработок и недоработок',
+          'Оптимизация ФОТ через данные',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: '+5% укомплектованность',
+      savingsLabel: '−3 часа/нед',
+      profitDescription: 'Оптимальная укомплектованность увеличивает пропускную способность',
+      savingsDescription: 'Планирование графиков в визуальном редакторе вместо Excel',
+    },
+  },
   {
     slug: 'salary-calculator',
     name: 'Калькулятор зарплаты',
@@ -237,45 +432,133 @@ export const MODULES: ModuleData[] = [
         mockupType: 'salary-admin',
       },
     ],
-    relatedModules: ['manager-dashboard', 'shift-schedule', 'data-entry'],
-  },
-  {
-    slug: 'shift-schedule',
-    name: 'Графики смен',
-    category: 'Мотивация и HR',
-    icon: CalendarDays,
-    color: 'bg-teal-500',
-    iconColor: 'text-white',
-    tagline: 'Визуальное планирование без Excel',
-    heroTitle: 'Графики смен без головной боли',
-    heroDescription: 'Забудьте про Excel-таблицы. Визуальный календарь с шаблонами и контролем укомплектованности — планирование за минуты.',
-    features: [
+    relatedModules: ['manager-dashboard', 'shift-schedule', 'plan-fact'],
+    personaUseCases: [
       {
-        title: 'Визуальный календарь',
-        description: 'Месячный календарь, где видно, кто когда работает. Перетаскивайте смены, применяйте шаблоны.',
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Вижу зарплату после каждой продажи',
+        description: 'Продал товар — открыл калькулятор — увидел, как выросла зарплата. Каждый KPI прозрачен, каждый бонус понятен.',
         bullets: [
-          'Месячное представление с цветовой кодировкой',
-          'Шаблоны смен (2/2, 5/2 и кастомные)',
-          'Контроль укомплектованности',
+          'Зарплата обновляется в реальном времени',
+          'Разбивка: оклад + бонусы + KPI',
+          'Нет вопросов к бухгалтерии — всё видно',
         ],
-        mockupType: 'shift-calendar',
       },
       {
-        title: 'Связь с мотивацией',
-        description: 'График смен автоматически влияет на расчёт зарплаты. Про-рейтинг плана корректируется под реальный график.',
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Команда мотивирована прозрачностью',
+        description: 'Когда сотрудники видят связь между работой и зарплатой — мотивация растёт сама. Меньше конфликтов, больше фокуса на продажах.',
         bullets: [
-          'Автоматический про-рейтинг',
-          'Учёт фактических рабочих дней',
-          'Интеграция с калькулятором',
+          'Снижение вопросов «почему столько?»',
+          'Менеджеры сами стремятся к целям',
+          'Объективная база для обсуждения результатов',
         ],
-        mockupType: 'shift-salary',
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Мотивация масштабируется по сети',
+        description: 'Единая формула мотивации для всей сети с возможностью настройки по филиалам. Прозрачность снижает текучку и повышает вовлечённость.',
+        bullets: [
+          'Единые правила расчёта по всей сети',
+          'Снижение текучки до 20%',
+          'Контроль ФОТ в реальном времени',
+        ],
       },
     ],
-    relatedModules: ['salary-calculator', 'employee-profile', 'task-management'],
+    metrics: {
+      profitLabel: '+20% к продажам',
+      savingsLabel: '−25% текучки',
+      profitDescription: 'Прозрачная мотивация стимулирует менеджеров продавать активнее',
+      savingsDescription: 'Понимание формулы зарплаты снижает конфликты и уход сотрудников',
+    },
+  },
+  {
+    slug: 'telegram-bot',
+    name: 'Веб-приложение',
+    category: 'Платформа',
+    icon: MessageCircle,
+    color: 'bg-sky-500',
+    iconColor: 'text-white',
+    tagline: 'Доступ с любого устройства без установки',
+    heroTitle: 'Веб-приложение — единая точка входа',
+    heroDescription: 'Не нужно устанавливать отдельное приложение. Всё работает в браузере — уведомления, задачи, быстрые действия.',
+    features: [
+      {
+        title: 'Push-уведомления',
+        description: 'Новая задача, просроченный заказ — сотрудник узнает мгновенно. Без email, без SMS.',
+        bullets: [
+          'Мгновенные уведомления',
+          'Deep links — один клик до нужного экрана',
+          'Агрегация сообщений (без спама)',
+        ],
+        mockupType: 'telegram-notifications',
+      },
+      {
+        title: 'Работает на любом устройстве',
+        description: 'Веб-приложение адаптировано под телефон, планшет и десктоп. Никаких сторов и установок.',
+        bullets: [
+          'Работает в браузере на любом устройстве',
+          'Не нужно скачивать из сторов',
+          'Автоматические обновления',
+        ],
+        mockupType: 'telegram-webapp',
+      },
+    ],
+    relatedModules: ['task-management', 'integrations', 'plan-fact'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Всё в одном приложении',
+        description: 'Уведомление о задаче, зарплата, стандарты — всё в одном веб-приложении. Не нужно помнить пароли или искать ссылки.',
+        bullets: [
+          'Push-уведомления в реальном времени',
+          'Один клик до нужного экрана',
+          'Работает на любом устройстве',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Команда подключается мгновенно',
+        description: 'Не нужно уговаривать сотрудников устанавливать приложения. Открыл ссылку — готово. Инструменты доступны с первого дня.',
+        bullets: [
+          '100% охват команды',
+          'Нулевой порог входа',
+          'Массовые рассылки по филиалу',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Ноль затрат на нативное приложение',
+        description: 'Нативное мобильное приложение = сотни тысяч на разработку + поддержку. Веб-приложение — без этих затрат.',
+        bullets: [
+          'Ноль затрат на разработку нативного приложения',
+          'Автоматические обновления без участия пользователей',
+          'Охват всех сотрудников без IT-поддержки',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: '100% охват команды',
+      savingsLabel: '−500K ₽/год',
+      profitDescription: 'Каждый сотрудник получает инструменты мгновенно, без барьеров',
+      savingsDescription: 'Экономия на разработке и поддержке нативного мобильного приложения',
+    },
   },
   {
     slug: 'employee-profile',
-    name: 'Профиль сотрудника',
+    name: 'Личный профиль',
     category: 'Мотивация и HR',
     icon: User,
     color: 'bg-pink-500',
@@ -297,25 +580,69 @@ export const MODULES: ModuleData[] = [
       },
     ],
     relatedModules: ['shift-schedule', 'salary-calculator', 'task-management'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Моя карточка с командой',
+        description: 'Вижу своё фото, должность, руководителя и коллег. Знаю, к кому обратиться по любому вопросу.',
+        bullets: [
+          'Фото и контактные данные',
+          'Информация о команде и руководителе',
+          'Быстрый доступ через веб-приложение',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Вся команда как на ладони',
+        description: 'Видит состав команды, роли и контакты. Быстро находит нужного сотрудника при замене или перестановке.',
+        bullets: [
+          'Список команды с ролями',
+          'История изменений по сотрудникам',
+          'Быстрый поиск по отделу',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Кадровая структура сети',
+        description: 'Полная оргструктура сети: филиалы, отделы, должности. Данные синхронизируются из ERP автоматически.',
+        bullets: [
+          'Оргструктура синхронизирована с ERP',
+          'Обзор кадрового состава по филиалам',
+          'Основа для ролевого доступа',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: 'Быстрый доступ',
+      savingsLabel: '−50% время адаптации',
+      profitDescription: 'Новый сотрудник сразу видит свою команду, руководителя и контакты',
+      savingsDescription: 'Не нужно тратить время руководителя на объяснение структуры',
+    },
   },
 
   // ── Операции ──
   {
     slug: 'task-management',
-    name: 'Управление задачами',
+    name: 'Авто-задачи',
     category: 'Операции',
     icon: CheckSquare,
     color: 'bg-orange-500',
     iconColor: 'text-white',
-    tagline: 'Задачи доходят мгновенно через Telegram',
+    tagline: 'Задачи доходят мгновенно через push-уведомления',
     heroTitle: 'Задачи, которые точно будут выполнены',
-    heroDescription: 'Поставьте задачу — сотрудник получит уведомление в Telegram и откроет её в один клик. Никаких потерянных писем.',
+    heroDescription: 'Поставьте задачу — сотрудник получит push-уведомление и откроет её в один клик. Никаких потерянных писем.',
     features: [
       {
-        title: 'Deep linking через Telegram',
-        description: 'Сотрудник получает push-уведомление в Telegram. Один клик — и задача открыта.',
+        title: 'Мгновенные уведомления',
+        description: 'Сотрудник получает push-уведомление. Один клик — и задача открыта.',
         bullets: [
-          'Push-уведомления в Telegram',
+          'Push-уведомления в реальном времени',
           'Открытие задачи в один клик',
           'Статусы: новая → в работе → выполнена',
         ],
@@ -332,52 +659,141 @@ export const MODULES: ModuleData[] = [
         mockupType: 'task-list',
       },
     ],
-    relatedModules: ['attention-deals', 'telegram-bot', 'knowledge-base'],
-  },
-  {
-    slug: 'attention-deals',
-    name: 'Контроль сделок',
-    category: 'Операции',
-    icon: AlertTriangle,
-    color: 'bg-red-500',
-    iconColor: 'text-white',
-    tagline: 'Ни одна сделка не потеряется',
-    heroTitle: 'Ни одна сделка не останется без внимания',
-    heroDescription: 'Алерты о просроченных и зависших заказах. Менеджер реагирует до того, как клиент уйдёт.',
-    features: [
+    relatedModules: ['plan-fact', 'telegram-bot', 'knowledge-base'],
+    personaUseCases: [
       {
-        title: 'Автоматические алерты',
-        description: 'Система следит за статусом сделок и сигнализирует, если заказ завис или просрочен.',
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Задача приходит — я делаю',
+        description: 'Push-уведомление, один клик — задача открыта. Не нужно заходить в CRM, искать в почте. Статус обновляется сразу.',
         bullets: [
-          'Алерты по просроченным заказам',
-          'Группировка по приоритету',
-          'Детали заказа в один клик',
+          'Мгновенные push-уведомления',
+          'Открытие задачи в один клик',
+          'Работа даже без интернета',
         ],
-        mockupType: 'deals-alerts',
       },
       {
-        title: 'Контроль для руководителя',
-        description: 'Руководитель видит все незакрытые сделки по всей сети. Фильтрация по филиалам и менеджерам.',
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Задачи доходят и выполняются',
+        description: 'Ставит задачу — сотрудник мгновенно получает уведомление. Видит статус каждой задачи: кто взял, кто выполнил, кто забыл.',
         bullets: [
-          'Сетевой обзор незакрытых сделок',
-          'Фильтры по филиалу и менеджеру',
-          'История действий',
+          'Контроль выполнения в реальном времени',
+          'Уведомления о просрочке',
+          'История задач по каждому сотруднику',
         ],
-        mockupType: 'deals-overview',
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Поручения доходят до исполнителей',
+        description: 'Может поставить задачу на любой филиал через единую систему. Контролирует исполнительскую дисциплину по всей сети.',
+        bullets: [
+          'Сетевые задачи для всех филиалов',
+          'Статистика исполнения по сети',
+          'Эскалация невыполненных задач',
+        ],
       },
     ],
-    relatedModules: ['task-management', 'leader-dashboard', 'customer-reviews'],
+    metrics: {
+      profitLabel: '+10% к эффективности',
+      savingsLabel: '−15 мин/задача',
+      profitDescription: 'Задачи не теряются — каждое поручение доходит до исполнителя',
+      savingsDescription: 'Мгновенная доставка вместо звонков, чатов и писем',
+    },
   },
   {
-    slug: 'data-entry',
-    name: 'Ввод данных',
+    slug: 'integrations',
+    name: 'Интеграции',
+    category: 'Платформа',
+    icon: Link,
+    color: 'bg-violet-500',
+    iconColor: 'text-white',
+    tagline: 'Подключение к ERP, CRM и аналитике',
+    heroTitle: 'Подключается к вашим системам за дни',
+    heroDescription: 'Overbrain — надстройка, а не замена. Подключаемся через API. Ваши системы продолжают работать как раньше.',
+    features: [
+      {
+        title: 'Готовые коннекторы',
+        description: 'Из коробки поддерживаем популярные системы для retail.',
+        bullets: [
+          'Frappe ERPNext — сотрудники, задачи, документы',
+          'Аналитические платформы — метрики и KPI',
+          'Outline Wiki — база знаний',
+          'Push API — уведомления в реальном времени',
+        ],
+        mockupType: 'integrations-list',
+      },
+      {
+        title: 'Мониторинг здоровья',
+        description: 'Панель администратора показывает статус каждой интеграции в реальном времени.',
+        bullets: [
+          'Health-check каждой интеграции',
+          'Измерение задержки (latency)',
+          'Автоматические алерты при сбоях',
+        ],
+        mockupType: 'integrations-health',
+      },
+    ],
+    relatedModules: ['flexible-settings', 'telegram-bot', 'leader-dashboard'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Всё работает — мне не нужно думать',
+        description: 'Сотруднику не нужно разбираться в интеграциях. Данные из CRM, ERP и аналитики просто появляются в приложении.',
+        bullets: [
+          'Данные из всех систем в одном месте',
+          'Автоматическое обновление',
+          'Никаких ручных действий',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Данные филиала всегда актуальны',
+        description: 'Интеграция с ERP и CRM гарантирует, что дашборды показывают реальные данные. Не нужно ничего вводить вручную.',
+        bullets: [
+          'Автоматическая синхронизация с ERP',
+          'Данные CRM подтягиваются в реальном времени',
+          'Health-check статус интеграций',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Подключение за дни, а не месяцы',
+        description: 'Готовые API-коннекторы к популярным retail-системам. Подключение нового филиала — стандартная процедура, а не проект.',
+        bullets: [
+          'Готовые коннекторы к ERP, CRM, аналитике',
+          'Мониторинг здоровья каждой интеграции',
+          'Масштабирование без боли',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: 'Все данные в одном месте',
+      savingsLabel: '0 своих разработчиков',
+      profitDescription: 'Быстрый запуск означает быстрое получение данных и результатов',
+      savingsDescription: 'Не нужно содержать команду разработки для поддержки интеграций',
+    },
+  },
+  {
+    slug: 'plan-fact',
+    name: 'План/Факт',
     category: 'Операции',
     icon: ClipboardList,
     color: 'bg-slate-500',
     iconColor: 'text-white',
-    tagline: 'Plan/Fact ввод метрик без ошибок',
-    heroTitle: 'Ввод данных — просто и без ошибок',
-    heroDescription: 'Формы с валидацией, подсказки и автозаполнение. Данные сразу попадают на дашборды.',
+    tagline: 'План vs реальность — отклонения видны сразу',
+    heroTitle: 'План/Факт — контроль выполнения в реальном времени',
+    heroDescription: 'Задайте плановые показатели, а система покажет отклонения. Реагируйте до конца месяца, а не после.',
     features: [
       {
         title: 'Формы ввода Plan/Fact',
@@ -391,12 +807,56 @@ export const MODULES: ModuleData[] = [
       },
     ],
     relatedModules: ['leader-dashboard', 'forecasting', 'salary-calculator'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Вношу данные без ошибок',
+        description: 'Формы с подсказками и валидацией. Ввёл план/факт — данные сразу появились на дашборде. Не нужно ждать обработки.',
+        bullets: [
+          'Понятные формы ввода',
+          'Валидация на лету',
+          'Моментальное отображение на дашбордах',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Данные всегда актуальны',
+        description: 'Вносит плановые значения по филиалу. Факт подтягивается автоматически. Дашборд обновляется мгновенно.',
+        bullets: [
+          'Ввод планов по периодам',
+          'Автоматическая привязка к метрикам',
+          'Контроль полноты данных',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Единый источник правды',
+        description: 'Все филиалы вводят данные в одну систему. Никаких разрозненных Excel-файлов — единый формат и единая точка правды.',
+        bullets: [
+          'Стандартизированный ввод по сети',
+          'Контроль сроков подачи данных',
+          'Автоматическая агрегация по филиалам',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: 'Управление цифрами',
+      savingsLabel: '−70% ошибок ввода',
+      profitDescription: 'Своевременные и точные данные — основа для правильных решений',
+      savingsDescription: 'Валидация форм исключает типичные ошибки ручного ввода',
+    },
   },
 
   // ── Знания ──
   {
     slug: 'knowledge-base',
-    name: 'База знаний',
+    name: 'Обучение и знания 3.0',
     category: 'Знания',
     icon: BookOpen,
     color: 'bg-emerald-600',
@@ -426,136 +886,220 @@ export const MODULES: ModuleData[] = [
         mockupType: 'kb-article',
       },
     ],
-    relatedModules: ['standards', 'telegram-bot', 'employee-profile'],
-  },
-  {
-    slug: 'standards',
-    name: 'Стандарты',
-    category: 'Знания',
-    icon: FileText,
-    color: 'bg-cyan-500',
-    iconColor: 'text-white',
-    tagline: 'Единые стандарты обслуживания',
-    heroTitle: 'Единые стандарты для всей сети',
-    heroDescription: 'Стандарты обслуживания доступны каждому сотруднику. Одинаковый уровень сервиса во всех филиалах.',
-    features: [
+    relatedModules: ['knowledge-base', 'telegram-bot', 'employee-profile'],
+    personaUseCases: [
       {
-        title: 'Стандарты всегда под рукой',
-        description: 'Открыл стандарты в приложении — и всё понятно. Не нужно звонить коллегам.',
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Нахожу ответ за секунды',
+        description: 'Не помню процедуру? Открыл базу знаний, нашёл через поиск. Не нужно звонить коллегам или ждать ответа в чате.',
         bullets: [
-          'Структурированные стандарты обслуживания',
-          'Быстрый доступ из любого устройства',
-          'Актуальная версия — всегда последняя',
+          'Полнотекстовый поиск по всей базе',
+          'Закладки для быстрого доступа',
+          'Красивое оформление с картинками',
         ],
-        mockupType: 'standards-list',
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Команда учится сама',
+        description: 'Новый сотрудник читает инструкции и стандарты сам. Опытные менеджеры сверяются при нестандартных ситуациях. Меньше вопросов — больше дела.',
+        bullets: [
+          'Онбординг без тренера',
+          'Актуальные инструкции всегда под рукой',
+          'Контроль через закладки и посещения',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Единые знания для всей сети',
+        description: 'Одна база знаний для всех филиалов. Обновил инструкцию — все сотрудники сразу видят актуальную версию. Никаких устаревших PDF.',
+        bullets: [
+          'Централизованное управление контентом',
+          'Мгновенное обновление по всей сети',
+          'Интеграция с Outline Wiki',
+        ],
       },
     ],
-    relatedModules: ['knowledge-base', 'task-management', 'employee-profile'],
+    metrics: {
+      profitLabel: '−30% ошибок сервиса',
+      savingsLabel: '−80% на обучение',
+      profitDescription: 'Доступные инструкции сокращают ошибки в работе с клиентами',
+      savingsDescription: 'Новый сотрудник учится сам — не нужен выделенный тренер',
+    },
   },
-
   // ── Платформа ──
   {
-    slug: 'integrations',
-    name: 'Интеграции',
+    slug: 'org-communications',
+    name: 'Оргструктура и коммуникации',
     category: 'Платформа',
-    icon: Link,
-    color: 'bg-violet-500',
+    icon: Users,
+    color: 'bg-indigo-600',
     iconColor: 'text-white',
-    tagline: 'Подключение к ERP, CRM и аналитике',
-    heroTitle: 'Подключается к вашим системам за дни',
-    heroDescription: 'Overbrain — надстройка, а не замена. Подключаемся через API. Ваши системы продолжают работать как раньше.',
+    tagline: 'Прозрачная иерархия и каналы связи для всей сети',
+    heroTitle: 'Команда на связи — от стажёра до директора',
+    heroDescription: 'Оргструктура синхронизирована с ERP. Каждый сотрудник видит своё место, руководителя и коллег. Коммуникации идут по нужным каналам — без хаоса в чатах.',
     features: [
       {
-        title: 'Готовые коннекторы',
-        description: 'Из коробки поддерживаем популярные системы для retail.',
+        title: 'Живое дерево организации',
+        description: 'Интерактивная оргструктура с филиалами, отделами и должностями. Синхронизация с Frappe ERP — изменения появляются автоматически.',
         bullets: [
-          'Frappe ERPNext — сотрудники, задачи, документы',
-          'Аналитические платформы — метрики и KPI',
-          'Outline Wiki — база знаний',
-          'Telegram Bot API — уведомления',
-        ],
-        mockupType: 'integrations-list',
-      },
-      {
-        title: 'Мониторинг здоровья',
-        description: 'Панель администратора показывает статус каждой интеграции в реальном времени.',
-        bullets: [
-          'Health-check каждой интеграции',
-          'Измерение задержки (latency)',
-          'Автоматические алерты при сбоях',
-        ],
-        mockupType: 'integrations-health',
-      },
-    ],
-    relatedModules: ['admin-panel', 'telegram-bot', 'leader-dashboard'],
-  },
-  {
-    slug: 'telegram-bot',
-    name: 'Telegram Bot',
-    category: 'Платформа',
-    icon: MessageCircle,
-    color: 'bg-sky-500',
-    iconColor: 'text-white',
-    tagline: 'Уведомления без отдельного приложения',
-    heroTitle: 'Telegram — единая точка входа',
-    heroDescription: 'Не нужно устанавливать отдельное приложение. Всё работает через Telegram — уведомления, задачи, быстрые действия.',
-    features: [
-      {
-        title: 'Push-уведомления',
-        description: 'Новая задача, просроченный заказ — сотрудник узнает мгновенно. Без email, без SMS.',
-        bullets: [
-          'Мгновенные уведомления',
-          'Deep links — один клик до нужного экрана',
-          'Агрегация сообщений (без спама)',
-        ],
-        mockupType: 'telegram-notifications',
-      },
-      {
-        title: 'Ноль затрат на мобильное приложение',
-        description: 'Разработка мобильного приложения — сотни тысяч рублей. С Telegram — бесплатно.',
-        bullets: [
-          'Работает в Telegram WebApp',
-          'Не нужно скачивать из сторов',
-          'Автоматические обновления',
-        ],
-        mockupType: 'telegram-webapp',
-      },
-    ],
-    relatedModules: ['task-management', 'integrations', 'attention-deals'],
-  },
-  {
-    slug: 'admin-panel',
-    name: 'Админ-панель',
-    category: 'Платформа',
-    icon: Shield,
-    color: 'bg-gray-600',
-    iconColor: 'text-white',
-    tagline: 'Оргструктура и настройки',
-    heroTitle: 'Полный контроль над платформой',
-    heroDescription: 'Настройте оргструктуру, управляйте доступами и следите за здоровьем интеграций.',
-    features: [
-      {
-        title: 'Организационная структура',
-        description: 'Филиалы, отделы, сотрудники — вся оргструктура синхронизируется из ERP.',
-        bullets: [
-          'Автоматическая синхронизация с ERP',
-          'Иерархия филиалов и отделов',
-          'Управление ролями и доступами',
+          'Древовидная визуализация всей сети',
+          'Автосинхронизация с ERP при изменении штатного расписания',
+          'Быстрый поиск сотрудника по имени или должности',
+          'Фильтрация по филиалу, отделу и роли',
         ],
         mockupType: 'admin-org',
       },
       {
-        title: 'Настройка зарплат',
-        description: 'Бухгалтер настраивает формулы мотивации через понятный интерфейс.',
+        title: 'Уведомления и рассылки',
+        description: 'Целевые рассылки через Telegram по филиалам, отделам или ролям. Никто не пропустит важное — и никто не получит лишнего.',
         bullets: [
-          'Управление окладами и ставками',
-          'Настройка KPI-множителей',
-          'Журнал изменений',
+          'Рассылки по филиалу, отделу или роли',
+          'Push-уведомления через Telegram Bot',
+          'История отправленных сообщений',
         ],
-        mockupType: 'admin-salary',
+        mockupType: 'admin-org',
+      },
+      {
+        title: 'Роли и доступы',
+        description: 'Гибкая система ролей определяет, что видит каждый сотрудник. Менеджер видит свой филиал, руководитель — всю сеть.',
+        bullets: [
+          'Ролевая модель доступа из коробки',
+          'Филиальные и сетевые уровни',
+          'Изменение доступов без разработчика',
+        ],
+        mockupType: 'admin-org',
+      },
+    ],
+    relatedModules: ['telegram-bot', 'flexible-settings', 'employee-profile'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Знаю, к кому обратиться',
+        description: 'Открыл оргструктуру — вижу своего руководителя, коллег из филиала и контакты нужных людей. Не нужно спрашивать в общих чатах.',
+        bullets: [
+          'Быстрый поиск коллег по имени',
+          'Контакты руководителя всегда под рукой',
+          'Уведомления только по своему филиалу',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Моя команда — как на ладони',
+        description: 'Вижу состав филиала, должности и роли каждого. Отправляю объявления только своей команде — без спама в общие чаты.',
+        bullets: [
+          'Состав филиала в одном месте',
+          'Целевые рассылки по команде',
+          'Управление доступами сотрудников',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Вся структура — одним взглядом',
+        description: 'Дерево всей организации: филиалы, отделы, люди. Изменения в ERP мгновенно отражаются. Рассылки по любому срезу — филиал, роль, отдел.',
+        bullets: [
+          'Полная оргструктура всей сети',
+          'Массовые рассылки по любому фильтру',
+          'Синхронизация с ERP без ручной работы',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: '+25% скорость коммуникаций',
+      savingsLabel: '−60% хаоса в чатах',
+      profitDescription: 'Информация доходит до нужных людей быстрее через целевые каналы',
+      savingsDescription: 'Рассылки по ролям и филиалам заменяют бесконечные сообщения в общих чатах',
+    },
+  },
+
+  {
+    slug: 'flexible-settings',
+    name: 'Гибкая настройка',
+    category: 'Платформа',
+    icon: Settings,
+    color: 'bg-gray-600',
+    iconColor: 'text-white',
+    tagline: 'Подстройте систему под ваши процессы',
+    heroTitle: 'Платформа, которая подстраивается под вас',
+    heroDescription: 'Формулы мотивации, KPI-множители, роли и оргструктура — всё настраивается без разработчиков.',
+    features: [
+      {
+        title: 'Конструктор мотивации',
+        description: 'Настраивайте формулы расчёта зарплат через визуальный интерфейс. Без программистов.',
+        bullets: [
+          'Визуальный редактор формул',
+          'KPI-множители и пороги',
+          'Предпросмотр расчётов до применения',
+        ],
+        mockupType: 'settings-motivation',
+      },
+      {
+        title: 'Оргструктура и роли',
+        description: 'Филиалы, отделы и доступы синхронизируются из ERP или настраиваются вручную.',
+        bullets: [
+          'Синхронизация с ERP',
+          'Гибкая иерархия ролей',
+          'Журнал всех изменений',
+        ],
+        mockupType: 'settings-org',
       },
     ],
     relatedModules: ['integrations', 'salary-calculator', 'shift-schedule'],
+    personaUseCases: [
+      {
+        persona: 'employee',
+        personaLabel: 'Сотрудник',
+        icon: User,
+        headline: 'Всё настроено — я просто работаю',
+        description: 'Сотрудник не думает о настройках. Его роль, филиал и доступы определены — он видит только свои инструменты.',
+        bullets: [
+          'Автоматическая настройка доступов',
+          'Роль определяет набор инструментов',
+          'Никаких лишних экранов',
+        ],
+      },
+      {
+        persona: 'branch_manager',
+        personaLabel: 'Руководитель филиала',
+        icon: Building2,
+        headline: 'Настраиваю без звонков в IT',
+        description: 'Меняет формулы мотивации, управляет доступами команды. Всё через понятный интерфейс, результат виден сразу.',
+        bullets: [
+          'Настройка формул мотивации',
+          'Управление ролями команды',
+          'Предпросмотр изменений',
+        ],
+      },
+      {
+        persona: 'network_director',
+        personaLabel: 'Руководитель сети',
+        icon: Network,
+        headline: 'Единая настройка на всю сеть',
+        description: 'Одна точка управления: оргструктура, роли, мотивация, интеграции. Изменения применяются по всем филиалам мгновенно.',
+        bullets: [
+          'Централизованное управление настройками',
+          'Массовое применение изменений',
+          'Полная история изменений',
+        ],
+      },
+    ],
+    metrics: {
+      profitLabel: 'Адаптивность системы',
+      savingsLabel: '−90% ручной настройки',
+      profitDescription: 'Система подстраивается под ваши процессы, а не наоборот',
+      savingsDescription: 'Синхронизация с ERP и визуальные редакторы исключают ручную работу',
+    },
   },
 ];
 
@@ -613,15 +1157,14 @@ export const MODULE_HERO_SCREENSHOTS: Record<string, ScreenshotInfo> = {
   'leader-dashboard':   { src: '/screenshots/dashboard-full.png', alt: 'Дашборд руководителя', variant: 'desktop', url: 'app.overbrain.io/dashboard' },
   'manager-dashboard':  { src: '/screenshots/dashboard-kpi-circles.png', alt: 'Дашборд менеджера', variant: 'desktop', url: 'app.overbrain.io/dashboard' },
   'forecasting':        { src: '/screenshots/dashboard-charts.png', alt: 'Прогнозирование', variant: 'desktop', url: 'app.overbrain.io/dashboard' },
-  'customer-reviews':   { src: '/screenshots/dashboard-widgets.png', alt: 'Отзывы клиентов', variant: 'desktop', url: 'app.overbrain.io/dashboard' },
   'salary-calculator':  { src: '/screenshots/salary-calc-mobile.png', alt: 'Калькулятор зарплаты', variant: 'mobile' },
   'shift-schedule':     { src: '/screenshots/profile-schedule-mobile.png', alt: 'Графики смен', variant: 'mobile' },
   'employee-profile':   { src: '/screenshots/profile-mobile.png', alt: 'Профиль сотрудника', variant: 'mobile' },
   'knowledge-base':     { src: '/screenshots/admin-kb-articles.png', alt: 'База знаний', variant: 'desktop', url: 'app.overbrain.io/admin' },
-  'standards':          { src: '/screenshots/kb-sections-mobile.png', alt: 'Стандарты', variant: 'mobile' },
   'integrations':       { src: '/screenshots/admin-system-health.png', alt: 'Интеграции', variant: 'desktop', url: 'app.overbrain.io/admin' },
-  'admin-panel':        { src: '/screenshots/admin-org-tree.png', alt: 'Админ-панель', variant: 'desktop', url: 'app.overbrain.io/admin' },
-  'data-entry':         { src: '/screenshots/salary-admin-table.png', alt: 'Ввод данных', variant: 'desktop', url: 'app.overbrain.io/admin' },
+  'org-communications': { src: '/screenshots/admin-org-tree.png', alt: 'Оргструктура и коммуникации', variant: 'desktop', url: 'app.overbrain.io/admin' },
+  'flexible-settings':  { src: '/screenshots/admin-org-tree.png', alt: 'Гибкая настройка', variant: 'desktop', url: 'app.overbrain.io/admin' },
+  'plan-fact':          { src: '/screenshots/salary-admin-table.png', alt: 'План/Факт', variant: 'desktop', url: 'app.overbrain.io/admin' },
 };
 
 export function getModuleBySlug(slug: string): ModuleData | undefined {

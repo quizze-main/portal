@@ -1,22 +1,22 @@
 {
-  "name": "LoovIS Staff Portal",
-  "short_name": "LoovISPortal",
+  "name": "OverBrain",
+  "short_name": "OverBrain",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
-  "theme_color": "#4f46e5",
-  "description": "LoovIS Staff Portal in Telegram Mini Apps",
+  "theme_color": "#60a5fa",
+  "description": "OverBrain — платформа автоматизации бизнес-процессов. Управление задачами, аналитика, база знаний и интеграции.",
   "categories": ["productivity", "business"],
   "prefer_related_applications": false,
   "lang": "ru",
   "dir": "ltr",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     },
     {
       "src": "/icon-192.png",

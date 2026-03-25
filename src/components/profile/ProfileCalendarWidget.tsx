@@ -2,7 +2,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useEmployeeSchedule } from '@/hooks/useEmployeeSchedule';
-import { SHIFT_TYPE_COLORS, SHIFT_TYPE_SHORT, type ShiftType } from '@/types/shift-schedule';
+import { SHIFT_TYPE_COLORS, type ShiftType } from '@/types/shift-schedule';
+import { SHIFT_INDICATORS } from '@/components/shift-schedule/ShiftIndicator';
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { DayDetailSheet } from './DayDetailSheet';
@@ -192,11 +193,11 @@ export function ProfileCalendarWidget({ employeeId, branchId }: ProfileCalendarW
               const colors = shiftType ? SHIFT_TYPE_COLORS[shiftType] : null;
               const isToday = date === today;
               const isWeekend = dow >= 5;
-              const shortLabel = shiftType
-                ? shiftType === 'work' && entry?.shift_number
-                  ? String(entry.shift_number)
-                  : SHIFT_TYPE_SHORT[shiftType]
-                : '';
+              const indicator = shiftType ? SHIFT_INDICATORS[shiftType] : null;
+              const Icon = indicator?.icon;
+              const shiftNumber = shiftType === 'work' && entry?.shift_number
+                ? String(entry.shift_number)
+                : null;
 
               return (
                 <button
@@ -223,8 +224,12 @@ export function ProfileCalendarWidget({ employeeId, branchId }: ProfileCalendarW
                   )}>
                     {day}
                   </span>
-                  <span className="text-[9px] leading-none h-3 flex items-center">
-                    {shortLabel || '\u00A0'}
+                  <span className="h-3 flex items-center justify-center">
+                    {Icon ? (
+                      shiftNumber
+                        ? <span className="text-[9px] leading-none font-semibold">{shiftNumber}</span>
+                        : <Icon className="w-3 h-3" />
+                    ) : '\u00A0'}
                   </span>
                 </button>
               );

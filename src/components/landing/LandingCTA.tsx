@@ -40,7 +40,7 @@ export function LandingCTA({ onRequestDemo, telegramLink = 'https://t.me/overbra
           >
             <a href={telegramLink} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="w-4 h-4" />
-              Написать в Telegram
+              Связаться с нами
             </a>
           </Button>
         </div>

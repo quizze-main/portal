@@ -27,7 +27,9 @@ export function LandingNavbar({ onRequestDemo }: LandingNavbarProps) {
   const isModulePage = location.pathname.startsWith('/landing/module/');
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40 dark:bg-gray-950/35 backdrop-blur-2xl border-b border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.6)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]"
+      style={{ WebkitBackdropFilter: 'blur(32px) saturate(200%)', backdropFilter: 'blur(32px) saturate(200%)' }}
+    >
       <div className="max-w-[1200px] mx-auto px-6 h-[64px] flex items-center justify-between">
         {isModulePage ? (
           <button

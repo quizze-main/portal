@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, MessageCircle, Search, TrendingUp, Database, Check } from 'lucide-react';
+import { ArrowRight, MessageCircle, Check } from 'lucide-react';
 import { BrowserMockup } from './BrowserMockup';
+import { PhoneMockup } from './PhoneMockup';
 
 interface LandingHeroProps {
   onRequestDemo: () => void;
@@ -10,7 +11,7 @@ interface LandingHeroProps {
 const VALUE_PROPS = [
   'Найдём точки потерь по филиалам',
   'Поднимем эффективность менеджеров',
-  'Подключимся к вашим данным за дни',
+  'Работа с вашими данными или ручная настройка',
 ];
 
 export function LandingHero({ onRequestDemo, telegramLink = 'https://t.me/overbrain_bot' }: LandingHeroProps) {
@@ -35,7 +36,7 @@ export function LandingHero({ onRequestDemo, telegramLink = 'https://t.me/overbr
 
         {/* Description */}
         <p className="text-center text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-xl mx-auto leading-relaxed">
-          Overbrain — надстройка над вашей ERP. Находит потери, мотивирует команду и поднимает базовый уровень продаж по всей сети.
+          Overbrain — надстройка над вашей системой. Находит потери, мотивирует команду и поднимает базовый уровень продаж по всей сети.
         </p>
 
         {/* Value props — compact inline checks */}
@@ -49,11 +50,11 @@ export function LandingHero({ onRequestDemo, telegramLink = 'https://t.me/overbr
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+        <div className="flex flex-row gap-3 justify-center mb-6">
           <Button
             size="lg"
             onClick={onRequestDemo}
-            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base px-8 h-13 shadow-md transition-all duration-200"
+            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base px-10 h-14 font-medium shadow-md transition-all duration-200 min-w-[280px] justify-center"
           >
             Запросить демонстрацию
             <ArrowRight className="w-4 h-4" />
@@ -62,7 +63,7 @@ export function LandingHero({ onRequestDemo, telegramLink = 'https://t.me/overbr
             size="lg"
             variant="outline"
             asChild
-            className="gap-2 rounded-xl text-base px-8 h-13 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-200"
+            className="gap-2 rounded-xl text-base px-10 h-14 font-medium border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-200 min-w-[280px] justify-center"
           >
             <a href={telegramLink} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="w-4 h-4" />
@@ -75,8 +76,9 @@ export function LandingHero({ onRequestDemo, telegramLink = 'https://t.me/overbr
           Бесплатный пилот 14 дней · Подключение за 3 дня
         </p>
 
-        {/* Dashboard screenshot */}
-        <div className="mt-16 max-w-[950px] mx-auto">
+        {/* Dashboard screenshots — desktop + phone overlay */}
+        <div className="mt-16 max-w-[950px] mx-auto relative">
+          {/* Desktop mockup */}
           <BrowserMockup className="shadow-xl shadow-gray-200/50 dark:shadow-black/20" url="app.overbrain.io/dashboard" noBackground>
             <img
               src="/screenshots/dashboard-full.png"
@@ -84,6 +86,22 @@ export function LandingHero({ onRequestDemo, telegramLink = 'https://t.me/overbr
               className="w-full h-auto"
             />
           </BrowserMockup>
+
+          {/* Phone mockup — overlapping bottom-right */}
+          <div className="hidden sm:block absolute -bottom-6 -right-4 md:-right-8 z-10">
+            <div className="relative rounded-[2.5rem] border-[5px] border-gray-800 dark:border-gray-600 bg-gray-800 dark:bg-gray-700 shadow-2xl overflow-hidden w-[200px] h-[433px] md:w-[230px] md:h-[498px]">
+              {/* Dynamic Island */}
+              <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-[70px] h-[18px] md:w-[80px] md:h-[20px] bg-black rounded-full z-10" />
+              <div className="w-full h-full overflow-hidden rounded-[2rem] bg-white dark:bg-gray-900">
+                <img
+                  src="/screenshots/hero-mobile-dashboard.png"
+                  alt="Overbrain мобильный дашборд"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[50px] h-[3px] bg-gray-600 dark:bg-gray-400 rounded-full opacity-50" />
+            </div>
+          </div>
         </div>
       </div>
     </section>

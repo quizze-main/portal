@@ -7,9 +7,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Staff Focus App API',
+      title: 'OverBrain API',
       version: '1.0.0',
-      description: 'API для приложения Staff Focus App',
+      description: 'API для платформы OverBrain',
       contact: {
         name: 'Loov Team',
         email: 'dev@loov.ru'
@@ -55,8 +55,8 @@ export function setupSwagger(app) {
   // Swagger UI
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
     customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Staff Focus App API Documentation',
-    customfavIcon: '/favicon.ico',
+    customSiteTitle: 'OverBrain API Documentation',
+    customfavIcon: '/favicon.svg',
     swaggerOptions: {
       docExpansion: 'list',
       filter: true,

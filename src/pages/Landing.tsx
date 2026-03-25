@@ -9,6 +9,7 @@ import { LandingSocialProof } from '@/components/landing/LandingSocialProof';
 import { LandingPricing } from '@/components/landing/LandingPricing';
 import { LandingCTA } from '@/components/landing/LandingCTA';
 import { LandingFooter } from '@/components/landing/LandingFooter';
+import { LandingLayer2 } from '@/components/landing/LandingLayer2';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,11 +23,12 @@ export default function Landing() {
   const [demoOpen, setDemoOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 pt-16">
       <LandingNavbar onRequestDemo={() => setDemoOpen(true)} />
       <LandingHero onRequestDemo={() => setDemoOpen(true)} telegramLink={TELEGRAM_LINK} />
-      <LandingModules />
+      <LandingModules onRequestDemo={() => setDemoOpen(true)} />
       <LandingValueSplit />
+      <LandingLayer2 onRequestDemo={() => setDemoOpen(true)} />
       <LandingHowItWorks />
       <LandingBenefits />
       <LandingSocialProof />

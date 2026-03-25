@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { MODULES } from './moduleData';
 import { useFadeInOnScroll } from '@/hooks/useFadeInOnScroll';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 /** Returns current grid column count matching Tailwind breakpoints: 3 / 4 / 5 */
 function useGridCols(): number {
@@ -30,13 +30,10 @@ function useGridCols(): number {
    This yields no adjacent overlap at any column count.
    ═══════════════════════════════════════════════════════════════════ */
 
-type Corner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+type Corner = 'top-right';
 
-function getCorner(index: number, cols: number): Corner {
-  const row = Math.floor(index / cols);
-  const vertical = row === 0 ? 'top' : 'bottom';
-  const horizontal = row % 2 === 0 ? 'left' : 'right';
-  return `${vertical}-${horizontal}` as Corner;
+function getCorner(_index: number, _cols: number): Corner {
+  return 'top-right';
 }
 
 interface ModuleLabel {
@@ -48,38 +45,31 @@ const LABELS: Record<string, ModuleLabel> = {
   'leader-dashboard':  { label: 'Tableau / Power BI', rotation: -4 },
   'manager-dashboard': { label: 'Excel-сводки',       rotation: 5 },
   'forecasting':       { label: 'Прогнозы в Excel',   rotation: -3 },
-  'customer-reviews':  { label: 'Яндекс.Бизнес',     rotation: 4 },
   'salary-calculator': { label: '1С ЗУП + Excel',    rotation: -5 },
   'shift-schedule':    { label: 'Excel-таблицы',      rotation: 5 },
   'employee-profile':  { label: 'ERP карточки',       rotation: -3 },
   'task-management':   { label: 'Trello / Asana',     rotation: 4 },
-  'attention-deals':   { label: 'CRM вручную',        rotation: -5 },
-  'data-entry':        { label: 'Google Forms',        rotation: 3 },
+  'plan-fact':         { label: 'Excel-таблицы',      rotation: 3 },
   'knowledge-base':    { label: 'Notion / Confluence', rotation: -4 },
-  'standards':         { label: 'PDF-инструкции',     rotation: 5 },
   'integrations':      { label: 'Zapier / ручная',    rotation: -3 },
-  'telegram-bot':      { label: 'Email + SMS',        rotation: 4 },
-  'admin-panel':       { label: 'ERP-админка',        rotation: -5 },
+  'telegram-bot':      { label: 'Нативное приложение', rotation: 4 },
+  'org-communications':{ label: 'Чаты и звонки',      rotation: -3 },
+  'flexible-settings': { label: 'Ручная настройка',   rotation: -5 },
 };
 
 /** Short labels for small screens (≤sm) */
 const SHORT_LABELS: Record<string, string> = {
   'leader-dashboard': 'Tableau', 'manager-dashboard': 'Excel',
-  'forecasting': 'Excel', 'customer-reviews': 'Яндекс',
-  'salary-calculator': '1С ЗУП', 'shift-schedule': 'Excel',
-  'employee-profile': 'ERP', 'task-management': 'Trello',
-  'attention-deals': 'CRM', 'data-entry': 'Forms',
-  'knowledge-base': 'Notion', 'standards': 'PDF',
-  'integrations': 'Zapier', 'telegram-bot': 'Email',
-  'admin-panel': 'ERP',
+  'forecasting': 'Excel', 'salary-calculator': '1С ЗУП',
+  'shift-schedule': 'Excel', 'employee-profile': 'ERP',
+  'task-management': 'Trello', 'plan-fact': 'Excel',
+  'knowledge-base': 'Notion', 'integrations': 'Zapier',
+  'telegram-bot': 'Натив', 'org-communications': 'Чаты', 'flexible-settings': 'Вручную',
 };
 
-/** Position classes for each corner — works at any breakpoint */
+/** Position classes — labels inside top-right corner of the card */
 const CORNER_STYLE: Record<Corner, string> = {
-  'top-left':     'left-0 -translate-x-1 lg:-translate-x-2 bottom-full mb-0.5 lg:mb-1',
-  'top-right':    'right-0 translate-x-1 lg:translate-x-2 bottom-full mb-0.5 lg:mb-1',
-  'bottom-left':  'left-0 -translate-x-1 lg:-translate-x-2 top-full mt-0.5 lg:mt-1',
-  'bottom-right': 'right-0 translate-x-1 lg:translate-x-2 top-full mt-0.5 lg:mt-1',
+  'top-right': 'right-1 top-1',
 };
 
 function FadeIn({ children, className = '' }: { children: React.ReactNode; className?: string }) {
@@ -93,7 +83,11 @@ function FadeIn({ children, className = '' }: { children: React.ReactNode; class
 
 /* ═══════════════════════════════════════════════════════════════════ */
 
-export function LandingModules() {
+interface LandingModulesProps {
+  onRequestDemo?: () => void;
+}
+
+export function LandingModules({ onRequestDemo }: LandingModulesProps) {
   const [showCompetitors, setShowCompetitors] = useState(false);
   const cols = useGridCols();
 
@@ -104,14 +98,42 @@ export function LandingModules() {
         <FadeIn>
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4 uppercase tracking-wider">
-              15 модулей
+              12 модулей
             </Badge>
             <h2 className="text-[1.75rem] md:text-[2.25rem] font-bold text-foreground mb-4 tracking-tight">
-              Всё, что нужно вашей сети
+              Всё, что нужно вашей сети в одном месте
             </h2>
             <p className="text-muted-foreground text-lg max-w-lg mx-auto">
               Нажмите на модуль, чтобы узнать подробнее
             </p>
+          </div>
+        </FadeIn>
+
+        {/* Toggle — above grid */}
+        <FadeIn>
+          <div className="flex items-center justify-center mb-8">
+            <button
+              onClick={() => setShowCompetitors(!showCompetitors)}
+              className={`relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer select-none ${
+                showCompetitors
+                  ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 shadow-sm'
+                  : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+              }`}
+            >
+              <span
+                className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-300 ${
+                  showCompetitors ? 'bg-rose-500' : 'bg-gray-300 dark:bg-gray-600'
+                }`}
+              >
+                <span
+                  className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                    showCompetitors ? 'translate-x-[18px]' : 'translate-x-[3px]'
+                  }`}
+                />
+              </span>
+              <Sparkles className={`w-3.5 h-3.5 transition-colors duration-300 ${showCompetitors ? 'text-rose-500' : 'text-muted-foreground/50'}`} />
+              <span>Бизнес без Overbrain</span>
+            </button>
           </div>
         </FadeIn>
 
@@ -128,6 +150,8 @@ export function LandingModules() {
                 <Link
                   key={mod.slug}
                   to={`/landing/module/${mod.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group relative flex flex-col items-center gap-2 p-3 md:p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-md transition-all duration-200"
                 >
                   {/* Competitor label — corner-anchored at all breakpoints */}
@@ -158,36 +182,28 @@ export function LandingModules() {
                   <span className="text-[11px] md:text-xs font-medium text-foreground text-center leading-tight group-hover:text-primary transition-colors">
                     {mod.name}
                   </span>
+
+                  {/* Metric badge */}
+                  {mod.metrics?.profitLabel && (
+                    <span className="text-[9px] md:text-[10px] text-emerald-600 dark:text-emerald-400 font-medium leading-tight text-center">
+                      {mod.metrics.profitLabel}
+                    </span>
+                  )}
                 </Link>
               );
             })}
           </div>
         </FadeIn>
 
-        {/* Toggle */}
+        {/* CTA button */}
         <FadeIn>
           <div className="flex items-center justify-center mt-10">
             <button
-              onClick={() => setShowCompetitors(!showCompetitors)}
-              className={`relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer select-none ${
-                showCompetitors
-                  ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 shadow-sm'
-                  : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted hover:text-foreground'
-              }`}
+              onClick={onRequestDemo}
+              className="inline-flex items-center gap-2.5 px-7 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm cursor-pointer select-none transition-all duration-300"
             >
-              <span
-                className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-300 ${
-                  showCompetitors ? 'bg-rose-500' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-              >
-                <span
-                  className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
-                    showCompetitors ? 'translate-x-[18px]' : 'translate-x-[3px]'
-                  }`}
-                />
-              </span>
-              <Sparkles className={`w-3.5 h-3.5 transition-colors duration-300 ${showCompetitors ? 'text-rose-500' : 'text-muted-foreground/50'}`} />
-              <span>Жизнь без Overbrain</span>
+              Попробовать Overbrain
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </FadeIn>

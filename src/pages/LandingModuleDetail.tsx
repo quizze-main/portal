@@ -3,10 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { LandingNavbar } from '@/components/landing/LandingNavbar';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 import { getModuleBySlug, getRelatedModules, SCREENSHOT_MAP, MODULE_HERO_SCREENSHOTS } from '@/components/landing/moduleData';
-import type { ModuleData, ModuleFeature } from '@/components/landing/moduleData';
+import type { ModuleData, ModuleFeature, PersonaUseCase, BusinessMetrics } from '@/components/landing/moduleData';
 import { FeatureMockup, ScreenshotMockup } from '@/components/landing/BrowserMockup';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, TrendingUp, PiggyBank } from 'lucide-react';
 import { useFadeInOnScroll } from '@/hooks/useFadeInOnScroll';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -38,13 +38,16 @@ export default function LandingModuleDetail() {
   const relatedModules = getRelatedModules(module.relatedModules);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 pt-16">
       <LandingNavbar onRequestDemo={() => setDemoOpen(true)} />
       <ModuleHero module={module} onRequestDemo={() => setDemoOpen(true)} />
 
       {module.features.map((feature, i) => (
         <FeatureSection key={i} feature={feature} index={i} />
       ))}
+
+      <PersonaUseCasesSection useCases={module.personaUseCases} />
+      <ModuleMetricsBanner metrics={module.metrics} />
 
       <RelatedModulesSection modules={relatedModules} />
 
@@ -91,12 +94,12 @@ function ModuleHero({ module, onRequestDemo }: { module: ModuleData; onRequestDe
             <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{module.category}</span>
           </div>
 
-          <h1 className="text-[2.2rem] md:text-[3.5rem] leading-[1.08] font-bold mb-6 max-w-3xl mx-auto tracking-tight text-gray-900 dark:text-white">
-            {module.heroTitle}
+          <h1 className="text-[2.2rem] md:text-[3.5rem] leading-[1.08] font-bold mb-4 max-w-3xl mx-auto tracking-tight text-gray-900 dark:text-white">
+            {module.name}
           </h1>
 
           <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            {module.heroDescription}
+            {module.heroTitle}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -229,6 +232,144 @@ function RelatedModulesSection({ modules }: { modules: ModuleData[] }) {
             Все модули
             <ArrowRight className="w-4 h-4" />
           </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const PERSONA_COLORS: Record<string, { bg: string; border: string; iconBg: string; iconText: string }> = {
+  employee:         { bg: 'bg-purple-50 dark:bg-purple-900/10', border: 'border-purple-200 dark:border-purple-800/40', iconBg: 'bg-purple-100 dark:bg-purple-900/30', iconText: 'text-purple-600 dark:text-purple-400' },
+  branch_manager:   { bg: 'bg-amber-50 dark:bg-amber-900/10', border: 'border-amber-200 dark:border-amber-800/40', iconBg: 'bg-amber-100 dark:bg-amber-900/30', iconText: 'text-amber-600 dark:text-amber-400' },
+  network_director: { bg: 'bg-blue-50 dark:bg-blue-900/10', border: 'border-blue-200 dark:border-blue-800/40', iconBg: 'bg-blue-100 dark:bg-blue-900/30', iconText: 'text-blue-600 dark:text-blue-400' },
+};
+
+function PersonaUseCasesSection({ useCases }: { useCases: PersonaUseCase[] }) {
+  const { ref, isVisible } = useFadeInOnScroll();
+  const [activeTab, setActiveTab] = useState(0);
+
+  return (
+    <section
+      ref={ref}
+      className={`py-16 md:py-24 px-6 bg-gray-50 dark:bg-gray-900/50 transition-all duration-700 ease-out ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
+      <div className="max-w-[1100px] mx-auto">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-4 uppercase tracking-wider">
+            Кейсы использования
+          </div>
+          <h2 className="text-[1.75rem] md:text-[2.25rem] font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
+            Как это работает для каждой роли
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400">
+            Один инструмент — три перспективы
+          </p>
+        </div>
+
+        {/* Mobile: tabs */}
+        <div className="md:hidden mb-4">
+          <div className="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-gray-800">
+            {useCases.map((uc, i) => {
+              const Icon = uc.icon;
+              return (
+                <button
+                  key={uc.persona}
+                  onClick={() => setActiveTab(i)}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+                    activeTab === i
+                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-500 dark:text-gray-400'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {uc.personaLabel}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mobile: active card */}
+        <div className="md:hidden">
+          {useCases[activeTab] && <PersonaCard useCase={useCases[activeTab]} />}
+        </div>
+
+        {/* Desktop: 3-column grid */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6">
+          {useCases.map((uc) => (
+            <PersonaCard key={uc.persona} useCase={uc} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PersonaCard({ useCase }: { useCase: PersonaUseCase }) {
+  const colors = PERSONA_COLORS[useCase.persona] || PERSONA_COLORS.employee;
+  const Icon = useCase.icon;
+
+  return (
+    <div className={`rounded-2xl border ${colors.border} ${colors.bg} p-6`}>
+      <div className="flex items-center gap-3 mb-4">
+        <div className={`w-9 h-9 rounded-xl ${colors.iconBg} flex items-center justify-center`}>
+          <Icon className={`w-4.5 h-4.5 ${colors.iconText}`} />
+        </div>
+        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{useCase.personaLabel}</span>
+      </div>
+
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{useCase.headline}</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">{useCase.description}</p>
+
+      <ul className="space-y-2.5">
+        {useCase.bullets.map((bullet, i) => (
+          <li key={i} className="flex items-start gap-2.5">
+            <CheckCircle2 className={`w-4 h-4 ${colors.iconText} shrink-0 mt-0.5`} />
+            <span className="text-sm text-gray-600 dark:text-gray-400">{bullet}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ModuleMetricsBanner({ metrics }: { metrics: BusinessMetrics }) {
+  const { ref, isVisible } = useFadeInOnScroll();
+
+  return (
+    <section
+      ref={ref}
+      className={`py-12 md:py-16 px-6 transition-all duration-700 ease-out ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
+      <div className="max-w-[900px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {/* Profit */}
+          <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800/40 bg-emerald-50/50 dark:bg-emerald-900/10 p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <TrendingUp className="w-4.5 h-4.5 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Доп. прибыль</span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{metrics.profitLabel}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{metrics.profitDescription}</p>
+          </div>
+
+          {/* Savings */}
+          <div className="rounded-2xl border border-blue-200 dark:border-blue-800/40 bg-blue-50/50 dark:bg-blue-900/10 p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <PiggyBank className="w-4.5 h-4.5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <span className="text-sm font-semibold text-blue-700 dark:text-blue-400">Экономия</span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{metrics.savingsLabel}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{metrics.savingsDescription}</p>
+          </div>
         </div>
       </div>
     </section>

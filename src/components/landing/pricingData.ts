@@ -36,7 +36,7 @@ export interface SubscriptionFeature {
 }
 
 export const SUBSCRIPTION_FEATURES: SubscriptionFeature[] = [
-  { icon: MessageCircle, label: 'Telegram-бот для команды' },
+  { icon: MessageCircle, label: 'Веб-приложение для команды' },
   { icon: BarChart3, label: 'Аналитика KPI и продаж' },
   { icon: BookOpen, label: 'База знаний и стандарты' },
   { icon: Trophy, label: 'Рейтинг менеджеров' },
