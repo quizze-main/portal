@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { requireAuth } from './requireAuth.js';
 
 const __filename = fileURLToPath(import.meta.url);

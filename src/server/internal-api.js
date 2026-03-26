@@ -929,8 +929,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path (original) ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1226,8 +1226,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path (original) ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1343,8 +1343,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path (original) ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1460,8 +1460,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1563,8 +1563,8 @@ export function setupInternalApiRoutes(app) {
     const { status = 'all', role = 'all', search = '', days = '' } = req.query;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured, returning empty tasks');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1664,8 +1664,8 @@ export function setupInternalApiRoutes(app) {
     const { status } = req.body;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1710,8 +1710,8 @@ export function setupInternalApiRoutes(app) {
   app.get('/api/frappe/tasks/:taskName', requireAuth, async (req, res) => {
     const { taskName } = req.params;
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1745,8 +1745,8 @@ export function setupInternalApiRoutes(app) {
     const { subject, description, assigneeId, authorId } = req.body;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1793,8 +1793,8 @@ export function setupInternalApiRoutes(app) {
     const updates = req.body;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1849,8 +1849,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1975,8 +1975,8 @@ export function setupInternalApiRoutes(app) {
   app.get('/api/kb/bookmarks', requireAuth, async (req, res) => {
     const employee = req.query.employee;
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
     if (!employee || typeof employee !== 'string') {
       return res.status(400).json({ error: 'employee is required' });
@@ -2013,8 +2013,8 @@ export function setupInternalApiRoutes(app) {
   // Set bookmark state for an article
   app.post('/api/kb/bookmarks', requireAuth, async (req, res) => {
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
     const { employee, article_id, bookmarked, title } = req.body || {};
     if (!employee || !article_id || typeof bookmarked === 'undefined') {
@@ -5349,7 +5349,7 @@ export function setupInternalApiRoutes(app) {
   // Client dimension — search clients
   app.get('/api/admin/clients/search', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.json({ data: [] });
 
       const { q = '', branch_id, limit = 20 } = req.query;
@@ -5384,7 +5384,7 @@ export function setupInternalApiRoutes(app) {
   // List clients (paginated)
   app.get('/api/admin/clients', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.json({ data: [], total: 0 });
 
       const limit = Math.min(parseInt(req.query.limit) || 50, 200);
@@ -5424,7 +5424,7 @@ export function setupInternalApiRoutes(app) {
   // Save/update custom adapter in registry
   app.post('/api/admin/adapters', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.status(503).json({ error: 'Database not connected' });
 
       const { id, name, description, version, supportedEvents, adapterCode, aiGenerated, aiPrompt } = req.body;
@@ -5453,7 +5453,7 @@ export function setupInternalApiRoutes(app) {
   // Delete custom adapter
   app.delete('/api/admin/adapters/:id', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.status(503).json({ error: 'Database not connected' });
 
       // Prevent deleting built-in adapters

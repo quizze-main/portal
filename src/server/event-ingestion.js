@@ -6,7 +6,7 @@
  * After ingestion, triggers aggregation into metric_snapshots.
  */
 
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { aggregateEventsToSnapshots } from './aggregation-engine.js';
 
 /**

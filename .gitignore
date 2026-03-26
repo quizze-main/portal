@@ -21,7 +21,6 @@ dist-ssr
 
 # Docker
 letsencrypt/
-certs/
 
 # Editor directories and files
 .vscode/*
@@ -37,13 +36,6 @@ certs/
 # Автоматически генерируемый файл версии
 src/version.json
 
-# Opensearch
-opensearch-data/*
-opensearch-config/*
-!opensearch-config/jvm.options
-!opensearch-config/opensearch.yml
-!opensearch-config/log4j2.properties
-
 #Redis
 redis-data/*
 
@@ -51,3 +43,4 @@ redis-data/*
 # _vendor is used for git subtree vendors (e.g. loovis-sandbox). Do not ignore it.
 # If you need to ignore other vendor folders, do it more specifically.
 # _vendor/
+

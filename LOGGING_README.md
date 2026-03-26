@@ -81,6 +81,6 @@ LOG_LEVEL=error
 - `x-api-key`
 - `Cookie`
 
-## OpenSearch
+## PostgreSQL
 
-Все логи отправляются в OpenSearch с соответствующим уровнем, что позволяет фильтровать их в Kibana или других инструментах визуализации. 
+Все логи отправляются в PostgreSQL (таблица `app_logs`) с соответствующим уровнем. Для просмотра используйте SQL-запросы или Prisma Studio (`npm run prisma:studio`).

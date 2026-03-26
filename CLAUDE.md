@@ -42,7 +42,7 @@ npm run start:prod       # Build + Production server
 
 ### Docker
 ```bash
-npm run docker:local     # Docker compose с hot reload (Traefik + ngrok + webhook-setup)
+npm run docker:local     # Docker compose с hot reload (localhost)
 npm run docker:dev       # Development Docker setup
 npm run docker:prod      # Production Docker setup
 npm run debug            # Debug build + Node inspector (порт 9229)
@@ -53,10 +53,24 @@ npm run debug            # Debug build + Node inspector (порт 9229)
 npm run lint             # ESLint (flat config, ESLint 9)
 npm run generate-api-key # Генерация API_SECRET_KEY
 npm run test-api         # Тестирование API эндпоинтов
-npm run setup-webhook    # Настройка Telegram webhook
 ```
 
 Note: No unit test framework is configured. Testing is manual via `npm run test-api` and health checks.
+
+### Database Migrations (Prisma)
+
+Миграции управляются через Prisma ORM и запускаются автоматически при старте приложения (`initPrisma()` в `src/server/prisma.js`):
+1. `prisma generate` — генерация Prisma Client
+2. `prisma migrate deploy` — применение pending миграций
+
+**Любые изменения схемы БД делать ТОЛЬКО через Prisma CLI:**
+```bash
+npx prisma migrate dev --name <описание>   # Создать новую миграцию (dev)
+npx prisma migrate deploy                   # Применить миграции (prod)
+npm run prisma:studio                       # GUI для просмотра данных
+```
+
+**НЕ создавать** SQL-файлы миграций вручную. Prisma сам генерирует миграции из `prisma/schema.prisma`.
 
 ## Architecture
 
@@ -68,7 +82,7 @@ All external API calls are proxied through the Express server. Frontend NEVER ca
 
 **Middleware stack in `server.js`:**
 1. Rate limiting (1000 req/15min per IP, supports X-Forwarded-For behind proxy)
-2. CORS with dynamic origin checking (supports ngrok URLs for dev)
+2. CORS with dynamic origin checking
 3. Cookie parsing + JWT verification (populates `req.user` from `token` cookie)
 4. Body parsing (JSON + URL-encoded)
 
@@ -77,8 +91,8 @@ All external API calls are proxied through the Express server. Frontend NEVER ca
 | Module | Purpose |
 |--------|---------|
 | `internal-api.js` | Main BFF routing layer (~1500 lines). All `/api/*` endpoints. Uses `frappeApiRequest()` helper for Frappe calls. |
-| `logger.js` | Dual logging: OpenSearch (monthly indices) + VictoriaLogs (exponential backoff with full jitter). Auto-disables after 10 consecutive failures. |
-| `telegram.js` | Telegram Bot webhook handler. Commands: `/start`, `/help`, `/clearcache`. Auto-detects ngrok for dev. |
+| `logger.js` | Dual logging: PostgreSQL (`app_logs` table) + VictoriaLogs (exponential backoff with full jitter). Auto-disables after 10 consecutive failures. |
+| `telegram.js` | Telegram Bot webhook handler. Commands: `/start`, `/help`, `/clearcache`. |
 | `external-api.js` | External webhook receiver. Telegram message aggregation (1.2s batching window), SMS gateway. Uses `EXTERNAL_API_KEY` auth. |
 | `realtime.js` | Server-Sent Events (SSE) for push notifications. Per-chat-id client tracking, 25s heartbeat. |
 | `requireAuth.js` | JWT middleware — checks `req.user` set by cookie parser in `server.js`. **Currently bypassed (dev mode: just calls `next()`).** |
@@ -187,7 +201,7 @@ Three format generations (all supported for backward compat):
 ### Logging Architecture
 
 **Dual logging system** (`src/server/logger.js`):
-- **OpenSearch**: Monthly indices (`{prefix}-YYYY-MM`), auto-disables after 10 errors
+- **PostgreSQL**: Logs stored in `app_logs` table, auto-disables after 10 errors
 - **VictoriaLogs**: JSON line protocol at `/insert/jsonline`
   - Exponential backoff with full jitter: `min(CAP, BASE * FACTOR^n) * random()`
   - Configurable via env: `VICTORIA_LOGS_TIMEOUT_MS`, `VICTORIA_LOGS_BACKOFF_BASE_MS`, `VICTORIA_LOGS_BACKOFF_FACTOR`, `VICTORIA_LOGS_BACKOFF_CAP_MS`
@@ -203,7 +217,7 @@ Three format generations (all supported for backward compat):
 | Loovis Tracker | `TRACKER_API_URL`, `TRACKER_API_TOKEN` | Leader dashboard metrics (revenue, CSI, conversion), manager rankings |
 | Telegram Bot | `TELEGRAM_BOT_TOKEN` | Webhook commands, deep linking to tasks/knowledge |
 | Yandex Tracker | `YANDEX_TREKER_AUTH_TOKEN`, `X_ORG_ID` | Feedback form → issue creation |
-| OpenSearch | `OPENSEARCH_URL`, `OPENSEARCH_USERNAME`, `OPENSEARCH_PASSWORD` | Backend log storage |
+| PostgreSQL Logs | `DATABASE_URL`, `PG_LOGS_ENABLED` | Backend log storage (table `app_logs`) |
 | VictoriaLogs | `VICTORIA_LOGS_URL` | Backend log storage (alternative) |
 
 ## Common Development Patterns
@@ -270,7 +284,7 @@ Create `.env` from `env.example`, run `npm run generate-api-key`, fill in remain
 - `DEMO_PIN` — Demo mode PIN code
 - `ALLOWED_ORIGINS` — CORS whitelist
 - `PORT` — Server port (default: 3000)
-- `OPENSEARCH_URL`, `OPENSEARCH_USERNAME`, `OPENSEARCH_PASSWORD` — Log storage
+- `PG_LOGS_ENABLED` — Enable/disable PostgreSQL logging (default: true)
 - `VICTORIA_LOGS_URL`, `VICTORIA_LOGS_SEND_LOGS` — Alternative log storage
 - `YANDEX_TREKER_AUTH_TOKEN`, `X_ORG_ID` — Yandex Tracker feedback
 
@@ -312,7 +326,7 @@ git subtree pull --prefix=_vendor/loovis-sandbox loovis-sandbox main --squash
 
 ## Docker Notes
 
-- `docker-compose.local.yml` includes: Traefik (reverse proxy + HTTPS), app (hot reload), ngrok (public tunnel for Telegram webhook), webhook-setup (auto-registers webhook)
+- `docker-compose.local.yml` includes: app (hot reload), PostgreSQL, Redis
 - Debug mode: Node inspector on port 9229, Vite HMR on port 5173
 - Production: multi-stage build, port 80 (configurable via `$PORT`)
 

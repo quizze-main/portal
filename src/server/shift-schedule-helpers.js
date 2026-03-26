@@ -8,7 +8,7 @@ import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

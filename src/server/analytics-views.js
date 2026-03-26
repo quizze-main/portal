@@ -5,7 +5,7 @@
  * with automatic refresh scheduling and fallback to live queries.
  */
 
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 
 /** Materialized views and their refresh intervals (ms) */
 const VIEWS = {

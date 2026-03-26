@@ -9,7 +9,7 @@
  * Follows the dual-persistence pattern from shift-schedule-api.js.
  */
 import path from 'path';
-import { query, withTransaction, isDbConnected } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query, withPrismaTransaction as withTransaction } from './prisma.js';
 import { DATA_DIR, readJsonFile, readJsonRaw, writeJsonFile, withFileLock } from './json-storage.js';
 
 const EMPLOYEES_PATH = path.join(DATA_DIR, 'org-employees.json');
