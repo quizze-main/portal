@@ -43,7 +43,7 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-staff_focus}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-staff_focus}
     ports:
       - "${PORT}:${PORT}"
-      - "5173:5173"
+      - "5175:5175"
       - "9229:9229"
     volumes:
       - ./src:/app/src
@@ -56,6 +56,7 @@ services:
       - ./tsconfig.json:/app/tsconfig.json
       - ./tailwind.config.ts:/app/tailwind.config.ts
       - ./postcss.config.js:/app/postcss.config.js
+      - ./prisma:/app/prisma
     networks:
       - app-network
     healthcheck:
