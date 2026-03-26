@@ -25,6 +25,11 @@ function runPrismaSetup() {
       stdio: 'inherit',
       env: process.env,
     });
+    console.log('Running seed...');
+    execSync('node prisma/seed.js', {
+      stdio: 'inherit',
+      env: process.env,
+    });
     console.log('Prisma setup complete');
   } catch (error) {
     console.error('Prisma setup failed:', error.message);
