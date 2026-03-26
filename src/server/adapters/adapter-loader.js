@@ -5,7 +5,7 @@
  * Custom adapters load code from adapter_registry DB table.
  */
 
-import { isDbConnected, query } from '../db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from '../prisma.js';
 import { AmoCRMAdapter } from './amocrm-adapter.js';
 import { TrackerAdapter } from './tracker-adapter.js';
 import { CustomAdapter } from './custom-adapter.js';

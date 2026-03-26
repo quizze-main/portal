@@ -3,10 +3,9 @@ const env = {
     isProd: import.meta.env.VITE_APP_ENV === 'production',
 };
 
-// Заглушка для отправки ошибок на внешний сервис (например, OpenSearch)
+// Заглушка для отправки ошибок на внешний сервис (логируются через BFF → PostgreSQL)
 function sendErrorToExternalService(message: string, extra: unknown = null) {
-    // TODO: реализовать отправку на сторонний сервис (например, fetch/post)
-    // fetch('https://your-opensearch-endpoint', { ... })
+    // TODO: реализовать отправку через BFF endpoint
 }
 
 export const logger = {

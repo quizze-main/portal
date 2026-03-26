@@ -9,7 +9,7 @@
  *   - computed  → post-calculation via formula engine
  */
 
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 
 /**
  * @typedef {Object} AggregationQuery

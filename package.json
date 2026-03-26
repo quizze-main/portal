@@ -16,7 +16,6 @@
     "preview": "vite preview",
     "server": "node server.js",
     "server:dev": "node server.js",
-    "setup-webhook": "node scripts/setup-telegram-webhook.js",
     "migrate": "node scripts/migrate-outline-to-frappe.js",
     "start": "node server.js",
     "start:prod": "npm run build && node server.js",
@@ -28,7 +27,11 @@
     "docker:prod": "./scripts/start-prod.sh",
     "docker:local": "docker compose -f docker-compose.local.yml up --build",
     "docker:debug": "docker compose -f docker-compose.local.yml up --build",
-    "docker:hot-reload": "docker compose -f docker-compose.local.yml-reload up --build"
+    "docker:hot-reload": "docker compose -f docker-compose.local.yml-reload up --build",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@blocknote/core": "^0.36.0",
@@ -38,7 +41,8 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^3.9.0",
-    "@opensearch-project/opensearch": "^2.13.0",
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -88,7 +92,6 @@
     "multer": "^2.0.2",
     "next-themes": "^0.3.0",
     "node-fetch": "^3.3.2",
-    "node-pg-migrate": "^8.0.4",
     "nodemon": "^3.0.2",
     "pg": "^8.20.0",
     "pptxgenjs": "^4.0.1",
@@ -127,10 +130,14 @@
     "globals": "^15.9.0",
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.4.47",
+    "prisma": "^7.5.0",
     "puppeteer": "^24.39.1",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

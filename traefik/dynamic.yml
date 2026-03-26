@@ -1,4 +1,0 @@
-tls:
-  certificates:
-    - certFile: /certs/staff-focus.localhost.pem
-      keyFile: /certs/staff-focus.localhost-key.pem 
