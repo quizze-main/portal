@@ -641,6 +641,8 @@ export function normalizeChartConfig(config: ChartWidgetConfig): ChartWidgetConf
   };
 }
 
+export type DashboardWidgetTargetPage = 'dashboard' | 'manager';
+
 export interface DashboardWidget {
   id: string;
   type: DashboardWidgetType;
@@ -648,6 +650,7 @@ export interface DashboardWidget {
   enabled: boolean;
   order: number;
   parentId?: string | null; // parent metric id; null = main dashboard
+  targetPage?: DashboardWidgetTargetPage; // 'dashboard' (default) or 'manager'
   config: RankingWidgetConfig | ChartWidgetConfig;
 }
 
@@ -2311,12 +2314,12 @@ class InternalApiClient {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   }
 
-  async reorderDashboardMetrics(ids: string[]): Promise<void> {
+  async reorderDashboardMetrics(ids: string[], widgetIds?: string[]): Promise<void> {
     const res = await fetch('/api/admin/dashboard-metrics/reorder', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ ids }),
+      body: JSON.stringify(widgetIds ? { metricIds: ids, widgetIds } : { ids }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   }

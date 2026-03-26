@@ -335,14 +335,24 @@ async function readConfigFromJson() {
 }
 
 export async function readConfig() {
+  // JSON is the authoritative source — writeConfig always writes JSON first,
+  // so it is guaranteed to be up-to-date. DB is a mirror that may drift.
+  const jsonConfig = await readConfigFromJson();
+
+  // If JSON file exists and has metrics, use it as source of truth
+  if (jsonConfig.metrics?.length) {
+    return jsonConfig;
+  }
+
+  // Fallback to DB only when JSON is empty / missing (first boot, migration)
   if (isDbConnected()) {
     try {
       return await readConfigFromDb();
     } catch (err) {
-      logger.warn('DB readConfig failed, falling back to JSON', { error: err.message });
+      logger.warn('DB readConfig failed, falling back to JSON defaults', { error: err.message });
     }
   }
-  return readConfigFromJson();
+  return jsonConfig;
 }
 
 async function writeConfig(config) {
@@ -362,6 +372,54 @@ async function writeConfig(config) {
       logger.warn('DB writeConfig failed', { error: err.message });
     }
   }
+}
+
+// Lightweight reorder: only updates order fields in JSON and DB,
+// without rewriting full metric data (avoids race conditions and data loss).
+// Always reads from JSON to preserve local state.
+async function reorderInPlace({ metricIds, widgetIds }) {
+  // Read from JSON directly (not DB) to preserve all local data
+  const config = await readConfigFromJson();
+
+  if (Array.isArray(metricIds)) {
+    for (const metric of config.metrics) {
+      const idx = metricIds.indexOf(metric.id);
+      if (idx !== -1) metric.order = idx;
+    }
+  }
+
+  if (Array.isArray(widgetIds)) {
+    for (const widget of config.widgets) {
+      const idx = widgetIds.indexOf(widget.id);
+      if (idx !== -1) widget.order = (idx + 1) * 100;
+    }
+  }
+
+  // Write JSON
+  if (!existsSync(DATA_DIR)) {
+    await mkdir(DATA_DIR, { recursive: true });
+  }
+  await writeFile(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf-8');
+
+  // Update only order columns in DB (no destructive data rewrites)
+  if (isDbConnected()) {
+    try {
+      if (Array.isArray(metricIds)) {
+        for (const metric of config.metrics) {
+          await query('UPDATE metric_definitions SET display_order = $1 WHERE id = $2', [metric.order, metric.id]);
+        }
+      }
+      if (Array.isArray(widgetIds)) {
+        for (const widget of config.widgets) {
+          await query('UPDATE dashboard_widgets SET display_order = $1, updated_at = now() WHERE id = $2', [widget.order, widget.id]);
+        }
+      }
+    } catch (err) {
+      logger.warn('DB reorderInPlace failed', { error: err.message });
+    }
+  }
+
+  return config;
 }
 
 // Helper: resolve Frappe employee ID from tg_username (cached in memory)
@@ -502,24 +560,17 @@ export function setupDashboardMetricsRoutes(app) {
   });
 
   // PUT /api/admin/dashboard-metrics/reorder — batch update order
+  // Accepts { ids } (metric-only) or { metricIds, widgetIds } (combined reorder)
   app.put('/api/admin/dashboard-metrics/reorder', requireAuth, async (req, res) => {
     try {
-      const { ids } = req.body || {};
-      if (!Array.isArray(ids)) {
-        return res.status(400).json({ error: 'ids array is required' });
+      const { ids, metricIds, widgetIds } = req.body || {};
+      const mIds = metricIds || ids;
+      if (!Array.isArray(mIds) && !Array.isArray(widgetIds)) {
+        return res.status(400).json({ error: 'ids or metricIds/widgetIds arrays are required' });
       }
 
-      const config = await readConfig();
-      // Update order based on position in ids array
-      for (const metric of config.metrics) {
-        const idx = ids.indexOf(metric.id);
-        if (idx !== -1) {
-          metric.order = idx;
-        }
-      }
-
-      await writeConfig(config);
-      logger.info('Dashboard metrics reordered', { ids });
+      await reorderInPlace({ metricIds: mIds, widgetIds });
+      logger.info('Dashboard metrics reordered', { metricIds: mIds, widgetIds });
       res.json({ ok: true });
     } catch (err) {
       logger.error('PUT /api/admin/dashboard-metrics/reorder error', { error: err.message });
@@ -1119,6 +1170,9 @@ export function setupDashboardMetricsRoutes(app) {
 
       const maxOrder = config.widgets.reduce((max, w) => Math.max(max, w.order ?? 0), 0);
 
+      const VALID_TARGET_PAGES = ['dashboard', 'manager'];
+      const targetPage = VALID_TARGET_PAGES.includes(body.targetPage) ? body.targetPage : 'dashboard';
+
       const widget = {
         id: body.id,
         type: body.type,
@@ -1126,6 +1180,7 @@ export function setupDashboardMetricsRoutes(app) {
         enabled: body.enabled !== false,
         order: body.order ?? maxOrder + 100,
         parentId: body.parentId || null,
+        targetPage,
         config: body.config || {},
       };
 
@@ -1155,22 +1210,7 @@ export function setupDashboardMetricsRoutes(app) {
       const { ids } = req.body || {};
       if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids array is required' });
 
-      const config = await readConfig();
-      for (const widget of config.widgets) {
-        const idx = ids.indexOf(widget.id);
-        if (idx !== -1) widget.order = (idx + 1) * 100;
-      }
-
-      await writeConfig(config);
-
-      if (isDbConnected()) {
-        try {
-          for (const widget of config.widgets) {
-            await query('UPDATE dashboard_widgets SET display_order = $1, updated_at = now() WHERE id = $2', [widget.order, widget.id]);
-          }
-        } catch (e) { logger.warn('DB reorderWidgets failed', { error: e.message }); }
-      }
-
+      await reorderInPlace({ widgetIds: ids });
       logger.info('Widgets reordered', { ids });
       res.json({ ok: true });
     } catch (err) {
@@ -1202,6 +1242,11 @@ export function setupDashboardMetricsRoutes(app) {
         if (err) return res.status(400).json({ error: err });
       }
 
+      const VALID_TARGET_PAGES = ['dashboard', 'manager'];
+      const resolvedTargetPage = body.targetPage !== undefined
+        ? (VALID_TARGET_PAGES.includes(body.targetPage) ? body.targetPage : 'dashboard')
+        : (existing.targetPage || 'dashboard');
+
       config.widgets[idx] = {
         ...existing,
         name: body.name ?? existing.name,
@@ -1209,6 +1254,7 @@ export function setupDashboardMetricsRoutes(app) {
         enabled: body.enabled ?? existing.enabled,
         order: body.order ?? existing.order,
         parentId: body.parentId !== undefined ? (body.parentId || null) : (existing.parentId || null),
+        targetPage: resolvedTargetPage,
         config: body.config ?? existing.config,
       };
 

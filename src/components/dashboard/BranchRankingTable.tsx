@@ -271,7 +271,8 @@ export function BranchRankingTable({
 
         let forecast = 0;
         if (label === "deviation") {
-          forecast = Math.round(100 + toNumber(data.loss_or_overperformance));
+          // Use fact/plan ratio — loss_or_overperformance may be in absolute units (₽), not %
+          forecast = plan > 0 ? Math.round((value / plan) * 100) : 100;
         } else {
           forecast = plan > 0 ? Math.round((forecastVal / plan) * 100) : 0;
         }

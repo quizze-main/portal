@@ -154,7 +154,7 @@
       "source": "tracker",
       "trackerCode": "revenue_closed",
       "enabled": true,
-      "order": 2,
+      "order": 1,
       "widgetType": "kpi_forecast",
       "parentId": null,
       "visibleToPositions": [
@@ -210,7 +210,7 @@
       "source": "tracker",
       "trackerCode": "frames_count",
       "enabled": true,
-      "order": 3,
+      "order": 2,
       "widgetType": "kpi_forecast",
       "parentId": null,
       "visibleToPositions": [],
@@ -253,7 +253,7 @@
       "source": "tracker",
       "trackerCode": "conversion_rate",
       "enabled": true,
-      "order": 4,
+      "order": 3,
       "widgetType": "kpi_deviation",
       "parentId": null,
       "visibleToPositions": [],
@@ -290,7 +290,7 @@
       "source": "tracker",
       "trackerCode": "csi",
       "enabled": true,
-      "order": 5,
+      "order": 4,
       "widgetType": "kpi_deviation",
       "parentId": null,
       "visibleToPositions": [],
@@ -327,7 +327,7 @@
       "source": "tracker",
       "trackerCode": "avg_glasses_price",
       "enabled": true,
-      "order": 6,
+      "order": 5,
       "widgetType": "kpi_deviation",
       "parentId": null,
       "visibleToPositions": [],
@@ -370,7 +370,7 @@
       "source": "tracker",
       "trackerCode": "margin_rate",
       "enabled": true,
-      "order": 8,
+      "order": 7,
       "color": "#3B82F6",
       "widgetType": "kpi_deviation",
       "parentId": null,
@@ -415,7 +415,7 @@
       "source": "tracker",
       "trackerCode": "avg_repaires_price",
       "enabled": true,
-      "order": 7,
+      "order": 6,
       "widgetType": "kpi_deviation",
       "parentId": null,
       "visibleToPositions": [],
@@ -779,7 +779,7 @@
       "manualData": [],
       "color": "#3B82F6",
       "enabled": false,
-      "order": 9,
+      "order": 10,
       "visibleToPositions": [
         "leader"
       ],
@@ -866,7 +866,7 @@
       "manualData": [],
       "color": "#3B82F6",
       "enabled": true,
-      "order": 10,
+      "order": 8,
       "visibleToPositions": [],
       "dataSourceId": null,
       "externalPath": "",
@@ -913,7 +913,7 @@
       "manualData": [],
       "color": "#3B82F6",
       "enabled": false,
-      "order": -1,
+      "order": 9,
       "visibleToPositions": [],
       "dataSourceId": null,
       "externalPath": "",
@@ -949,7 +949,7 @@
       "type": "ranking",
       "name": "Рейтинг филиалов",
       "enabled": true,
-      "order": 100,
+      "order": 300,
       "config": {
         "entityType": "branch",
         "metricCodes": [
@@ -1021,11 +1021,18 @@
       "order": 400,
       "parentId": null,
       "config": {
-        "metricCode": "revenue_created",
-        "chartType": "bar",
-        "subjectType": "store",
+        "metricSeries": [
+          {
+            "metricCode": "revenue_created",
+            "chartType": "bar",
+            "color": "#3B82F6",
+            "barStyle": "dynamic"
+          }
+        ],
+        "subjectType": "manager",
         "isAggregated": true
-      }
+      },
+      "targetPage": "manager"
     },
     {
       "id": "chart_1773417367571",
@@ -1046,7 +1053,7 @@
       "type": "chart",
       "name": "csi",
       "enabled": true,
-      "order": 600,
+      "order": 500,
       "parentId": null,
       "config": {
         "metricSeries": [
@@ -1065,7 +1072,7 @@
       "type": "chart",
       "name": "СЗ ЗЗ Клиенты",
       "enabled": true,
-      "order": 700,
+      "order": 100,
       "parentId": null,
       "config": {
         "metricSeries": [
@@ -1130,13 +1137,36 @@
       "type": "chart",
       "name": "Все метрики",
       "enabled": true,
-      "order": 1100,
+      "order": 600,
       "parentId": null,
       "config": {
         "metricSeries": [],
         "subjectType": "store",
         "isAggregated": true,
         "isMetricSelector": true
+      }
+    },
+    {
+      "id": "ranking_1774523721516",
+      "type": "ranking",
+      "name": "Рейтинг филиалов",
+      "enabled": true,
+      "order": 1100,
+      "parentId": "revenue_created",
+      "config": {
+        "entityType": "branch",
+        "metricCodes": [
+          "conversion_rate",
+          "frames_count",
+          "revenue_closed",
+          "revenue_created",
+          "avg_glasses_price"
+        ],
+        "lossConfig": {
+          "mode": "formula",
+          "metricCode": "revenue_created",
+          "formula": "{revenue_created.fact} - {frames_count.fact} * {avg_glasses_price.fact}"
+        }
       }
     }
   ]

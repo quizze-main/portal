@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { LandingNavbar } from '@/components/landing/LandingNavbar';
 import { LandingFooter } from '@/components/landing/LandingFooter';
-import { getModuleBySlug, getRelatedModules, SCREENSHOT_MAP, MODULE_HERO_SCREENSHOTS } from '@/components/landing/moduleData';
+import { getModuleBySlug, getRelatedModules, SCREENSHOT_MAP, MODULE_HERO_SCREENSHOTS, MODULE_HERO_MOBILE } from '@/components/landing/moduleData';
 import type { ModuleData, ModuleFeature, PersonaUseCase, BusinessMetrics } from '@/components/landing/moduleData';
 import { FeatureMockup, ScreenshotMockup } from '@/components/landing/BrowserMockup';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ArrowLeft, CheckCircle2, TrendingUp, PiggyBank } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, TrendingUp, PiggyBank, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useFadeInOnScroll } from '@/hooks/useFadeInOnScroll';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -46,8 +46,19 @@ export default function LandingModuleDetail() {
         <FeatureSection key={i} feature={feature} index={i} />
       ))}
 
-      <PersonaUseCasesSection useCases={module.personaUseCases} />
-      <ModuleMetricsBanner metrics={module.metrics} />
+      {/* Mid-page CTA */}
+      <div className="py-6 md:py-8 px-6 text-center">
+        <Button
+          size="lg"
+          onClick={() => setDemoOpen(true)}
+          className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-lg px-12 h-16 font-semibold shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 transition-all duration-200 hover:-translate-y-0.5"
+        >
+          Внедрить в мой бизнес
+          <ArrowRight className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <PersonaAndMetricsSection useCases={module.personaUseCases} metrics={module.metrics} />
 
       <RelatedModulesSection modules={relatedModules} />
 
@@ -81,24 +92,26 @@ export default function LandingModuleDetail() {
 
 function ModuleHero({ module, onRequestDemo }: { module: ModuleData; onRequestDemo: () => void }) {
   const Icon = module.icon;
+  const heroScreenshot = MODULE_HERO_SCREENSHOTS[module.slug];
+  const mobileScreenshot = MODULE_HERO_MOBILE[module.slug];
 
   return (
-    <section className="py-20 md:py-28 px-6">
+    <section className="py-12 md:py-16 px-6">
       <div className="max-w-[1100px] mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           {/* Category badge */}
-          <div className="inline-flex items-center gap-2.5 mb-6 px-4 py-2 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm">
+          <div className="inline-flex items-center gap-2.5 mb-4 px-4 py-2 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm">
             <div className={`w-8 h-8 rounded-xl ${module.color} flex items-center justify-center shadow-md`}>
               <Icon className={`w-4 h-4 ${module.iconColor}`} />
             </div>
             <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{module.category}</span>
           </div>
 
-          <h1 className="text-[2.2rem] md:text-[3.5rem] leading-[1.08] font-bold mb-4 max-w-3xl mx-auto tracking-tight text-gray-900 dark:text-white">
+          <h1 className="text-[2.2rem] md:text-[3.5rem] leading-[1.08] font-bold mb-3 max-w-3xl mx-auto tracking-tight text-gray-900 dark:text-white">
             {module.name}
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-6 max-w-2xl mx-auto leading-relaxed">
             {module.heroTitle}
           </p>
 
@@ -106,28 +119,47 @@ function ModuleHero({ module, onRequestDemo }: { module: ModuleData; onRequestDe
             <Button
               size="lg"
               onClick={onRequestDemo}
-              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base px-8 h-13 font-semibold shadow-md transition-all duration-200"
+              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base px-8 h-13 font-semibold shadow-md transition-all duration-200 min-w-[280px] justify-center"
             >
-              Начать сейчас — это бесплатно
+              Подключить дашборд
               <ArrowRight className="w-4 h-4" />
             </Button>
             <Button
               size="lg"
               variant="outline"
               onClick={onRequestDemo}
-              className="gap-2 rounded-xl text-base px-8 h-13 border-gray-200 dark:border-gray-700"
+              className="gap-2 rounded-xl text-base px-8 h-13 border-gray-200 dark:border-gray-700 min-w-[280px] justify-center"
             >
               Встреча с экспертом
             </Button>
           </div>
         </div>
 
-        {/* Main screenshot */}
-        <div className="max-w-[900px] mx-auto">
-          {MODULE_HERO_SCREENSHOTS[module.slug] ? (
-            <ScreenshotMockup {...MODULE_HERO_SCREENSHOTS[module.slug]} className="shadow-lg shadow-gray-200/50 dark:shadow-black/20" />
+        {/* Screenshots — desktop + optional phone overlay */}
+        <div className="max-w-[950px] mx-auto relative">
+          {/* Desktop mockup */}
+          {heroScreenshot ? (
+            <ScreenshotMockup {...heroScreenshot} className="shadow-xl shadow-gray-200/50 dark:shadow-black/20" />
           ) : (
-            <FeatureMockup label={`Скриншот: ${module.name}`} className="shadow-lg shadow-gray-200/50 dark:shadow-black/20" />
+            <FeatureMockup label={`Скриншот: ${module.name}`} className="shadow-xl shadow-gray-200/50 dark:shadow-black/20" />
+          )}
+
+          {/* Phone mockup — overlapping bottom-right (like main landing hero) */}
+          {mobileScreenshot && (
+            <div className="hidden sm:block absolute -bottom-6 -right-4 md:-right-8 z-10">
+              <div className="relative rounded-[2.5rem] border-[5px] border-gray-800 dark:border-gray-600 bg-gray-800 dark:bg-gray-700 shadow-2xl overflow-hidden w-[200px] h-[433px] md:w-[230px] md:h-[498px]">
+                {/* Dynamic Island */}
+                <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-[70px] h-[18px] md:w-[80px] md:h-[20px] bg-black rounded-full z-10" />
+                <div className="w-full h-full overflow-hidden rounded-[2rem] bg-white dark:bg-gray-900">
+                  <img
+                    src={mobileScreenshot.src}
+                    alt={mobileScreenshot.alt}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[50px] h-[3px] bg-gray-600 dark:bg-gray-400 rounded-full opacity-50" />
+              </div>
+            </div>
           )}
         </div>
       </div>
@@ -138,27 +170,34 @@ function ModuleHero({ module, onRequestDemo }: { module: ModuleData; onRequestDe
 function FeatureSection({ feature, index }: { feature: ModuleFeature; index: number }) {
   const { ref, isVisible } = useFadeInOnScroll();
   const isReversed = index % 2 === 1;
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  // Collect all screenshots: mockupTypes takes precedence, fallback to single mockupType
+  const slides = (feature.mockupTypes || (feature.mockupType ? [feature.mockupType] : []))
+    .map((type) => SCREENSHOT_MAP[type])
+    .filter(Boolean);
+  const hasSlider = slides.length > 1;
 
   return (
     <section
       ref={ref}
-      className={`py-16 md:py-24 px-6 transition-all duration-700 ease-out ${
+      className={`py-12 md:py-16 px-6 transition-all duration-700 ease-out ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       } ${index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900/50' : ''}`}
     >
-      <div className="max-w-[1100px] mx-auto">
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center ${isReversed ? 'md:[direction:rtl]' : ''}`}>
+      <div className="max-w-[1280px] mx-auto">
+        <div className={`grid grid-cols-1 md:grid-cols-[5fr_7fr] gap-8 md:gap-10 items-center ${isReversed ? 'md:[direction:rtl]' : ''}`}>
           {/* Text side */}
           <div className={isReversed ? 'md:[direction:ltr]' : ''}>
-            <h2 className="text-2xl md:text-[2rem] font-bold text-gray-900 dark:text-white mb-4 leading-tight tracking-tight">
+            <h2 className="text-2xl md:text-[2rem] font-bold text-gray-900 dark:text-white mb-3 leading-tight tracking-tight">
               {feature.title}
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-base md:text-lg mb-8">
+            <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-base md:text-lg mb-6">
               {feature.description}
             </p>
 
             {feature.bullets && (
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {feature.bullets.map((bullet, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
@@ -169,10 +208,46 @@ function FeatureSection({ feature, index }: { feature: ModuleFeature; index: num
             )}
           </div>
 
-          {/* Screenshot side */}
+          {/* Screenshot side — larger with optional slider */}
           <div className={isReversed ? 'md:[direction:ltr]' : ''}>
-            {feature.mockupType && SCREENSHOT_MAP[feature.mockupType] ? (
-              <ScreenshotMockup {...SCREENSHOT_MAP[feature.mockupType]} className="shadow-lg shadow-gray-200/50 dark:shadow-black/20" />
+            {slides.length > 0 ? (
+              <div className="relative">
+                <ScreenshotMockup
+                  {...slides[activeSlide]}
+                  className="shadow-lg shadow-gray-200/50 dark:shadow-black/20"
+                />
+
+                {hasSlider && (
+                  <>
+                    <button
+                      onClick={() => setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length)}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-colors cursor-pointer z-10"
+                    >
+                      <ChevronLeft className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+                    </button>
+                    <button
+                      onClick={() => setActiveSlide((prev) => (prev + 1) % slides.length)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-colors cursor-pointer z-10"
+                    >
+                      <ChevronRight className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+                    </button>
+
+                    <div className="flex justify-center gap-2 mt-3">
+                      {slides.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setActiveSlide(i)}
+                          className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                            i === activeSlide
+                              ? 'w-6 bg-blue-600'
+                              : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
               <FeatureMockup label={feature.mockupType || 'Скриншот'} className="shadow-lg shadow-gray-200/50 dark:shadow-black/20" />
             )}
@@ -238,25 +313,19 @@ function RelatedModulesSection({ modules }: { modules: ModuleData[] }) {
   );
 }
 
-const PERSONA_COLORS: Record<string, { bg: string; border: string; iconBg: string; iconText: string }> = {
-  employee:         { bg: 'bg-purple-50 dark:bg-purple-900/10', border: 'border-purple-200 dark:border-purple-800/40', iconBg: 'bg-purple-100 dark:bg-purple-900/30', iconText: 'text-purple-600 dark:text-purple-400' },
-  branch_manager:   { bg: 'bg-amber-50 dark:bg-amber-900/10', border: 'border-amber-200 dark:border-amber-800/40', iconBg: 'bg-amber-100 dark:bg-amber-900/30', iconText: 'text-amber-600 dark:text-amber-400' },
-  network_director: { bg: 'bg-blue-50 dark:bg-blue-900/10', border: 'border-blue-200 dark:border-blue-800/40', iconBg: 'bg-blue-100 dark:bg-blue-900/30', iconText: 'text-blue-600 dark:text-blue-400' },
-};
-
-function PersonaUseCasesSection({ useCases }: { useCases: PersonaUseCase[] }) {
+function PersonaAndMetricsSection({ useCases, metrics }: { useCases: PersonaUseCase[]; metrics: BusinessMetrics }) {
   const { ref, isVisible } = useFadeInOnScroll();
   const [activeTab, setActiveTab] = useState(0);
 
   return (
     <section
       ref={ref}
-      className={`py-16 md:py-24 px-6 bg-gray-50 dark:bg-gray-900/50 transition-all duration-700 ease-out ${
+      className={`py-10 md:py-14 px-6 bg-gray-50 dark:bg-gray-900/50 transition-all duration-700 ease-out ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
       <div className="max-w-[1100px] mx-auto">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8 md:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-4 uppercase tracking-wider">
             Кейсы использования
           </div>
@@ -269,7 +338,7 @@ function PersonaUseCasesSection({ useCases }: { useCases: PersonaUseCase[] }) {
         </div>
 
         {/* Mobile: tabs */}
-        <div className="md:hidden mb-4">
+        <div className="md:hidden mb-5">
           <div className="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-gray-800">
             {useCases.map((uc, i) => {
               const Icon = uc.icon;
@@ -297,10 +366,35 @@ function PersonaUseCasesSection({ useCases }: { useCases: PersonaUseCase[] }) {
         </div>
 
         {/* Desktop: 3-column grid */}
-        <div className="hidden md:grid md:grid-cols-3 gap-6">
+        <div className="hidden md:grid md:grid-cols-3 gap-5">
           {useCases.map((uc) => (
             <PersonaCard key={uc.persona} useCase={uc} />
           ))}
+        </div>
+
+        {/* Metrics — two cards below personas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+          {/* Profit */}
+          <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm p-5 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center shrink-0">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{metrics.profitLabel}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{metrics.profitDescription}</p>
+            </div>
+          </div>
+
+          {/* Savings */}
+          <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm p-5 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+              <PiggyBank className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{metrics.savingsLabel}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{metrics.savingsDescription}</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -308,71 +402,34 @@ function PersonaUseCasesSection({ useCases }: { useCases: PersonaUseCase[] }) {
 }
 
 function PersonaCard({ useCase }: { useCase: PersonaUseCase }) {
-  const colors = PERSONA_COLORS[useCase.persona] || PERSONA_COLORS.employee;
   const Icon = useCase.icon;
 
   return (
-    <div className={`rounded-2xl border ${colors.border} ${colors.bg} p-6`}>
+    <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm p-5 md:p-6 flex flex-col">
       <div className="flex items-center gap-3 mb-4">
-        <div className={`w-9 h-9 rounded-xl ${colors.iconBg} flex items-center justify-center`}>
-          <Icon className={`w-4.5 h-4.5 ${colors.iconText}`} />
+        <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+          <Icon className="w-5 h-5" />
         </div>
-        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{useCase.personaLabel}</span>
+        <span className="text-sm font-semibold text-gray-900 dark:text-white">{useCase.personaLabel}</span>
       </div>
 
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{useCase.headline}</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">{useCase.description}</p>
+      <div className="mb-4">
+        <div className="flex gap-2 mb-2">
+          <Quote className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white leading-snug">{useCase.headline}</h3>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed pl-6">{useCase.description}</p>
+      </div>
 
-      <ul className="space-y-2.5">
+      <div className="space-y-2.5 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
         {useCase.bullets.map((bullet, i) => (
-          <li key={i} className="flex items-start gap-2.5">
-            <CheckCircle2 className={`w-4 h-4 ${colors.iconText} shrink-0 mt-0.5`} />
-            <span className="text-sm text-gray-600 dark:text-gray-400">{bullet}</span>
-          </li>
+          <div key={i} className="flex items-start gap-3 text-sm text-gray-500 dark:text-gray-400">
+            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 shrink-0" />
+            {bullet}
+          </div>
         ))}
-      </ul>
-    </div>
-  );
-}
-
-function ModuleMetricsBanner({ metrics }: { metrics: BusinessMetrics }) {
-  const { ref, isVisible } = useFadeInOnScroll();
-
-  return (
-    <section
-      ref={ref}
-      className={`py-12 md:py-16 px-6 transition-all duration-700 ease-out ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      }`}
-    >
-      <div className="max-w-[900px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {/* Profit */}
-          <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800/40 bg-emerald-50/50 dark:bg-emerald-900/10 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                <TrendingUp className="w-4.5 h-4.5 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Доп. прибыль</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{metrics.profitLabel}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{metrics.profitDescription}</p>
-          </div>
-
-          {/* Savings */}
-          <div className="rounded-2xl border border-blue-200 dark:border-blue-800/40 bg-blue-50/50 dark:bg-blue-900/10 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                <PiggyBank className="w-4.5 h-4.5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <span className="text-sm font-semibold text-blue-700 dark:text-blue-400">Экономия</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{metrics.savingsLabel}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{metrics.savingsDescription}</p>
-          </div>
-        </div>
       </div>
-    </section>
+    </div>
   );
 }
 

@@ -219,7 +219,7 @@ export function LeaderDashboardHome() {
   const { widgets } = useWidgets();
   const enabledWidgets = useMemo(
     () => widgets
-      .filter(w => w.enabled && !w.parentId)
+      .filter(w => w.enabled && !w.parentId && (!w.targetPage || w.targetPage === 'dashboard'))
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
     [widgets],
   );

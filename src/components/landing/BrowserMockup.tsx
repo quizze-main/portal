@@ -37,7 +37,7 @@ export function ScreenshotMockup({
 }: ScreenshotInfo & { className?: string }) {
   if (variant === 'mobile') {
     return (
-      <div className={`flex justify-center ${className}`}>
+      <div className="flex justify-center">
         <PhoneMockup>
           <img
             src={src}

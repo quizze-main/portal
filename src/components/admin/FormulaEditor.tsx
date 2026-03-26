@@ -86,10 +86,13 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
   const [tokens, setTokens] = useState<FormulaToken[]>(() => formulaToTokens(value));
   // Cursor position: index where new tokens will be inserted (null = end)
   const [cursor, setCursor] = useState<number | null>(null);
-  // Drag state
+  // Pointer-based drag state
   const [dragIdx, setDragIdx] = useState<number | null>(null);
-  const [dropIdx, setDropIdx] = useState<number | null>(null);
+  const [dropTarget, setDropTarget] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const tokenRefs = useRef<(HTMLElement | null)[]>([]);
+  const isDraggingRef = useRef(false);
+  const dragStartPos = useRef<{ x: number; y: number } | null>(null);
 
   // Sync tokens → parent onChange
   useEffect(() => {
@@ -157,67 +160,96 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
     });
   }, []);
 
-  // ── Drag & Drop ──
-  const handleDragStart = useCallback((e: React.DragEvent, idx: number) => {
+  // ── Pointer-based Drag & Drop ──
+  // Calculate drop index based on pointer position relative to token elements
+  const calcDropIndex = useCallback((clientX: number, clientY: number): number => {
+    const refs = tokenRefs.current;
+    if (!refs.length || !containerRef.current) return tokens.length;
+
+    // Find closest insertion point by checking midpoints of each token
+    let bestIdx = tokens.length;
+    let bestDist = Infinity;
+
+    for (let i = 0; i < refs.length; i++) {
+      const el = refs[i];
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      const midX = rect.left + rect.width / 2;
+      const midY = rect.top + rect.height / 2;
+      const dist = Math.abs(clientX - midX) + Math.abs(clientY - midY) * 2;
+
+      // Before this token
+      if (clientX < midX && dist < bestDist) {
+        bestDist = dist;
+        bestIdx = i;
+      }
+      // After this token
+      const distAfter = Math.abs(clientX - rect.right) + Math.abs(clientY - midY) * 2;
+      if (clientX >= midX && distAfter < bestDist) {
+        bestDist = distAfter;
+        bestIdx = i + 1;
+      }
+    }
+
+    return bestIdx;
+  }, [tokens.length]);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent, idx: number) => {
+    // Only left mouse button or touch
+    if (e.button !== 0) return;
+    // Don't start drag on X button
+    if ((e.target as HTMLElement).closest('button[data-remove]')) return;
+
+    dragStartPos.current = { x: e.clientX, y: e.clientY };
     setDragIdx(idx);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', String(idx));
+
+    const el = e.currentTarget as HTMLElement;
+    el.setPointerCapture(e.pointerId);
   }, []);
 
-  const handleDragOver = useCallback((e: React.DragEvent, idx: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDropIdx(idx);
-  }, []);
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (dragIdx === null || !dragStartPos.current) return;
 
-  const handleDragEnd = useCallback(() => {
+    // Require minimum 5px movement to start drag (prevents accidental drags)
+    if (!isDraggingRef.current) {
+      const dx = Math.abs(e.clientX - dragStartPos.current.x);
+      const dy = Math.abs(e.clientY - dragStartPos.current.y);
+      if (dx + dy < 5) return;
+      isDraggingRef.current = true;
+    }
+
+    const newDropTarget = calcDropIndex(e.clientX, e.clientY);
+    // Don't show drop indicator at the dragged item's current position or position+1
+    if (newDropTarget === dragIdx || newDropTarget === dragIdx + 1) {
+      setDropTarget(null);
+    } else {
+      setDropTarget(newDropTarget);
+    }
+  }, [dragIdx, calcDropIndex]);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    if (dragIdx === null) return;
+
+    (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+
+    if (isDraggingRef.current && dropTarget !== null) {
+      const fromIdx = dragIdx;
+      const toIdx = dropTarget;
+      setTokens(prev => {
+        const next = [...prev];
+        const [moved] = next.splice(fromIdx, 1);
+        const insertAt = fromIdx < toIdx ? toIdx - 1 : toIdx;
+        next.splice(insertAt, 0, moved);
+        return next;
+      });
+      setCursor(null);
+    }
+
+    isDraggingRef.current = false;
+    dragStartPos.current = null;
     setDragIdx(null);
-    setDropIdx(null);
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent, toIdx: number) => {
-    e.preventDefault();
-    const fromIdx = dragIdx;
-    setDragIdx(null);
-    setDropIdx(null);
-    if (fromIdx === null || fromIdx === toIdx) return;
-    setTokens(prev => {
-      const next = [...prev];
-      const [moved] = next.splice(fromIdx, 1);
-      const insertAt = fromIdx < toIdx ? toIdx - 1 : toIdx;
-      next.splice(insertAt, 0, moved);
-      return next;
-    });
-    setCursor(null);
-  }, [dragIdx]);
-
-  // Handle drop on the gap zones (between/before/after tokens)
-  const handleGapDragOver = useCallback((e: React.DragEvent, gapIdx: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDropIdx(gapIdx);
-  }, []);
-
-  const handleGapDrop = useCallback((e: React.DragEvent, gapIdx: number) => {
-    e.preventDefault();
-    const fromIdx = dragIdx;
-    setDragIdx(null);
-    setDropIdx(null);
-    if (fromIdx === null) return;
-    setTokens(prev => {
-      const next = [...prev];
-      const [moved] = next.splice(fromIdx, 1);
-      const insertAt = fromIdx < gapIdx ? gapIdx - 1 : gapIdx;
-      next.splice(insertAt, 0, moved);
-      return next;
-    });
-    setCursor(null);
-  }, [dragIdx]);
-
-  // Click on gap to set cursor there
-  const handleGapClick = useCallback((gapIdx: number) => {
-    setCursor(gapIdx);
-  }, []);
+    setDropTarget(null);
+  }, [dragIdx, dropTarget]);
 
   // Click on container background to set cursor to end
   const handleContainerClick = useCallback((e: React.MouseEvent) => {
@@ -239,13 +271,12 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
 
   // ── Render a single token chip ──
   const renderToken = (token: FormulaToken, idx: number) => {
-    const isDragging = dragIdx === idx;
-    const commonDragProps = {
-      draggable: true,
-      onDragStart: (e: React.DragEvent) => handleDragStart(e, idx),
-      onDragOver: (e: React.DragEvent) => handleDragOver(e, idx),
-      onDrop: (e: React.DragEvent) => handleDrop(e, idx),
-      onDragEnd: handleDragEnd,
+    const isDragging = isDraggingRef.current && dragIdx === idx;
+    const pointerProps = {
+      onPointerDown: (e: React.PointerEvent) => handlePointerDown(e, idx),
+      onPointerMove: handlePointerMove,
+      onPointerUp: handlePointerUp,
+      style: { touchAction: 'none' as const },
     };
 
     if (token.type === 'metric') {
@@ -255,13 +286,14 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
       return (
         <Badge
           key={idx}
+          ref={(el: HTMLElement | null) => { tokenRefs.current[idx] = el; }}
           variant="secondary"
           className={cn(
             'gap-0.5 pr-1 text-xs font-normal cursor-grab active:cursor-grabbing select-none',
-            isDragging && 'opacity-40',
+            isDragging && 'opacity-40 scale-95',
             isUnknown && 'border-red-300 bg-red-50 text-red-700 dark:border-red-700 dark:bg-red-950 dark:text-red-300',
           )}
-          {...commonDragProps}
+          {...pointerProps}
         >
           <GripVertical className="h-3 w-3 text-muted-foreground/50 shrink-0" />
           {label}
@@ -276,6 +308,7 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
           )}
           <button
             type="button"
+            data-remove
             onClick={(e) => { e.stopPropagation(); removeToken(idx); }}
             className="ml-0.5 rounded-sm hover:bg-muted-foreground/20 p-0.5"
           >
@@ -288,16 +321,18 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
       return (
         <span
           key={idx}
+          ref={el => { tokenRefs.current[idx] = el; }}
           className={cn(
             'inline-flex items-center gap-0.5 text-xs font-mono bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded px-1.5 py-0.5 cursor-grab active:cursor-grabbing select-none',
-            isDragging && 'opacity-40',
+            isDragging && 'opacity-40 scale-95',
           )}
-          {...commonDragProps}
+          {...pointerProps}
         >
           <GripVertical className="h-2.5 w-2.5 text-blue-400/50 shrink-0" />
           {token.value}(
           <button
             type="button"
+            data-remove
             onClick={(e) => { e.stopPropagation(); removeToken(idx); }}
             className="ml-0.5 rounded-sm hover:bg-blue-200 dark:hover:bg-blue-800 p-0.5"
           >
@@ -310,16 +345,18 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
     return (
       <span
         key={idx}
+        ref={el => { tokenRefs.current[idx] = el; }}
         className={cn(
           'inline-flex items-center gap-0.5 text-xs font-mono bg-muted rounded px-1.5 py-0.5 cursor-grab active:cursor-grabbing select-none',
-          isDragging && 'opacity-40',
+          isDragging && 'opacity-40 scale-95',
         )}
-        {...commonDragProps}
+        {...pointerProps}
       >
         <GripVertical className="h-2.5 w-2.5 text-muted-foreground/50 shrink-0" />
         {token.value}
         <button
           type="button"
+          data-remove
           onClick={(e) => { e.stopPropagation(); removeToken(idx); }}
           className="ml-0.5 rounded-sm hover:bg-muted-foreground/20 p-0.5"
         >
@@ -329,33 +366,32 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
     );
   };
 
-  // ── Render a gap (insertion point) between tokens ──
-  const renderGap = (gapIdx: number) => {
-    const isDropTarget = dragIdx !== null && dropIdx === gapIdx;
-    const isCursor = cursor === gapIdx;
+  // ── Render drop indicator ──
+  const renderDropIndicator = (position: number) => {
+    if (dropTarget !== position || !isDraggingRef.current) return null;
     return (
       <div
-        key={`gap-${gapIdx}`}
-        className={cn(
-          'self-stretch flex items-center justify-center transition-all duration-150',
-          dragIdx !== null ? 'w-2 min-w-[8px]' : 'w-1 min-w-[4px]',
-          isDropTarget && 'w-3 min-w-[12px]',
-        )}
-        onClick={() => handleGapClick(gapIdx)}
-        onDragOver={(e) => handleGapDragOver(e, gapIdx)}
-        onDrop={(e) => handleGapDrop(e, gapIdx)}
-      >
-        <div
-          className={cn(
-            'w-0.5 h-5 rounded-full transition-all duration-150',
-            isCursor && 'bg-primary animate-pulse w-0.5',
-            isDropTarget && 'bg-blue-500 w-1 h-6',
-            !isCursor && !isDropTarget && 'bg-transparent hover:bg-muted-foreground/30',
-          )}
-        />
-      </div>
+        key={`drop-${position}`}
+        className="w-1 h-6 rounded-full bg-blue-500 shrink-0 animate-pulse mx-0.5"
+      />
     );
   };
+
+  // ── Render cursor indicator ──
+  const renderCursor = (position: number) => {
+    if (cursor !== position || isDraggingRef.current) return null;
+    return (
+      <div
+        key={`cursor-${position}`}
+        className="w-0.5 h-5 rounded-full bg-primary animate-pulse shrink-0 mx-0.5"
+      />
+    );
+  };
+
+  // Keep tokenRefs in sync with token count
+  useEffect(() => {
+    tokenRefs.current = tokenRefs.current.slice(0, tokens.length);
+  }, [tokens.length]);
 
   return (
     <div className="space-y-2">
@@ -363,10 +399,10 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
         Формула
       </label>
 
-      {/* Token chips area with gaps for cursor/drop */}
+      {/* Token chips area */}
       <div
         ref={containerRef}
-        className="min-h-[40px] flex flex-wrap items-center p-2 rounded-md border bg-background max-h-[120px] overflow-y-auto cursor-text"
+        className="min-h-[40px] flex flex-wrap items-center gap-y-1 p-2 rounded-md border bg-background max-h-[120px] overflow-y-auto cursor-text"
         onClick={handleContainerClick}
       >
         {tokens.length === 0 && (
@@ -374,11 +410,19 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({
         )}
         {tokens.map((token, idx) => (
           <React.Fragment key={idx}>
-            {renderGap(idx)}
-            {renderToken(token, idx)}
+            {renderDropIndicator(idx)}
+            {renderCursor(idx)}
+            <div className="mx-0.5">
+              {renderToken(token, idx)}
+            </div>
           </React.Fragment>
         ))}
-        {tokens.length > 0 && renderGap(tokens.length)}
+        {tokens.length > 0 && (
+          <>
+            {renderDropIndicator(tokens.length)}
+            {renderCursor(tokens.length)}
+          </>
+        )}
       </div>
 
       {/* Controls row 1: metric selector + accessor toggle + operators */}

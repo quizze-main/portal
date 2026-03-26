@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Save, Plus, GripVertical, X } from 'lucide-react';
-import type { DashboardWidget, RankingWidgetConfig, RankingLossConfig } from '@/lib/internalApiClient';
+import type { DashboardWidget, RankingWidgetConfig, RankingLossConfig, DashboardWidgetTargetPage } from '@/lib/internalApiClient';
 import { RANKING_METRIC_CONFIG, METRIC_NAMES } from '@/hooks/useLeaderMetrics';
 import { cn } from '@/lib/utils';
 
@@ -89,6 +89,7 @@ export default function RankingWidgetEditDialog({
     config.forecastLabelOverrides || {},
   );
   const [parentId, setParentId] = useState<string | null>(widget?.parentId || null);
+  const [targetPage, setTargetPage] = useState<DashboardWidgetTargetPage>(widget?.targetPage || 'dashboard');
 
   // Formula visual constructor tokens
   const [formulaTokens, setFormulaTokens] = useState<FormulaToken[]>(() =>
@@ -250,6 +251,7 @@ export default function RankingWidgetEditDialog({
     const data: Partial<DashboardWidget> = {
       name: name.trim() || (entityType === 'branch' ? 'Рейтинг филиалов' : 'Рейтинг менеджеров'),
       parentId: parentId || null,
+      targetPage,
       config: {
         entityType,
         metricCodes,
@@ -294,15 +296,24 @@ export default function RankingWidgetEditDialog({
           <div className="space-y-1.5">
             <label className="text-xs font-medium">Страница</label>
             <select
-              value={parentId || '__main__'}
+              value={targetPage === 'manager' ? '__manager__' : (parentId || '__main__')}
               onChange={e => {
-                const val = e.target.value === '__main__' ? null : e.target.value;
-                console.log('[RankingWidget] parentId onChange:', { raw: e.target.value, resolved: val, options: parentMetrics.map(m => m.id) });
-                setParentId(val);
+                const val = e.target.value;
+                if (val === '__manager__') {
+                  setTargetPage('manager');
+                  setParentId(null);
+                } else if (val === '__main__') {
+                  setTargetPage('dashboard');
+                  setParentId(null);
+                } else {
+                  setTargetPage('dashboard');
+                  setParentId(val);
+                }
               }}
               className="flex h-8 w-full rounded-md border border-input bg-background px-3 text-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <option value="__main__">Главная (дашборд)</option>
+              <option value="__manager__">Страница менеджера</option>
               {parentMetrics.map(m => (
                 <option key={m.id} value={m.id}>{m.name}</option>
               ))}

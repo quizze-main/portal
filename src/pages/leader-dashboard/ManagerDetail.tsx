@@ -9,20 +9,26 @@ import {
   FilterBar,
   EditModeControls,
   MissionCard,
+  BranchRankingTable,
+  ManagerRankingTable,
 } from '@/components/dashboard';
 import { FilterPeriod } from '@/components/dashboard/FilterBar';
 import { FullWidthKPIMetric } from '@/components/dashboard/KPIFullWidthCard';
 import { DraggableMetricsGrid } from '@/components/dashboard/DraggableMetricsGrid';
 import { DailyFactCards } from '@/components/leader-dashboard/DailyFactCards';
+import { ChartWidget } from '@/components/leader-dashboard/ChartWidget';
+import { MetricQuickChart } from '@/components/leader-dashboard/MetricQuickChart';
 import { FactStatusCard } from '@/components/dashboard/FactStatusCard';
 import { useManagerDetailLayout } from '@/hooks/useManagerDetailLayout';
 import { useManagerDetail } from '@/hooks/useManagerDetail';
 import { useAdminDashboardMetrics } from '@/hooks/useAdminDashboardMetrics';
+import { useWidgets } from '@/hooks/useWidgets';
 import { BranchManagerSelector } from '@/components/dashboard/BranchManagerSelector';
 import { useEmployee } from '@/contexts/EmployeeProvider';
 import { useMission } from '@/hooks/useMission';
 import { Spinner } from '@/components/Spinner';
 import { DateRange } from 'react-day-picker';
+import type { ChartWidgetConfig, RankingWidgetConfig } from '@/lib/internalApiClient';
 
 // --- Date helpers (same as LeaderDashboardHome) ---
 
@@ -63,6 +69,13 @@ function rangeForPeriod(p: FilterPeriod): DateRange {
 function periodFromRange(dateRange: DateRange | undefined): string {
   const d = dateRange?.from || new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function formatYmd(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 
 function getInitialBranchId(storeOptions: { store_id: string }[]): string {
@@ -125,6 +138,15 @@ export function ManagerDetailContent({
   const [factSheetOpen, setFactSheetOpen] = useState(false);
   const { metrics: allMetricConfigs } = useAdminDashboardMetrics();
 
+  // Widgets targeted at manager page
+  const { widgets } = useWidgets();
+  const managerWidgets = useMemo(
+    () => widgets
+      .filter(w => w.enabled && w.targetPage === 'manager')
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+    [widgets],
+  );
+
   const storeIds = useMemo(() => selectedBranchId ? [selectedBranchId] : [], [selectedBranchId]);
 
   const period = periodFromRange(dateRange);
@@ -155,6 +177,16 @@ export function ManagerDetailContent({
       dailyRate: m.dailyRate,
     }));
   }, [metrics]);
+
+  // Date range for chart/ranking widgets
+  const dateFrom = dateRange?.from ? formatYmd(dateRange.from) : undefined;
+  const dateTo = dateRange?.to ? formatYmd(dateRange.to) : undefined;
+
+  // Available metrics for ranking widgets
+  const rankingAvailableMetrics = useMemo(
+    () => allMetricConfigs.filter(m => m.enabled && !m.parentId),
+    [allMetricConfigs],
+  );
 
   // Metrics layout hook
   const metricIds = useMemo(() => kpiMetrics.map(m => m.id), [kpiMetrics]);
@@ -335,8 +367,90 @@ export function ManagerDetailContent({
           </div>
         )}
 
+        {/* Manager-page widgets (charts, rankings) */}
+        {!loading && managerWidgets.length > 0 && (
+          <div className="space-y-4">
+            {managerWidgets.map(widget => {
+              if (widget.type === 'ranking') {
+                const cfg = widget.config as RankingWidgetConfig;
+                if (cfg.entityType === 'branch') {
+                  return (
+                    <BranchRankingTable
+                      key={widget.id}
+                      branches={storeOptions}
+                      selectedBranchIds={storeIds}
+                      dateFrom={dateFrom}
+                      dateTo={dateTo}
+                      availableMetrics={rankingAvailableMetrics}
+                      lossConfig={cfg.lossConfig}
+                      forecastLabelOverrides={cfg.forecastLabelOverrides}
+                      title={widget.name}
+                      visibleColumns={cfg.metricCodes}
+                    />
+                  );
+                }
+                if (cfg.entityType === 'manager') {
+                  return (
+                    <ManagerRankingTable
+                      key={widget.id}
+                      period={filterPeriod}
+                      dateRange={dateRange}
+                      branches={storeOptions}
+                      selectedBranches={storeIds}
+                      availableMetrics={rankingAvailableMetrics}
+                      lossConfig={cfg.lossConfig}
+                      forecastLabelOverrides={cfg.forecastLabelOverrides}
+                      title={widget.name}
+                      visibleColumns={cfg.metricCodes}
+                    />
+                  );
+                }
+              }
+
+              if (widget.type === 'chart') {
+                const cfg = widget.config as ChartWidgetConfig;
+                if (cfg.isMetricSelector) {
+                  return (
+                    <MetricQuickChart
+                      key={widget.id}
+                      metrics={allMetricConfigs.filter(m => m.enabled && !m.parentId)}
+                      storeIds={storeIds}
+                      dateFrom={dateFrom}
+                      dateTo={dateTo}
+                      forceCollapsed={false}
+                    />
+                  );
+                }
+                // On manager page: always use store subject type for the API call
+                // (Tracker daily_plan_graph only supports store IDs as subjects).
+                // managerId is passed separately — backend resolves itigris ID and
+                // extracts per-manager data via by_managers=True.
+                const managerChartConfig: ChartWidgetConfig = {
+                  ...cfg,
+                  subjectType: 'store',
+                  isAggregated: true,
+                };
+                return (
+                  <ChartWidget
+                    key={widget.id}
+                    config={managerChartConfig}
+                    title={widget.name}
+                    storeIds={storeIds}
+                    dateFrom={dateFrom}
+                    dateTo={dateTo}
+                    forceCollapsed={false}
+                    managerId={managerId}
+                  />
+                );
+              }
+
+              return null;
+            })}
+          </div>
+        )}
+
         {/* Empty State */}
-        {!loading && !error && kpiMetrics.length === 0 && (
+        {!loading && !error && kpiMetrics.length === 0 && managerWidgets.length === 0 && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">Нет данных по этому менеджеру</p>
           </div>

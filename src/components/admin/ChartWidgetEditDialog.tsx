@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, Save, Plus, Trash2, BarChart3, TrendingUp, Layers, AlertTriangle, ListFilter } from 'lucide-react';
-import type { DashboardWidget, ChartWidgetConfig, ChartMetricSeries } from '@/lib/internalApiClient';
+import type { DashboardWidget, ChartWidgetConfig, ChartMetricSeries, DashboardWidgetTargetPage } from '@/lib/internalApiClient';
 import { CHART_SERIES_COLORS, normalizeChartConfig } from '@/lib/internalApiClient';
 import { METRIC_NAMES, METRIC_UNITS } from '@/hooks/useLeaderMetrics';
 import { LEADER_METRIC_CODES } from '@/lib/leaderDashboardApi';
@@ -91,6 +91,7 @@ export default function ChartWidgetEditDialog({
   const [subjectType, setSubjectType] = useState<'store' | 'manager'>(normalized.subjectType || 'store');
   const [isAggregated, setIsAggregated] = useState(normalized.isAggregated ?? true);
   const [parentId, setParentId] = useState<string | null>(widget?.parentId || null);
+  const [targetPage, setTargetPage] = useState<DashboardWidgetTargetPage>(widget?.targetPage || 'dashboard');
 
   // ── Metric options: catalog has priority over hardcode ──
   const allChartMetrics = useMemo(() => {
@@ -182,6 +183,7 @@ export default function ChartWidgetEditDialog({
     const data: Partial<DashboardWidget> = {
       name: name.trim() || autoName,
       parentId: parentId || null,
+      targetPage,
       config: chartConfig,
     };
 
@@ -436,11 +438,24 @@ export default function ChartWidgetEditDialog({
             <div className="space-y-1.5">
               <label className="text-xs font-medium">Страница</label>
               <select
-                value={parentId || '__main__'}
-                onChange={e => setParentId(e.target.value === '__main__' ? null : e.target.value)}
+                value={targetPage === 'manager' ? '__manager__' : (parentId || '__main__')}
+                onChange={e => {
+                  const val = e.target.value;
+                  if (val === '__manager__') {
+                    setTargetPage('manager');
+                    setParentId(null);
+                  } else if (val === '__main__') {
+                    setTargetPage('dashboard');
+                    setParentId(null);
+                  } else {
+                    setTargetPage('dashboard');
+                    setParentId(val);
+                  }
+                }}
                 className="flex h-8 w-full rounded-md border border-input bg-background px-3 text-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="__main__">Главная (дашборд)</option>
+                <option value="__manager__">Страница менеджера</option>
                 {parentMetrics.map(m => (
                   <option key={m.id} value={m.id}>{m.name}</option>
                 ))}

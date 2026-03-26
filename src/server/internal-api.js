@@ -2935,13 +2935,101 @@ export function setupInternalApiRoutes(app) {
 
   // --- Daily Plan Graph ---
   app.get('/api/metric-daily-graph', requireAuth, async (req, res) => {
-    const { metric_name, date_from, date_to, subject_type, subject_ids, is_aggregated } = req.query;
+    const { metric_name, date_from, date_to, subject_type, subject_ids, is_aggregated, manager_id } = req.query;
 
     if (!metric_name || !date_from || !date_to || !subject_type || !subject_ids) {
       return res.status(400).json({ error: 'Missing required params: metric_name, date_from, date_to, subject_type, subject_ids' });
     }
 
     res.setHeader('Cache-Control', 'no-store');
+
+    // --- Manager-level daily graph: use by_managers=True on Tracker API ---
+    if (manager_id && TRACKER_API_URL && TRACKER_API_TOKEN) {
+      try {
+        // 1. Resolve employee's itigris ID
+        let itigrisId = null;
+        try {
+          const empUrl = `${FRAPPE_BASE_URL}/api/resource/Employee/${encodeURIComponent(String(manager_id))}?fields=["custom_itigris_user_id"]`;
+          const empRes = await fetch(empUrl, {
+            headers: { 'Authorization': `token ${FRAPPE_API_KEY}:${FRAPPE_API_SECRET}` },
+          });
+          if (empRes.ok) {
+            const empJson = await empRes.json();
+            itigrisId = empJson?.data?.custom_itigris_user_id || null;
+          }
+        } catch (e) {
+          loggerWithUser.warn(req, 'Failed to resolve itigris ID for manager', { manager_id, error: e.message });
+        }
+
+        if (itigrisId) {
+          // 2. Resolve tracker code
+          let trackerMetricName = metric_name;
+          try {
+            const dashCfg = await readDashboardMetricsConfig();
+            const cfg = (dashCfg.metrics || []).find(m => m.id === metric_name);
+            if (cfg && cfg.trackerCode) trackerMetricName = cfg.trackerCode;
+          } catch (_) { /* use original */ }
+
+          // 3. Call Tracker API with by_managers=True
+          const storeIds = Array.isArray(subject_ids) ? subject_ids : [subject_ids];
+          const url = new URL(
+            `/api/v1/portal/analytics/metrics/${encodeURIComponent(trackerMetricName)}/daily_plan_graph`,
+            TRACKER_API_URL
+          );
+          url.searchParams.set('date_from', date_from);
+          url.searchParams.set('date_to', date_to);
+          url.searchParams.set('subject_type', 'store');
+          storeIds.forEach(id => url.searchParams.append('subject_ids', id));
+          url.searchParams.set('is_aggregated', storeIds.length > 1 ? 'true' : 'false');
+          url.searchParams.set('by_managers', 'True');
+
+          const cacheKey = generateCacheKey('daily_graph_manager', {
+            metric: metric_name, date_from, date_to, manager_id, store_ids: storeIds.sort().join(','),
+          });
+
+          const { data: trackerData } = await withCache(cacheKey, CACHE_TTL.ANALYTICS, () =>
+            fetch(url.toString(), {
+              method: 'GET',
+              headers: { 'Authorization': `Bearer ${TRACKER_API_TOKEN}`, 'Content-Type': 'application/json' },
+            }).then(async (r) => {
+              if (!r.ok) {
+                const err = new Error(`Tracker daily_plan_graph by_managers error: ${r.status}`);
+                err.status = r.status;
+                throw err;
+              }
+              return r.json();
+            })
+          );
+
+          // 4. Extract this manager's data from the response
+          // Response may have: { data: { managers: { "itigrisId": { "2026-03-01": { fact_value, plan_value }, ... } } } }
+          // or: { managers: { ... } } or data keyed by itigris ID
+          const rawData = trackerData?.data || trackerData || {};
+          const managers = rawData.managers || rawData;
+
+          // Try to find manager's data by itigris ID (with and without prefix)
+          const itigrisClean = String(itigrisId).replace(/^itigris[-_]/i, '').trim();
+          const managerDaily = managers[itigrisId]
+            || managers[itigrisClean]
+            || managers[`itigris-${itigrisClean}`]
+            || managers[`itigris_${itigrisClean}`]
+            || null;
+
+          if (managerDaily && typeof managerDaily === 'object') {
+            // Return in the same format as regular daily graph response
+            return res.json({
+              code: metric_name,
+              data: { aggregated: managerDaily },
+            });
+          }
+
+          // If by_managers didn't return per-manager data, fall through to regular logic
+          loggerWithUser.debug(req, 'by_managers did not return data for manager, falling through', { manager_id, itigrisId });
+        }
+      } catch (e) {
+        loggerWithUser.warn(req, 'Manager daily graph failed, falling through', { manager_id, error: e.message });
+      }
+    }
 
     // --- Manual / computed metrics: build response from manualData ---
     try {

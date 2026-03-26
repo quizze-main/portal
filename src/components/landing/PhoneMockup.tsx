@@ -14,10 +14,10 @@ export function PhoneMockup({ children, className = '', perspective = false }: P
         transformStyle: 'preserve-3d',
       } : undefined}
     >
-      {/* Phone frame */}
-      <div className="relative rounded-[2.5rem] border-[6px] border-gray-800 dark:border-gray-600 bg-gray-800 dark:bg-gray-700 shadow-2xl overflow-hidden w-[280px] h-[580px]">
-        {/* Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[28px] bg-gray-800 dark:bg-gray-700 rounded-b-2xl z-10" />
+      {/* Phone frame — iPhone 14 Pro Max proportions, 85% scale */}
+      <div className="relative rounded-[2.2rem] border-[5px] border-gray-800 dark:border-gray-600 bg-gray-800 dark:bg-gray-700 overflow-hidden w-[238px] h-[516px]">
+        {/* Dynamic Island */}
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[76px] h-[19px] bg-black rounded-full z-10" />
         {/* Screen */}
         <div className="w-full h-full overflow-hidden rounded-[2rem] bg-white dark:bg-gray-900">
           {children}
