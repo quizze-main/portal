@@ -1,5 +1,5 @@
 import { BRANCHES, getAvailablePositions, type BranchId } from '@/data/branchData';
-import type { LoovisStoreOption } from '@/lib/internalApiClient';
+import type { StoreOption } from '@/lib/internalApiClient';
 
 type StoreLike = { name?: string | null } | string | null | undefined;
 
@@ -129,8 +129,8 @@ export function derivePositionIdFromDesignation(params: {
 
 export function mapBranchIdToStoreOption(
   branchId: BranchId,
-  storeOptions: LoovisStoreOption[]
-): LoovisStoreOption | null {
+  storeOptions: StoreOption[]
+): StoreOption | null {
   for (const opt of storeOptions) {
     if (mapStoreNameToBranchId(opt) === branchId) return opt;
   }

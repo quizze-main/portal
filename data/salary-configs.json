@@ -125,19 +125,12 @@
         "120%": 4,
         "130%": 4.5
       },
-      "100%": {
+      "95%": {
         "<100%": 2.5,
         "100%": 3.5,
         "110%": 4,
         "120%": 4.5,
         "130%": 5
-      },
-      "110%>": {
-        "<100%": 2.5,
-        "100%": 4,
-        "110%": 4.5,
-        "120%": 5,
-        "130%": 5.5
       }
     },
     "kpis": [
@@ -166,10 +159,20 @@
         ]
       }
     ],
-    "managerAxisLabel": "План менеджера по PP",
-    "clubAxisLabel": "План филиала по PP",
+    "managerAxisLabel": "План менеджера по СЗ",
+    "clubAxisLabel": "План филиала по ЗЗ",
     "managerLinkedMetricId": "revenue_created",
-    "clubLinkedMetricId": "revenue_closed"
+    "clubLinkedMetricId": "revenue_closed",
+    "clubLevels": [
+      {
+        "label": "<95%",
+        "threshold": 0
+      },
+      {
+        "label": "95%",
+        "threshold": 95
+      }
+    ]
   },
   "kaliningrad_club_manager_5_2_emp_HR-EMP-00015": {
     "branchId": "kaliningrad_club",

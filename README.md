@@ -1,6 +1,6 @@
 # Staff Focus App
 
-Мобильное веб-приложение для сотрудников Loov с интеграцией Frappe ERP и Outline Wiki.
+Мобильное веб-приложение для сотрудников OverBrain с интеграцией Frappe ERP и Outline Wiki.
 
 ## Vendored dashboard (loovis-sandbox) via git subtree
 
@@ -231,7 +231,7 @@ src/
 - **Frontend**: React + Vite + TypeScript
 - **Backend**: Express.js сервер с API и Telegram Web App
 - **Интеграция**: Frappe ERP API
-- **Инфраструктура**: Docker + Traefik + HTTPS
+- **Инфраструктура**: Docker
 
 ### Дополнительные API Endpoints
 

@@ -34,12 +34,13 @@ export function useAdminDashboardMetrics() {
   });
 
   const reorderMutation = useMutation({
-    mutationFn: (ids: string[]) => internalApiClient.reorderDashboardMetrics(ids),
-    onMutate: async (ids: string[]) => {
+    mutationFn: ({ metricIds, widgetIds }: { metricIds: string[]; widgetIds?: string[] }) =>
+      internalApiClient.reorderDashboardMetrics(metricIds, widgetIds),
+    onMutate: async ({ metricIds }: { metricIds: string[]; widgetIds?: string[] }) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEY });
       const prev = queryClient.getQueryData<DashboardMetricConfig[]>(QUERY_KEY);
       if (prev) {
-        const idOrderMap = new Map(ids.map((id, i) => [id, i]));
+        const idOrderMap = new Map(metricIds.map((id, i) => [id, i]));
         const reordered = prev.map(m => ({
           ...m,
           order: idOrderMap.has(m.id) ? idOrderMap.get(m.id)! : m.order,
@@ -55,6 +56,8 @@ export function useAdminDashboardMetrics() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      // Also refresh widgets since combined reorder updates both
+      queryClient.invalidateQueries({ queryKey: ['admin', 'widgets'] });
     },
   });
 
@@ -67,7 +70,8 @@ export function useAdminDashboardMetrics() {
     createMetric: createMutation.mutateAsync,
     updateMetric: updateMutation.mutateAsync,
     deleteMetric: deleteMutation.mutateAsync,
-    reorderMetrics: reorderMutation.mutateAsync,
+    reorderMetrics: (metricIds: string[], widgetIds?: string[]) =>
+      reorderMutation.mutateAsync({ metricIds, widgetIds }),
     isCreating: createMutation.isPending,
     isUpdating: updateMutation.isPending,
     isDeleting: deleteMutation.isPending,

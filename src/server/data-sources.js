@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import logger from './logger.js';
 import { requireAuth } from './requireAuth.js';
 import { extractByPath } from './jsonpath.js';
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -182,7 +182,7 @@ export function mergeEnvDefaults(config) {
     if (trackerUrl || trackerToken) {
       result.sources.tracker = {
         id: 'tracker',
-        label: 'Loovis Tracker',
+        label: 'OverBrain Tracker',
         baseUrl: trackerUrl || '',
         authType: 'bearer',
         authConfig: { token: trackerToken || '' },

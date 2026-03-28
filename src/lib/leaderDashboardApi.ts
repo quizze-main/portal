@@ -317,6 +317,8 @@ export interface DailyPlanGraphParams {
   subjectType: 'manager' | 'store';
   subjectIds: string[];
   isAggregated: boolean;
+  /** Frappe employee ID — backend resolves itigris ID and fetches per-manager data */
+  managerId?: string;
 }
 
 export async function fetchMetricDailyGraph(params: DailyPlanGraphParams): Promise<DailyPlanGraphResponse> {
@@ -327,6 +329,7 @@ export async function fetchMetricDailyGraph(params: DailyPlanGraphParams): Promi
   qs.set('subject_type', params.subjectType);
   params.subjectIds.forEach(id => qs.append('subject_ids', id));
   qs.set('is_aggregated', String(params.isAggregated));
+  if (params.managerId) qs.set('manager_id', params.managerId);
 
   const resp = await fetch(`/api/metric-daily-graph?${qs.toString()}`, {
     method: 'GET',

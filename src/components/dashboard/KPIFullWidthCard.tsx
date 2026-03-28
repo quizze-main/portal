@@ -42,6 +42,10 @@ export interface FullWidthKPIMetric {
   isMission?: boolean;
   hasChildren?: boolean;
   isLoading?: boolean;
+  // V7: Predictive forecast
+  predictedValue?: number;
+  predictedCompletion?: number;
+  dailyRate?: number;
 }
 
 export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCardProps) {
@@ -82,7 +86,7 @@ export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCar
   const currentDisplay = Math.round(metric.current);
   const planDisplay = Math.round(metric.plan);
 
-  const { bar } = MetricProgressBar({ current: metric.current, plan: metric.plan, size: 'md', color: metric.color });
+  const { percent, bar } = MetricProgressBar({ current: metric.current, plan: metric.plan, size: 'md', color: metric.color });
 
   const reserveColor = metric.reserve && metric.reserve >= 0
     ? 'text-emerald-600 dark:text-emerald-400'
@@ -92,7 +96,7 @@ export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCar
     <button
       onClick={onClick}
       className={cn(
-        "relative w-full border rounded-xl p-2.5 lg:p-3 text-left transition-all shadow-sm",
+        "relative w-full h-full border rounded-xl p-2.5 lg:p-3 text-left transition-all shadow-sm",
         "[@media(hover:hover)]:hover:shadow-md active:scale-[0.99]",
         getStatusStyles(calculatedStatus),
         calculatedStatus === 'critical'
@@ -109,7 +113,7 @@ export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCar
             <KPIDonutChart
               value={metric.current}
               maxValue={metric.plan}
-              forecast={metric.forecast}
+              forecast={metric.predictedCompletion ?? metric.forecast}
               displayValue={displayValue}
               color={metric.color}
               isDeviation={metric.forecastLabel === 'deviation'}
@@ -128,7 +132,12 @@ export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCar
             {formatFull(currentDisplay, metric.unit)}
           </div>
 
-          {bar}
+          <div className="flex items-center gap-1.5">
+            <div className="flex-1 min-w-0">{bar}</div>
+            <span className="text-muted-foreground font-medium leading-none shrink-0 text-[clamp(11px,1.4vw,13px)] tabular-nums">
+              {percent}%
+            </span>
+          </div>
         </div>
 
         {/* Row 2 / Col 1: Forecast label */}
@@ -138,25 +147,35 @@ export function KPIFullWidthCard({ metric, onClick, showArrow }: KPIFullWidthCar
           </span>
         </div>
 
-        {/* Row 2 / Col 2: Plan + Reserve/Loss */}
-        <div className="flex items-baseline justify-between gap-3 min-w-0 text-[clamp(12px,1.45vw,13px)] group-[.is-edit-mode]:text-[clamp(10px,1.25vw,12px)] group-[.is-edit-mode]:gap-2">
-          <span className="text-muted-foreground whitespace-nowrap shrink-0 leading-none">
-            План: {formatFull(planDisplay, metric.unit)}
-          </span>
+        {/* Row 2 / Col 2: Plan + Predicted + Reserve/Loss */}
+        <div className="flex flex-col gap-1 min-w-0 text-[clamp(12px,1.45vw,13px)] group-[.is-edit-mode]:text-[clamp(10px,1.25vw,12px)]">
+          <div className="flex items-baseline justify-between gap-3 group-[.is-edit-mode]:gap-2">
+            <span className="text-muted-foreground whitespace-nowrap shrink-0 leading-none">
+              План: {formatFull(planDisplay, metric.unit)}
+            </span>
 
-          <div className="ml-auto flex items-baseline justify-end gap-4 min-w-0 overflow-hidden group-[.is-edit-mode]:gap-2">
-            {metric.reserve !== undefined && (
-              <span className={cn("font-semibold whitespace-nowrap truncate leading-none", reserveColor)}>
-                Запас: {formatReserveFull(metric.reserve, metric.reserveUnit ?? metric.unit)}
-              </span>
-            )}
+            <div className="ml-auto flex items-baseline justify-end gap-4 min-w-0 overflow-hidden group-[.is-edit-mode]:gap-2">
+              {metric.reserve !== undefined && (
+                <span className={cn("font-semibold whitespace-nowrap truncate leading-none", reserveColor)}>
+                  Запас: {formatReserveFull(metric.reserve, metric.reserveUnit ?? metric.unit)}
+                </span>
+              )}
 
-            {metric.loss !== undefined && (
-              <span className="font-semibold whitespace-nowrap truncate text-red-500 leading-none">
-                Потери: {formatFull(metric.loss > 0 ? -metric.loss : metric.loss, '₽')}
-              </span>
-            )}
+              {metric.loss !== undefined && (
+                <span className="font-semibold whitespace-nowrap truncate text-red-500 leading-none">
+                  Потери: {formatFull(metric.loss > 0 ? -metric.loss : metric.loss, metric.unit)}
+                </span>
+              )}
+            </div>
           </div>
+
+          {metric.predictedValue != null && metric.forecastLabel !== 'deviation' && (
+            <div className="flex items-baseline gap-2 leading-none">
+              <span className="text-muted-foreground whitespace-nowrap">
+                К концу мес: {formatFull(Math.round(metric.predictedValue), metric.unit)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </button>

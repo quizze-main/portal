@@ -139,7 +139,7 @@ export const MultiSeriesChart: React.FC<MultiSeriesChartProps> = ({
     return dateSet.size;
   }, [seriesData, series]);
 
-  const { containerRef, height: adaptiveHeight, isDesktop } = useChartDimensions({
+  const { containerRef, height: adaptiveHeight, isDesktop, containerWidth } = useChartDimensions({
     dataPointsCount,
     baseHeight: heightProp,
     desiredAspectRatio: 3.2,
@@ -349,7 +349,17 @@ export const MultiSeriesChart: React.FC<MultiSeriesChartProps> = ({
   const MIN_SVG_VIEW_WIDTH = 600;
   const BASE_COL_WIDTH = 28;
   const n = allDates.length;
-  const columnWidth = n > 0 ? Math.max(BASE_COL_WIDTH, Math.ceil(MIN_SVG_VIEW_WIDTH / n)) : BASE_COL_WIDTH;
+  // On desktop, use actual container width for SVG viewBox to prevent
+  // preserveAspectRatio="none" distortion (non-uniform X/Y scaling)
+  const desktopAvailableWidth = isDesktop && containerWidth > 0
+    ? containerWidth - xOffset - xPaddingRight
+    : 0;
+  const desktopColWidth = desktopAvailableWidth > 0 && n > 0
+    ? Math.max(BASE_COL_WIDTH, Math.floor(desktopAvailableWidth / n))
+    : 0;
+  const columnWidth = n > 0
+    ? (desktopColWidth > 0 ? desktopColWidth : Math.max(BASE_COL_WIDTH, Math.ceil(MIN_SVG_VIEW_WIDTH / n)))
+    : BASE_COL_WIDTH;
   const colCenter = columnWidth / 2;
   const svgWidth = xOffset + n * columnWidth + xPaddingRight;
 
@@ -361,7 +371,7 @@ export const MultiSeriesChart: React.FC<MultiSeriesChartProps> = ({
   const barCount = barSeries.length;
   const isSingleBarMode = barCount === 1;
   const singleBarWidth = isSingleBarMode
-    ? 8
+    ? Math.min(20, Math.max(8, Math.floor(columnWidth * 0.4)))
     : barCount > 0
       ? Math.min(40, Math.max(6, Math.floor(columnWidth * 0.7 / barCount)))
       : 0;

@@ -139,11 +139,17 @@ export default {
 					'0%, 100%': { transform: 'rotate(-0.3deg)' },
 					'50%': { transform: 'rotate(0.3deg)' }
 				},
+				'flow-up': {
+					'0%': { transform: 'translateY(100%)', opacity: '0' },
+					'50%': { opacity: '1' },
+					'100%': { transform: 'translateY(-100%)', opacity: '0' }
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'wiggle': 'wiggle 0.5s ease-in-out infinite'
+				'wiggle': 'wiggle 0.5s ease-in-out infinite',
+				'flow-up': 'flow-up 2s ease-in-out infinite'
 			}
 		}
 	},

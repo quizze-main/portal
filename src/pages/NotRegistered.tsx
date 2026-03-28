@@ -12,7 +12,7 @@ export const NotRegistered = ({ onEnterDemoMode }: NotRegisteredProps) => {
         <AlertCircle size={48} className="text-orange-500 mx-auto mb-4" />
         <h1 className="page-title mb-3">Ты не зарегистрирован</h1>
         <p className="text-gray-600 mb-6">
-          Твой Telegram аккаунт не найден в системе LoovIS. Для получения доступа, пожалуйста, обратись в поддержку.
+          Твой Telegram аккаунт не найден в системе OverBrain. Для получения доступа, пожалуйста, обратись в поддержку.
         </p>
         <a 
           href="https://forms.yandex.ru/cloud/67499d00d04688ac041223f4/" 

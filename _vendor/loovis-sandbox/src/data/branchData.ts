@@ -1,11 +1,11 @@
 export const BRANCHES = [
-  { id: 'moscow_club', name: 'Москва клуб' },
-  { id: 'spb_clinic', name: 'Санкт-Петербург клиника' },
-  { id: 'kaliningrad_club', name: 'Калининград клуб' },
-  { id: 'kaliningrad_clinic', name: 'Калининград клиника' },
-  { id: 'yakutsk_club', name: 'Якутск клуб' },
-  { id: 'yakutsk_clinic', name: 'Якутск клиника' },
-  { id: 'kazan_club', name: 'Казань клуб' },
+  { id: 'moscow_club', name: 'Comciti Москва' },
+  { id: 'spb_clinic', name: 'Санкт-Петербург Мега' },
+  { id: 'kaliningrad_club', name: 'Калининград 2' },
+  { id: 'kaliningrad_clinic', name: 'Калининград 1' },
+  { id: 'yakutsk_club', name: 'Якутск 1' },
+  { id: 'yakutsk_clinic', name: 'Якутск ТЦ Зимняя вишня' },
+  { id: 'kazan_club', name: 'Казань ТЦ Мега' },
 ] as const;
 
 export type BranchId = typeof BRANCHES[number]['id'];

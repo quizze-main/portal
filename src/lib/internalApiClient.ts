@@ -342,21 +342,21 @@ interface UnclosedOrdersResponse {
   data?: UnclosedOrder[];
 }
 
-// === Loovis access role (employee role + allowed stores) ===
-export type LoovisStoreOption = {
+// === Employee access role (role + allowed stores) ===
+export type StoreOption = {
   store_id: string;
   name: string;
   department_id?: string | null;
 };
 
-export type LoovisEmployeeRoleResponse = {
+export type EmployeeRoleResponse = {
   employee_id: string;
   loovis_role: string | null;
   source: string | null;
-  stores: LoovisStoreOption[];
+  stores: StoreOption[];
 };
 
-// === LoovIs user settings (stored in Frappe DocType) ===
+// === User settings (stored in Frappe DocType) ===
 export type UserSettingsVariant = 'shared' | 'mobile_tg' | 'desktop_tg' | 'mobile_web' | 'desktop_web';
 
 export type UserSettingsBlob = {
@@ -580,6 +580,9 @@ export interface DashboardMetricConfig {
   lossMode?: 'auto' | 'formula' | 'jsonpath' | 'disabled' | 'tracker';
   lossFormula?: string;
   jsonPathLoss?: string;
+  // V7: Forecast prediction
+  forecastMethod?: 'linear' | 'custom' | 'disabled';
+  forecastFormula?: string;
 }
 
 // V5: Ranking loss configuration
@@ -638,6 +641,8 @@ export function normalizeChartConfig(config: ChartWidgetConfig): ChartWidgetConf
   };
 }
 
+export type DashboardWidgetTargetPage = 'dashboard' | 'manager';
+
 export interface DashboardWidget {
   id: string;
   type: DashboardWidgetType;
@@ -645,6 +650,7 @@ export interface DashboardWidget {
   enabled: boolean;
   order: number;
   parentId?: string | null; // parent metric id; null = main dashboard
+  targetPage?: DashboardWidgetTargetPage; // 'dashboard' (default) or 'manager'
   config: RankingWidgetConfig | ChartWidgetConfig;
 }
 
@@ -998,7 +1004,7 @@ class InternalApiClient {
     }
   }
 
-  async getLoovisEmployeeRole(): Promise<LoovisEmployeeRoleResponse | null> {
+  async getEmployeeRole(): Promise<EmployeeRoleResponse | null> {
     try {
       const response = await fetch(`${this.baseUrl}/loovis/employee-role`, {
         method: 'POST',
@@ -1008,7 +1014,7 @@ class InternalApiClient {
         // 401/403 can happen when cookie is missing; treat as "no extra access"
         return null;
       }
-      const result = (await response.json()) as LoovisEmployeeRoleResponse;
+      const result = (await response.json()) as EmployeeRoleResponse;
       return result || null;
     } catch (error) {
       logger.error('❌ Ошибка получения роли доступа (loovis_get_employee_role):', error);
@@ -1089,7 +1095,7 @@ class InternalApiClient {
       const result = (await response.json()) as UserSettingsResponse;
       return result || null;
     } catch (error) {
-      logger.error('❌ Ошибка получения пользовательских настроек (LoovIs user settings):', error);
+      logger.error('❌ Ошибка получения пользовательских настроек (user settings):', error);
       return null;
     }
   }
@@ -1120,7 +1126,7 @@ class InternalApiClient {
       const result = (await response.json()) as UserSettingsResponse;
       return result || null;
     } catch (error) {
-      logger.error('❌ Ошибка сохранения пользовательских настроек (LoovIs user settings):', error);
+      logger.error('❌ Ошибка сохранения пользовательских настроек (user settings):', error);
       return null;
     }
   }
@@ -2308,12 +2314,12 @@ class InternalApiClient {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   }
 
-  async reorderDashboardMetrics(ids: string[]): Promise<void> {
+  async reorderDashboardMetrics(ids: string[], widgetIds?: string[]): Promise<void> {
     const res = await fetch('/api/admin/dashboard-metrics/reorder', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ ids }),
+      body: JSON.stringify(widgetIds ? { metricIds: ids, widgetIds } : { ids }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   }
@@ -3363,6 +3369,46 @@ class InternalApiClient {
     if (!response.ok) throw new Error(`Delete requirement error: ${response.status}`);
     return response.json();
   }
+
+  // ─── Schedule Integration ───
+
+  async getEmployeeScheduleSummary(employeeId: string, month: string) {
+    const response = await fetch(
+      `/api/shift-schedule/employee-summary?employee_id=${encodeURIComponent(employeeId)}&month=${encodeURIComponent(month)}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok) throw new Error(`Employee schedule summary error: ${response.status}`);
+    return response.json();
+  }
+
+  async getShiftScheduleSalaryData(branchId: string, month: string) {
+    const response = await fetch(
+      `/api/shift-schedule/salary-data?branch_id=${encodeURIComponent(branchId)}&month=${encodeURIComponent(month)}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok) throw new Error(`Salary schedule data error: ${response.status}`);
+    return response.json();
+  }
+
+  async getDayCrewmates(branchId: string, date: string): Promise<{ crew: DayCrewMember[]; date: string; branch_id: string }> {
+    const response = await fetch(
+      `/api/shift-schedule/day-crew?branch_id=${encodeURIComponent(branchId)}&date=${encodeURIComponent(date)}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok) throw new Error(`Day crew error: ${response.status}`);
+    return response.json();
+  }
+}
+
+export interface DayCrewMember {
+  employee_id: string;
+  employee_name: string;
+  image: string | null;
+  designation: string | null;
+  shift_type: string;
+  shift_number: number | null;
+  time_start: string | null;
+  time_end: string | null;
 }
 
 export const internalApiClient = new InternalApiClient();

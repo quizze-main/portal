@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import type { LoovisStoreOption } from '@/lib/internalApiClient';
+import type { StoreOption } from '@/lib/internalApiClient';
 
 export interface ManagerOption {
   id: string;
@@ -18,7 +18,7 @@ function getEmployeeImageUrl(employeeId: string, image?: string): string {
 }
 
 interface BranchManagerSelectorProps {
-  branches: LoovisStoreOption[];
+  branches: StoreOption[];
   managers: ManagerOption[];
   currentBranchId: string;
   currentManagerId: string;

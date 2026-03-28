@@ -514,7 +514,7 @@ function addProblemList(slide, items, x, y, w) {
   addSubtitle(slide, '100% OpenSource. Модульная архитектура с API-интеграциями.');
 
   // Top row: external systems
-  const topSystems = ['Frappe ERP', 'Outline Wiki', 'Loovis Tracker', 'Yandex Tracker'];
+  const topSystems = ['Frappe ERP', 'Outline Wiki', 'OverBrain Tracker', 'Yandex Tracker'];
   topSystems.forEach((name, i) => {
     const x = 1.5 + i * 2.8;
     slide.addShape(pptx.ShapeType.roundRect, {

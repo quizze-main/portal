@@ -48,7 +48,7 @@ const integrations = [
   },
   {
     id: 'tracker',
-    name: 'Loovis Tracker',
+    name: 'OverBrain Tracker',
     category: 'external',
     envVars: ['TRACKER_API_URL', 'TRACKER_API_TOKEN'],
     check: async () => {
@@ -104,16 +104,26 @@ const integrations = [
     },
   },
   {
-    id: 'opensearch',
-    name: 'OpenSearch',
+    id: 'pg_logs',
+    name: 'PostgreSQL Logs',
     category: 'logging',
-    envVars: ['OPENSEARCH_URL', 'OPENSEARCH_USERNAME', 'OPENSEARCH_PASSWORD'],
+    envVars: ['DATABASE_URL'],
     check: async () => {
-      const url = env.OPENSEARCH_URL;
-      const user = env.OPENSEARCH_USERNAME;
-      const pass = env.OPENSEARCH_PASSWORD;
-      if (!url || !user || !pass) return { ok: false, message: 'Missing env vars' };
-      return { ok: true, message: 'Env configured (no live check)' };
+      const dbUrl = env.DATABASE_URL;
+      if (!dbUrl) return { ok: false, message: 'DATABASE_URL not configured' };
+      try {
+        const { query, isDbConnected } = await import('./db.js');
+        if (!isDbConnected()) return { ok: false, message: 'DB not connected' };
+        const start = Date.now();
+        const result = await query(
+          `SELECT COUNT(*) AS cnt FROM app_logs WHERE timestamp > now() - INTERVAL '1 hour'`
+        );
+        const latency = Date.now() - start;
+        const cnt = parseInt(result?.rows?.[0]?.cnt || 0);
+        return { ok: true, message: `OK | ${cnt} logs in last hour`, latency };
+      } catch (e) {
+        return { ok: false, message: `DB error: ${e.message}` };
+      }
     },
   },
   {
@@ -142,18 +152,6 @@ const integrations = [
       const url = env.SMS_HTTP_URL;
       if (!url) return { ok: false, message: 'Missing env vars' };
       return { ok: true, message: 'Env configured (no live check)' };
-    },
-  },
-  {
-    id: 'ngrok',
-    name: 'ngrok',
-    category: 'dev',
-    envVars: ['NODE_ENV', 'SHOW_DEV_TO_PUBLIC'],
-    check: async () => {
-      const isLocal = env.NODE_ENV === 'local';
-      const showDev = env.SHOW_DEV_TO_PUBLIC === 'true';
-      if (!isLocal && !showDev) return { ok: false, message: 'Not in local/dev mode' };
-      return { ok: true, message: `NODE_ENV=${env.NODE_ENV || '(unset)'}, SHOW_DEV_TO_PUBLIC=${env.SHOW_DEV_TO_PUBLIC || '(unset)'}` };
     },
   },
   {

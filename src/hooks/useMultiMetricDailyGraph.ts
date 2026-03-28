@@ -24,6 +24,8 @@ interface UseMultiMetricDailyGraphParams {
   subjectIds: string[];
   isAggregated?: boolean;
   enabled?: boolean;
+  /** Frappe employee ID — when set, backend fetches per-manager daily data */
+  managerId?: string;
 }
 
 export function useMultiMetricDailyGraph({
@@ -34,6 +36,7 @@ export function useMultiMetricDailyGraph({
   subjectIds,
   isAggregated = false,
   enabled = true,
+  managerId,
 }: UseMultiMetricDailyGraphParams): MultiMetricData {
   const sortedIdsKey = subjectIds.slice().sort().join(',');
   const sortedIds = useMemo(() => subjectIds.slice().sort(), [sortedIdsKey]);
@@ -43,7 +46,7 @@ export function useMultiMetricDailyGraph({
   // Fire parallel queries — one per metric series
   const queries = useQueries({
     queries: metricSeries.map(series => ({
-      queryKey: ['metric-daily-graph', series.metricCode, dateFrom, dateTo, subjectType, sortedIdsKey, isAggregated],
+      queryKey: ['metric-daily-graph', series.metricCode, dateFrom, dateTo, subjectType, sortedIdsKey, isAggregated, managerId],
       queryFn: () => fetchMetricDailyGraph({
         metricName: series.metricCode,
         dateFrom: dateFrom!,
@@ -51,6 +54,7 @@ export function useMultiMetricDailyGraph({
         subjectType,
         subjectIds: sortedIds,
         isAggregated,
+        managerId,
       }),
       enabled: canFetch && !!series.metricCode,
       staleTime: 5 * 60 * 1000,

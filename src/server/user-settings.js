@@ -1,13 +1,13 @@
 /**
- * User Settings module — replaces Frappe's loovis_user_settings DocType.
+ * User Settings module — replaces Frappe's user settings DocType.
  *
  * Stores dashboard layout preferences per employee per client variant.
- * Data shape matches the Frappe loovis_user_settings_get/upsert responses.
+ * Data shape matches the Frappe user_settings_get/upsert responses.
  *
  * Dual-persistence: PostgreSQL primary, JSON file fallback.
  */
 import path from 'path';
-import { query, isDbConnected } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { DATA_DIR, readJsonRaw, writeJsonFile, withFileLock } from './json-storage.js';
 
 const SETTINGS_PATH = path.join(DATA_DIR, 'user-settings.json');

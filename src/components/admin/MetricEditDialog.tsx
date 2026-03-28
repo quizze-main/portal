@@ -738,6 +738,33 @@ const MetricEditDialog: React.FC<MetricEditDialogProps> = ({
         )}
       </div>
 
+      {/* V7: Forecast prediction settings */}
+      <div className="space-y-2 pt-2 border-t">
+        <label className="text-xs font-semibold text-muted-foreground block">Прогноз на конец месяца</label>
+        <Select value={form.forecastMethod || 'auto'} onValueChange={v => updateField('forecastMethod', v === 'auto' ? '' : v)}>
+          <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Авто (по типу метрики)" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="auto">Авто (по типу метрики)</SelectItem>
+            <SelectItem value="linear">Линейная экстраполяция</SelectItem>
+            <SelectItem value="custom">Своя формула</SelectItem>
+            <SelectItem value="disabled">Отключено</SelectItem>
+          </SelectContent>
+        </Select>
+        {form.forecastMethod === 'custom' && (
+          <div className="space-y-1">
+            <Input
+              value={form.forecastFormula}
+              onChange={e => updateField('forecastFormula', e.target.value)}
+              placeholder="{fact} + ({daily_avg} * {remaining_working_days})"
+              className="text-xs h-8 font-mono"
+            />
+            <p className="text-[10px] text-muted-foreground">
+              Переменные: {'{fact}'}, {'{plan}'}, {'{daily_avg}'}, {'{elapsed_working_days}'}, {'{remaining_working_days}'}, {'{total_working_days}'}, {'{completion_pct}'}, {'{elapsed_calendar_days}'}, {'{total_calendar_days}'}
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Plan period settings (from wizard Step 3) */}
       <div className="grid grid-cols-2 gap-3 pt-2 border-t">
         <div>

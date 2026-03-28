@@ -3,7 +3,7 @@
 
 -- Networks / companies (hierarchy root)
 CREATE TABLE IF NOT EXISTS org_networks (
-    id          TEXT PRIMARY KEY,                -- e.g. 'loov-russia'
+    id          TEXT PRIMARY KEY,                -- e.g. 'overbrain-network'
     name        TEXT NOT NULL,
     enabled     BOOLEAN DEFAULT true,
     metadata    JSONB DEFAULT '{}',
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS org_departments (
     department_name TEXT NOT NULL,
     branch_id       TEXT REFERENCES dim_branches(id),
     parent_id       TEXT REFERENCES org_departments(id),
-    store_id        TEXT,                        -- maps to Loovis Tracker store (was custom_store_id)
+    store_id        TEXT,                        -- maps to OverBrain Tracker store (was custom_store_id)
     is_group        BOOLEAN DEFAULT false,
     enabled         BOOLEAN DEFAULT true,
     metadata        JSONB DEFAULT '{}',

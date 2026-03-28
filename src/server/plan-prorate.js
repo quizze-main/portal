@@ -2,7 +2,12 @@
  * Plan pro-rating module.
  * Extracted from internal-api.js for reuse across metric sources.
  * Supports: working_days, calendar_days, none.
+ *
+ * Schedule-aware async variants use actual shift_entries data when available,
+ * falling back to generic Mon-Fri calculation otherwise.
  */
+
+import { hasScheduleData, getEmployeeWorkingDays } from './shift-schedule-helpers.js';
 
 export const isWorkingDay = (d) => {
   const dow = d.getDay();
@@ -82,5 +87,82 @@ export const proRatePlan = (monthlyPlan, method, year, month, rangeStart, rangeE
   // Default: working_days
   const totalWd = getWorkingDaysInMonth(year, month);
   const rangeWd = getWorkingDaysInRange(rangeStart, rangeEnd);
+  return totalWd > 0 ? Math.round(monthlyPlan * rangeWd / totalWd) : 0;
+};
+
+// ─── Schedule-aware async variants ───
+
+/**
+ * Get working days in a month using actual shift schedule when available.
+ * Falls back to generic Mon-Fri calculation if no schedule data exists.
+ *
+ * @param {number} year
+ * @param {number} month - 0-indexed
+ * @param {string} [employeeId] - If provided, checks shift_entries
+ * @returns {Promise<number>}
+ */
+export const getScheduleWorkingDaysInMonth = async (year, month, employeeId) => {
+  if (employeeId) {
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    const dateFrom = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+    const dateTo = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+    const has = await hasScheduleData(employeeId, dateFrom, dateTo);
+    if (has) {
+      const { total } = await getEmployeeWorkingDays(employeeId, dateFrom, dateTo);
+      return total;
+    }
+  }
+  return getWorkingDaysInMonth(year, month);
+};
+
+/**
+ * Get working days in a date range using actual shift schedule when available.
+ *
+ * @param {Date} from
+ * @param {Date} to
+ * @param {string} [employeeId]
+ * @returns {Promise<number>}
+ */
+export const getScheduleWorkingDaysInRange = async (from, to, employeeId) => {
+  if (employeeId) {
+    const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const dateFrom = fmt(from);
+    const dateTo = fmt(to);
+
+    const has = await hasScheduleData(employeeId, dateFrom, dateTo);
+    if (has) {
+      const { total } = await getEmployeeWorkingDays(employeeId, dateFrom, dateTo);
+      return total;
+    }
+  }
+  return getWorkingDaysInRange(from, to);
+};
+
+/**
+ * Pro-rate a monthly plan using actual shift schedule when available.
+ * Async version of proRatePlan.
+ *
+ * @param {number} monthlyPlan
+ * @param {string} method - 'working_days' | 'calendar_days' | 'none'
+ * @param {number} year
+ * @param {number} month - 0-indexed
+ * @param {Date} rangeStart
+ * @param {Date} rangeEnd
+ * @param {string} [employeeId]
+ * @returns {Promise<number>}
+ */
+export const proRatePlanWithSchedule = async (monthlyPlan, method, year, month, rangeStart, rangeEnd, employeeId) => {
+  if (method === 'none') return monthlyPlan;
+
+  if (method === 'calendar_days') {
+    const totalDays = getCalendarDaysInMonth(year, month);
+    const rangeDays = getCalendarDaysInRange(rangeStart, rangeEnd);
+    return totalDays > 0 ? Math.round(monthlyPlan * rangeDays / totalDays) : 0;
+  }
+
+  // working_days with schedule awareness
+  const totalWd = await getScheduleWorkingDaysInMonth(year, month, employeeId);
+  const rangeWd = await getScheduleWorkingDaysInRange(rangeStart, rangeEnd, employeeId);
   return totalWd > 0 ? Math.round(monthlyPlan * rangeWd / totalWd) : 0;
 };

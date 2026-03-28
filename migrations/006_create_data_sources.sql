@@ -49,6 +49,6 @@ CREATE TABLE IF NOT EXISTS adapter_registry (
 -- Seed known adapters
 INSERT INTO adapter_registry (id, name, supported_events) VALUES
     ('amocrm', 'amoCRM', ARRAY['order_created', 'order_status_changed', 'order_closed']),
-    ('tracker', 'Loovis Tracker', ARRAY['order_created', 'order_closed', 'visit_recorded']),
+    ('tracker', 'OverBrain Tracker', ARRAY['order_created', 'order_closed', 'visit_recorded']),
     ('manual', 'Manual Entry', ARRAY[]::TEXT[])
 ON CONFLICT (id) DO NOTHING;

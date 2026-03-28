@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "skills": {
+    "chart-visualization": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "3c2878765e0f0dcc4e4a75ab1b80e85f7249b2cedc3e1530ed3dfc16f5395437"
+    },
+    "claude-to-deerflow": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "662b5b9d8a84ba22b44a2c470c0566546817995aaba10adfe997acd416678568"
+    },
+    "consulting-analysis": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "3242c2149e8ca3290ade56ce380d1751c75473bc5420c092f7ee70718dd34597"
+    },
+    "data-analysis": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "02ff77b006e3330edac94c7a16262bc4a71ca5cefbabe784f43a34c88e6ed5c7"
+    },
+    "deep-research": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "c0477094cbe075d32f103eb7c39b139c9bc2e762f8537260a2330e50d2df45a0"
+    },
+    "find-skills": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "202da6ad9e3c65949fa70371e89b1f55a1f5bd6d11b20b4491af17de495a0caf"
+    },
+    "frontend-design": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "8925cd22a5b6dba32095df9dee7b69fe2797bd0e0ba89d3fd8bdaee5543deffc"
+    },
+    "github-deep-research": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "21c31c97eb7315e00718ae999e84005a7a7cdcfc9220aa3b57f8319879af62c5"
+    },
+    "image-generation": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "dd2d450cdb2fcd39c5f07b8033208bd3676a62f8db3770df01f7ce04dbb61550"
+    },
+    "podcast-generation": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "e002e28462f1c34f8f758b3a946ac84a2b3badfddd192e23acee969940f3a5c5"
+    },
+    "ppt-generation": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "1f95cca84b78975d6552da8e19c31fcb610ac80acc16f29c96c57bc6bc4d2173"
+    },
+    "skill-creator": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "0c58e456ce22214d35ad381093c1f2aa510f5b3129f2abebdf1f5ec5e691b23d"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "computedHash": "e3ba3d760c5f4cc43b02a91fb8924f726c7818f95cc35d79d0a606ca622b72f5"
+    },
+    "surprise-me": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "5f1e90e27bbf451bb0c1878ff4621b39a8f2c47f56e9a9b98426e736fbd1d37a"
+    },
+    "vercel-deploy": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "a93f4d00fbe0233466bb142e3881fb86af5c6465cd17da03d7235a92af210267"
+    },
+    "video-generation": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "8e94b83946799ee30733b10d65013e5d8605ef4db24dbfffce781ab50c5e01c4"
+    },
+    "web-design-guidelines": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    }
+  }
+}

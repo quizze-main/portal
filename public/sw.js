@@ -47,7 +47,7 @@ self.addEventListener('install', (event) => {
       caches.open(ASSETS_CACHE).then(cache => {
         return cache.addAll([
           '/manifest.json',
-          '/favicon.ico',
+          '/favicon.svg',
           '/icon-192.png',
           '/icon-512.png'
         ]).catch(error => {

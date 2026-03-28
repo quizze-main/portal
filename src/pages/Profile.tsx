@@ -17,9 +17,10 @@ import type { UserSettingsResponse } from "@/lib/internalApiClient";
 import { useVersion } from "@/hooks/useVersion";
 import { logger } from '@/lib/logger';
 import { detectClientVariant as detectClientVariantStatic } from "@/lib/clientVariant";
+import { ProfileCalendarWidget } from "@/components/profile/ProfileCalendarWidget";
 
 export const Profile = () => {
-  const { employee, reloadEmployee, canUseLeaderDashboard, userSettings, reloadUserSettings } = useEmployee();
+  const { employee, reloadEmployee, canUseLeaderDashboard, userSettings, reloadUserSettings, storeId } = useEmployee();
   const DEFAULT_TEAM_TITLE = "Моя команда";
   const DEFAULT_MANAGER_TITLE = "Руководитель";
 
@@ -523,6 +524,9 @@ export const Profile = () => {
       </Button>
 
       <GreenFeedbackModal open={greenOpen} onClose={() => setGreenOpen(false)} />
+
+      {/* Schedule Widget */}
+      {employee?.name && <ProfileCalendarWidget employeeId={employee.name} branchId={storeId} />}
 
       {/* Manager Card */}
       <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">

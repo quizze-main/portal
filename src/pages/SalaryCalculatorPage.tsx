@@ -44,13 +44,13 @@ import { getSalaryConfig as getLocalConfig } from '@/data/salaryConfig';
 const GENERIC_EMPLOYEE_VALUE = '__generic__';
 
 export default function SalaryCalculatorPage() {
-  // Apply loov-theme to <html> so portals (Select, Popover) also inherit the theme
+  // Apply overbrain-theme to <html> so portals (Select, Popover) also inherit the theme
   useEffect(() => {
-    document.documentElement.classList.add('loov-theme');
-    return () => document.documentElement.classList.remove('loov-theme');
+    document.documentElement.classList.add('overbrain-theme');
+    return () => document.documentElement.classList.remove('overbrain-theme');
   }, []);
 
-  const { employee, storeOptions, loovisRole, hasAllBranchesAccess, canEditSalaryCalculator } = useEmployee();
+  const { employee, storeOptions, employeeRole, hasAllBranchesAccess, canEditSalaryCalculator } = useEmployee();
 
   // Only leaders / elevated-access users can switch positions in calculator.
   const canChangePosition = Boolean(canEditSalaryCalculator);
@@ -401,9 +401,11 @@ export default function SalaryCalculatorPage() {
     }
   }, [branchEmployees, selectedBranch, availablePositions]);
 
-  const itigrisUserId = selectedEmployee?.custom_itigris_user_id
-    ?? employee?.custom_itigris_user_id
-    ?? null;
+  // When a specific employee is selected, use ONLY their itigris ID (no fallback to current user).
+  // When in generic mode ("По должности"), use the current logged-in user's ID.
+  const itigrisUserId = effectiveEmployeeId
+    ? (selectedEmployee?.custom_itigris_user_id ?? null)
+    : (employee?.custom_itigris_user_id ?? null);
   const canForecast = Boolean(itigrisUserId && selectedStoreOption?.store_id);
 
   const {

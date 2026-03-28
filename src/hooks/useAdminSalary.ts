@@ -8,6 +8,15 @@ import { derivePositionIdFromDesignation, mapBranchIdToStoreOption } from '@/lib
 import { getSingleLeaderMetric, getManagerMetric } from '@/lib/leaderDashboardApi';
 import type { SalarySessionEmployee, SalaryCalculationSession } from '@/types/salary-admin';
 
+export interface ShiftSalaryInfo {
+  plannedWorkDays: number;
+  actualWorkDays: number;
+  extraShifts: number;
+  dayOffLieu: number;
+  sickDays: number;
+  vacations: number;
+}
+
 export interface EmployeeWithCalc {
   employee: Employee;
   positionId: string;
@@ -25,6 +34,9 @@ export interface EmployeeWithCalc {
   // Calculated
   breakdown: SalaryBreakdown | null;
   explanation: string;
+  // Schedule integration
+  shiftData: ShiftSalaryInfo | null;
+  effectiveBaseSalary: number;
 }
 
 /** Strip "itigris-" or "itigris_" prefix from Tracker manager keys */
@@ -122,6 +134,20 @@ export function useAdminSalary() {
     enabled: !!selectedStoreOption?.store_id,
   });
 
+  // Fetch shift schedule salary data for the branch
+  const shiftSalaryQuery = useQuery({
+    queryKey: ['shiftSalaryData', selectedStoreOption?.store_id, selectedPeriod],
+    queryFn: () => internalApiClient.getShiftScheduleSalaryData(
+      selectedStoreOption!.store_id,
+      selectedPeriod,
+    ),
+    enabled: !!selectedStoreOption?.store_id,
+  });
+
+  const shiftDataMap = useMemo<Record<string, ShiftSalaryInfo>>(() => {
+    return shiftSalaryQuery.data?.data || {};
+  }, [shiftSalaryQuery.data]);
+
   // Branch fact from Tracker API (plan comes from salary config, not Tracker)
   const branchFact = useMemo(() => {
     return branchMetricQuery.data?.current ?? 0;
@@ -172,6 +198,14 @@ export function useAdminSalary() {
       const selectedKPIs = employeeKPIs.get(emp.name || '') || {};
       const baseSalary = employeeBaseSalaries.get(emp.name || '') ?? config.baseSalary;
 
+      // Schedule-aware base salary proration
+      const shiftData: ShiftSalaryInfo | null = emp.name ? (shiftDataMap[emp.name] || null) : null;
+      let effectiveBaseSalary = baseSalary;
+      if (shiftData && shiftData.plannedWorkDays > 0) {
+        // Pro-rate base salary by actual worked days vs planned work days
+        effectiveBaseSalary = Math.round(baseSalary * shiftData.actualWorkDays / shiftData.plannedWorkDays);
+      }
+
       // Auto-calculate salary when Tracker data is available
       let breakdown: SalaryBreakdown | null = null;
       let explanation = '';
@@ -182,10 +216,13 @@ export function useAdminSalary() {
           personalPlan: managerPlan > 0 ? managerPlan : config.personalPlan,
           clubPercent,
           selectedKPIs,
-          baseSalary,
+          baseSalary: effectiveBaseSalary,
           config,
         });
         explanation = generateExplanation(config, breakdown, selectedKPIs);
+        if (shiftData && shiftData.plannedWorkDays > 0) {
+          explanation += ` | Смены ${shiftData.actualWorkDays}/${shiftData.plannedWorkDays}`;
+        }
       }
 
       return {
@@ -202,6 +239,8 @@ export function useAdminSalary() {
         selectedKPIs,
         breakdown,
         explanation,
+        shiftData,
+        effectiveBaseSalary,
       };
     });
 
@@ -213,7 +252,7 @@ export function useAdminSalary() {
     });
 
     return result;
-  }, [employeesQuery.data, selectedBranchId, branchFact, managerDataMap, employeeKPIs, employeeBaseSalaries]);
+  }, [employeesQuery.data, selectedBranchId, branchFact, managerDataMap, employeeKPIs, employeeBaseSalaries, shiftDataMap]);
 
   // Update KPI for an employee
   const setKPI = useCallback((employeeId: string, kpiId: string, value: string | number | null) => {

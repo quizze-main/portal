@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import logger, { loggerWithUser } from './logger.js';
 import { requireAuth } from './requireAuth.js';
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,10 +22,12 @@ const MAX_BASE_SALARY = 10_000_000;
 const MAX_PLAN = 100_000_000;
 
 /**
- * Block demo users from write operations (disabled in dev)
+ * Block demo users from write operations
  */
 function requireNonDemo(req, res, next) {
-  // TODO: re-enable in production
+  if (req.user?.demo) {
+    return res.status(403).json({ ok: false, error: 'Demo users cannot modify salary configs' });
+  }
   next();
 }
 

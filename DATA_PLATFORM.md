@@ -115,7 +115,7 @@
 | `src/server/adapters/types.ts` | 107 | Интерфейсы `CRMAdapter`, `IncomingEvent`, `DiscoveryResult` |
 | `src/server/adapters/base-adapter.js` | 122 | Базовый класс с default-реализациями |
 | `src/server/adapters/amocrm-adapter.js` | 246 | amoCRM: discover + transformWebhook + poll |
-| `src/server/adapters/tracker-adapter.js` | 77 | Loovis Tracker: 8 предустановленных метрик |
+| `src/server/adapters/tracker-adapter.js` | 77 | OverBrain Tracker: 8 предустановленных метрик |
 | `src/server/adapters/custom-adapter.js` | 190 | VM sandbox (5s timeout) для AI-генерируемого кода |
 | `src/server/adapters/adapter-loader.js` | 162 | Фабрика + авто-детект типа + кэш инстансов |
 | `src/server/adapters/polling-scheduler.js` | 163 | Фоновый polling (30s цикл, 60s мин. интервал) |

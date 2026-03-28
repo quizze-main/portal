@@ -2,29 +2,6 @@ import fetch from 'node-fetch';
 import logger from './logger.js';
 
 const env = process.env || {};
-const SHOW_DEV_TO_PUBLIC = env.NODE_ENV === 'local' && env.SHOW_DEV_TO_PUBLIC === 'true';
-
-async function getNgrokUrl() {
-  const maxRetries = 6; // 6 попыток = 31.5 секунд всего
-  const baseDelay = 500; // начальная задержка 500мс
-  
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      const response = await fetch('http://ngrok:4040/api/tunnels');
-      const data = await response.json();
-      const httpsTunnel = data.tunnels.find(tunnel => tunnel.proto === 'https');
-      if (!httpsTunnel) throw new Error('No HTTPS tunnel found');
-      return httpsTunnel.public_url;
-    } catch (error) {
-      const delay = baseDelay * Math.pow(2, attempt); // экспоненциальная задержка
-      logger.warn(`Ошибка получения URL ngrok (попытка ${attempt + 1}/${maxRetries})`, { error: error.message, attempt: attempt + 1, maxRetries });
-      if (attempt === maxRetries - 1) return null;
-      await new Promise(lve => setTimeout(resolve, delay));
-    }
-  }
-  logger.error('Не удалось получить URL ngrok');
-  return null;
-}
 
 // Функция для отправки сообщения в Telegram
 export async function sendMessage(chatId, text, options = {}) {
@@ -90,11 +67,6 @@ export async function setTelegramWebhook(webhookUrl) {
 export async function setBotMenu() {
   const botToken = env.TELEGRAM_BOT_TOKEN;
   let appUrl = env.LOOV_IS_STAFF_PORTAL_URL;
-  if (SHOW_DEV_TO_PUBLIC) {
-    const ngrokUrl = await getNgrokUrl();
-    if (ngrokUrl) appUrl = ngrokUrl;
-    else console.warn('SHOW_DEV_TO_PUBLIC=true, но ngrok url не получен, используем LOOV_IS_STAFF_PORTAL_URL');
-  }
   if (!botToken) {
     throw new Error('TELEGRAM_BOT_TOKEN is not set');
   }
@@ -286,77 +258,6 @@ export function setupTelegramRoutes(app) {
   logger.info('Telegram routes registered');
 }
 
-// Обновление backend_url для интеграции по типу
-export async function updateIntegrationCustomBackendUrl() {
-  const integrationType = env.FRAPPE_INTEGRATION_TYPE;
-  let backendUrl = null;
-  if (SHOW_DEV_TO_PUBLIC) {
-    const ngrokUrl = await getNgrokUrl();
-    if (ngrokUrl) backendUrl = ngrokUrl;
-    else {
-      logger.warn('SHOW_DEV_TO_PUBLIC=true, но ngrok url не получен, backend_url не будет обновлён');
-      return;
-    }
-  } else {
-    logger.info('SHOW_DEV_TO_PUBLIC не включён, Frappe LoovIS integration settings->backend_url не будет обновлён');
-    return;
-  }
-  if (!integrationType) {
-    logger.warn('FRAPPE_INTEGRATION_TYPE не задан, backend_url не будет обновлён');
-    return;
-  }
-  if (!backendUrl) {
-    logger.warn('backendUrl не определён, backend_url не будет обновлён');
-    return;
-  }
-  const FRAPPE_BASE_URL = env.FRAPPE_BASE_URL;
-  const FRAPPE_API_KEY = env.FRAPPE_API_KEY;
-  const FRAPPE_API_SECRET = env.FRAPPE_API_SECRET;
-  if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-    logger.warn('FRAPPE_API_KEY/SECRET не заданы, backend_url не будет обновлён');
-    return;
-  }
-  try {
-    // Найти LoovIS integration settings по типу
-    const searchUrl = `${FRAPPE_BASE_URL}/api/resource/LoovIS integration settings?filters=[[\"type\",\"=\",\"${integrationType}\"]]`;
-    const searchResp = await fetch(searchUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `token ${FRAPPE_API_KEY}:${FRAPPE_API_SECRET}`,
-        'Content-Type': 'application/json',
-      }
-    });
-    if (!searchResp.ok) {
-      logger.warn('Ошибка поиска LoovIS integration settings по типу', { status: searchResp.status });
-      return;
-    }
-    const searchData = await searchResp.json();
-    const integration = searchData.data && searchData.data.length > 0 ? searchData.data[0] : null;
-    if (!integration) {
-      logger.warn('LoovIS integration settings с таким типом не найдена', { integrationType });
-      return;
-    }
-    await new Promise(resolve => setTimeout(resolve, 15000));
-    // Обновить backend_url
-    const updateUrl = `${FRAPPE_BASE_URL}/api/resource/LoovIS integration settings/${integration.name}`;
-    const updateResp = await fetch(updateUrl, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${FRAPPE_API_KEY}:${FRAPPE_API_SECRET}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ backend_url: backendUrl })
-    });
-    if (!updateResp.ok) {
-      logger.warn('Ошибка обновления Frappe backend_url', { status: updateResp.status });
-      return;
-    }
-    logger.info('Frappe backend_url успешно обновлён!', { integrationType, backendUrl });
-  } catch (error) {
-    logger.warn('Ошибка при обновлении Frappe backend_url', { error: error.message });
-  }
-}
-
 // Инициализация Telegram бота при запуске модуля
 export async function initializeTelegramBot() {
   // Проверяем необходимые переменные окружения
@@ -372,9 +273,7 @@ export async function initializeTelegramBot() {
 
   // Устанавливаем меню бота
   await setBotMenu().catch(error => logger.logError(error, { context: 'setBotMenu' }));
-  // Обновляем backend_url для интеграции
-  await updateIntegrationCustomBackendUrl();
-  
+
   // В продакшн режиме устанавливаем webhook
   if (env.NODE_ENV === 'production' || env.NODE_ENV === 'development') {
     await setTelegramWebhook(env.LOOV_IS_STAFF_PORTAL_URL).catch(error => 

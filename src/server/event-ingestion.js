@@ -6,7 +6,7 @@
  * After ingestion, triggers aggregation into metric_snapshots.
  */
 
-import { isDbConnected, query } from './db.js';
+import { isPrismaConnected as isDbConnected, rawQuery as query } from './prisma.js';
 import { aggregateEventsToSnapshots } from './aggregation-engine.js';
 
 /**
@@ -210,12 +210,13 @@ export function setupEventRoutes(app, requireAuth) {
         if (!src) return res.status(404).json({ error: 'Unknown source' });
         if (!src.enabled) return res.status(403).json({ error: 'Source disabled' });
 
-        // Verify webhook secret if configured
-        if (src.webhook_secret) {
-          const providedSecret = req.headers['x-webhook-secret'] || req.query.secret;
-          if (providedSecret !== src.webhook_secret) {
-            return res.status(401).json({ error: 'Invalid webhook secret' });
-          }
+        // Verify webhook secret (required for security)
+        const providedSecret = req.headers['x-webhook-secret'] || req.query.secret;
+        if (!src.webhook_secret) {
+          return res.status(403).json({ error: 'Webhook secret not configured for this source' });
+        }
+        if (providedSecret !== src.webhook_secret) {
+          return res.status(401).json({ error: 'Invalid webhook secret' });
         }
       }
 

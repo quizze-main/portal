@@ -15,6 +15,16 @@ export interface ManagerMetricItem {
   color: string;
   forecastLabel: 'forecast' | 'deviation' | 'remaining';
   status: 'good' | 'warning' | 'critical' | 'neutral';
+  // Derived fields for KPI card parity
+  reserve?: number;
+  reserveUnit?: string;
+  loss?: number;
+  forecast?: number;
+  forecastValue?: number;
+  forecastUnit?: string;
+  predictedValue?: number;
+  predictedCompletion?: number;
+  dailyRate?: number;
 }
 
 export interface UseManagerDetailResult {
@@ -99,8 +109,18 @@ export function useManagerDetail(
           plan: managerEntry?.plan ?? null,
           percent: managerEntry?.percent ?? null,
           color: metricConfig.color || '#3B82F6',
-          forecastLabel: metricConfig.forecastLabel || 'forecast',
-          status: getMetricStatus(managerEntry?.percent ?? null),
+          forecastLabel: managerEntry?.forecastLabel || metricConfig.forecastLabel || 'forecast',
+          status: managerEntry?.status || getMetricStatus(managerEntry?.percent ?? null),
+          // Derived fields from API
+          reserve: managerEntry?.reserve,
+          reserveUnit: managerEntry?.reserveUnit,
+          loss: managerEntry?.loss,
+          forecast: managerEntry?.forecast,
+          forecastValue: managerEntry?.forecastValue,
+          forecastUnit: managerEntry?.forecastUnit,
+          predictedValue: managerEntry?.predictedValue,
+          predictedCompletion: managerEntry?.predictedCompletion,
+          dailyRate: managerEntry?.dailyRate,
         } satisfies ManagerMetricItem;
       })
       .filter((m): m is ManagerMetricItem => m !== null);

@@ -17,6 +17,7 @@ import { resolvePlan, readPlans as readMetricPlans } from './metric-plans-api.js
 import { generateCacheKey, withCache, CACHE_TTL, isRedisConnected } from './cache.js';
 import { aggregate } from './aggregation-engine.js';
 import { getDynamicPlan } from './plan-engine.js';
+import { calculateForecast, buildDateContext } from './forecast-engine.js';
 import { setupEventRoutes } from './event-ingestion.js';
 import { listAdapters, clearAdapterCache } from './adapters/adapter-loader.js';
 import { manualPoll } from './adapters/polling-scheduler.js';
@@ -44,7 +45,7 @@ const FRAPPE_API_SECRET = env.FRAPPE_API_SECRET;
 const OUTLINE_BASE_URL = env.OUTLINE_BASE_URL || 'https://wiki.loov.ru';
 const OUTLINE_API_KEY = env.OUTLINE_API_KEY;
 
-// Конфигурация Tracker (loov dashboards)
+// Конфигурация Tracker (OverBrain dashboards)
 const TRACKER_API_URL = env.TRACKER_API_URL || 'https://tracker.loov.ru';
 const TRACKER_API_TOKEN = env.TRACKER_API_TOKEN;
 
@@ -142,13 +143,14 @@ export function setupInternalApiRoutes(app) {
   // Server-side version of getDashboardPositionCategory (mirrors src/lib/roleUtils.ts)
   const _getDashboardPositionCategory = (designation) => {
     const d = String(designation || '').toLowerCase().replace(/ё/g, 'е');
-    if (d.includes('руководитель')) return 'leader';
-    if (d.includes('старш') && d.includes('менеджер')) return 'senior_manager';
+    if (d.includes('руководитель') || d.includes('директор')) return 'leader';
+    if (d.includes('старш') && (d.includes('менеджер') || d.includes('продавец'))) return 'senior_manager';
     if (d.includes('оптометрист')) return 'optometrist';
     if (d.includes('5/2')) return 'manager_5_2';
     if (d.includes('2/2')) return 'manager_2_2';
     if (d.includes('универсал')) return 'universal_manager';
-    if (d.includes('менеджер')) return 'manager';
+    if (d.includes('менеджер') || d.includes('продавец') || d.includes('консультант')) return 'manager';
+    if (d.includes('кассир')) return 'other';
     return 'other';
   };
 
@@ -927,8 +929,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path (original) ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1224,8 +1226,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path (original) ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1341,8 +1343,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path (original) ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1458,8 +1460,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1561,8 +1563,8 @@ export function setupInternalApiRoutes(app) {
     const { status = 'all', role = 'all', search = '', days = '' } = req.query;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured, returning empty tasks');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1662,8 +1664,8 @@ export function setupInternalApiRoutes(app) {
     const { status } = req.body;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1708,8 +1710,8 @@ export function setupInternalApiRoutes(app) {
   app.get('/api/frappe/tasks/:taskName', requireAuth, async (req, res) => {
     const { taskName } = req.params;
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1743,8 +1745,8 @@ export function setupInternalApiRoutes(app) {
     const { subject, description, assigneeId, authorId } = req.body;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1791,8 +1793,8 @@ export function setupInternalApiRoutes(app) {
     const updates = req.body;
     
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1847,8 +1849,8 @@ export function setupInternalApiRoutes(app) {
 
     // ── Frappe path ──
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
 
     try {
@@ -1973,8 +1975,8 @@ export function setupInternalApiRoutes(app) {
   app.get('/api/kb/bookmarks', requireAuth, async (req, res) => {
     const employee = req.query.employee;
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
     if (!employee || typeof employee !== 'string') {
       return res.status(400).json({ error: 'employee is required' });
@@ -2011,8 +2013,8 @@ export function setupInternalApiRoutes(app) {
   // Set bookmark state for an article
   app.post('/api/kb/bookmarks', requireAuth, async (req, res) => {
     if (!FRAPPE_API_KEY || !FRAPPE_API_SECRET) {
-      loggerWithUser.error(req, 'Frappe API credentials not configured');
-      return res.status(500).json({ error: 'Frappe API credentials not configured' });
+      loggerWithUser.warn(req, 'Frappe API credentials not configured');
+      return res.json({ data: [] });
     }
     const { employee, article_id, bookmarked, title } = req.body || {};
     if (!employee || !article_id || typeof bookmarked === 'undefined') {
@@ -2238,7 +2240,7 @@ export function setupInternalApiRoutes(app) {
   };
 
   // Build normalized metric response from fact/plan/meta (V2: uses metricType + thresholds)
-  const _buildMetricResponse = (metricCfg, fact, plan, forecastRaw, lossOrOver, valueType, valuePostfixType, remainingWorkingDays = 0) => {
+  const _buildMetricResponse = (metricCfg, fact, plan, forecastRaw, lossOrOver, valueType, valuePostfixType, remainingWorkingDays = 0, dateCtx = null) => {
     const unitFromPostfix =
       valuePostfixType === 'rubles' ? '₽'
         : valuePostfixType === 'percent' ? '%'
@@ -2247,8 +2249,8 @@ export function setupInternalApiRoutes(app) {
     const isPercentage = valueType === 'percentage' || unitFromPostfix === '%';
     const unit = unitFromPostfix ?? metricCfg.unit;
 
-    const reserve = lossOrOver > 0 ? Math.ceil(lossOrOver) : undefined;
-    const loss = lossOrOver < 0 ? Math.ceil(Math.abs(lossOrOver)) : undefined;
+    let reserve = lossOrOver > 0 ? Math.ceil(lossOrOver) : undefined;
+    let loss = lossOrOver < 0 ? Math.ceil(Math.abs(lossOrOver)) : undefined;
     const reserveUnit = metricCfg.id === 'conversion_rate' && reserve !== undefined ? '₽' : undefined;
 
     // Determine calculation mode: V2 metricType takes precedence, fallback to forecastLabel
@@ -2305,6 +2307,29 @@ export function setupInternalApiRoutes(app) {
       }
     }
 
+    // V7: Predictive forecast (end-of-month projection)
+    let predictedValue = undefined;
+    let predictedCompletion = undefined;
+    let dailyRate = undefined;
+    try {
+      const effectiveDateCtx = dateCtx || buildDateContext(remainingWorkingDays);
+      const prediction = calculateForecast(metricCfg, fact, plan, effectiveDateCtx);
+      if (prediction) {
+        predictedValue = prediction.predictedValue;
+        predictedCompletion = prediction.predictedCompletion;
+        dailyRate = prediction.dailyRate;
+      }
+    } catch (err) {
+      console.warn(`[forecast-engine] Error for metric ${metricCfg?.id}: ${err.message}`);
+    }
+
+    // For auto lossMode, recalculate reserve/loss using predicted end-of-month value
+    if (metricCfg.lossMode === 'auto' && predictedValue != null) {
+      const predictedLossOrOver = predictedValue - plan;
+      reserve = predictedLossOrOver > 0 ? Math.ceil(predictedLossOrOver) : undefined;
+      loss = predictedLossOrOver < 0 ? Math.ceil(Math.abs(predictedLossOrOver)) : undefined;
+    }
+
     return {
       id: metricCfg.id,
       name: metricCfg.name,
@@ -2330,6 +2355,10 @@ export function setupInternalApiRoutes(app) {
       remainingDailyPlan: forecastLabel === 'remaining' && remainingWorkingDays > 0
         ? Math.round(Math.max(0, plan - fact) / remainingWorkingDays)
         : undefined,
+      // V7: Predictive forecast
+      predictedValue,
+      predictedCompletion,
+      dailyRate,
     };
   };
 
@@ -2558,7 +2587,6 @@ export function setupInternalApiRoutes(app) {
             const fact = _toNumber(data?.fact_value) ?? 0;
             const plan = _toNumber(data?.plan_value) ?? 0;
             const forecastRaw = _toNumber(data?.forecast_value);
-            const lossOrOver = _toNumber(data?.loss_or_overperformance) ?? 0;
             const valueType = data?.value_type ? String(data.value_type) : '';
             const valuePostfixType = data?.value_postfix_type ? String(data.value_postfix_type) : '';
 
@@ -2570,6 +2598,17 @@ export function setupInternalApiRoutes(app) {
               const resolved = resolvePlan(metric.id, storeId, null, period, allMetricPlans);
               if (resolved !== null) effectivePlan = resolved;
             }
+
+            // Respect metric lossMode config (previously tracker value was always used)
+            let lossOrOver = 0;
+            const lossMode = metric.lossMode || 'disabled';
+            if (lossMode === 'tracker') {
+              lossOrOver = _toNumber(data?.loss_or_overperformance) ?? 0;
+            } else if (lossMode !== 'disabled') {
+              // 'auto', 'formula', 'jsonpath' — delegate to existing function
+              lossOrOver = _calculateLossOrOver(metric, fact, effectivePlan, data, null);
+            }
+
             return _buildMetricResponse(metric, fact, effectivePlan, forecastRaw, lossOrOver, valueType, valuePostfixType, _remainingWorkingDays);
           });
       }
@@ -2896,13 +2935,101 @@ export function setupInternalApiRoutes(app) {
 
   // --- Daily Plan Graph ---
   app.get('/api/metric-daily-graph', requireAuth, async (req, res) => {
-    const { metric_name, date_from, date_to, subject_type, subject_ids, is_aggregated } = req.query;
+    const { metric_name, date_from, date_to, subject_type, subject_ids, is_aggregated, manager_id } = req.query;
 
     if (!metric_name || !date_from || !date_to || !subject_type || !subject_ids) {
       return res.status(400).json({ error: 'Missing required params: metric_name, date_from, date_to, subject_type, subject_ids' });
     }
 
     res.setHeader('Cache-Control', 'no-store');
+
+    // --- Manager-level daily graph: use by_managers=True on Tracker API ---
+    if (manager_id && TRACKER_API_URL && TRACKER_API_TOKEN) {
+      try {
+        // 1. Resolve employee's itigris ID
+        let itigrisId = null;
+        try {
+          const empUrl = `${FRAPPE_BASE_URL}/api/resource/Employee/${encodeURIComponent(String(manager_id))}?fields=["custom_itigris_user_id"]`;
+          const empRes = await fetch(empUrl, {
+            headers: { 'Authorization': `token ${FRAPPE_API_KEY}:${FRAPPE_API_SECRET}` },
+          });
+          if (empRes.ok) {
+            const empJson = await empRes.json();
+            itigrisId = empJson?.data?.custom_itigris_user_id || null;
+          }
+        } catch (e) {
+          loggerWithUser.warn(req, 'Failed to resolve itigris ID for manager', { manager_id, error: e.message });
+        }
+
+        if (itigrisId) {
+          // 2. Resolve tracker code
+          let trackerMetricName = metric_name;
+          try {
+            const dashCfg = await readDashboardMetricsConfig();
+            const cfg = (dashCfg.metrics || []).find(m => m.id === metric_name);
+            if (cfg && cfg.trackerCode) trackerMetricName = cfg.trackerCode;
+          } catch (_) { /* use original */ }
+
+          // 3. Call Tracker API with by_managers=True
+          const storeIds = Array.isArray(subject_ids) ? subject_ids : [subject_ids];
+          const url = new URL(
+            `/api/v1/portal/analytics/metrics/${encodeURIComponent(trackerMetricName)}/daily_plan_graph`,
+            TRACKER_API_URL
+          );
+          url.searchParams.set('date_from', date_from);
+          url.searchParams.set('date_to', date_to);
+          url.searchParams.set('subject_type', 'store');
+          storeIds.forEach(id => url.searchParams.append('subject_ids', id));
+          url.searchParams.set('is_aggregated', storeIds.length > 1 ? 'true' : 'false');
+          url.searchParams.set('by_managers', 'True');
+
+          const cacheKey = generateCacheKey('daily_graph_manager', {
+            metric: metric_name, date_from, date_to, manager_id, store_ids: storeIds.sort().join(','),
+          });
+
+          const { data: trackerData } = await withCache(cacheKey, CACHE_TTL.ANALYTICS, () =>
+            fetch(url.toString(), {
+              method: 'GET',
+              headers: { 'Authorization': `Bearer ${TRACKER_API_TOKEN}`, 'Content-Type': 'application/json' },
+            }).then(async (r) => {
+              if (!r.ok) {
+                const err = new Error(`Tracker daily_plan_graph by_managers error: ${r.status}`);
+                err.status = r.status;
+                throw err;
+              }
+              return r.json();
+            })
+          );
+
+          // 4. Extract this manager's data from the response
+          // Response may have: { data: { managers: { "itigrisId": { "2026-03-01": { fact_value, plan_value }, ... } } } }
+          // or: { managers: { ... } } or data keyed by itigris ID
+          const rawData = trackerData?.data || trackerData || {};
+          const managers = rawData.managers || rawData;
+
+          // Try to find manager's data by itigris ID (with and without prefix)
+          const itigrisClean = String(itigrisId).replace(/^itigris[-_]/i, '').trim();
+          const managerDaily = managers[itigrisId]
+            || managers[itigrisClean]
+            || managers[`itigris-${itigrisClean}`]
+            || managers[`itigris_${itigrisClean}`]
+            || null;
+
+          if (managerDaily && typeof managerDaily === 'object') {
+            // Return in the same format as regular daily graph response
+            return res.json({
+              code: metric_name,
+              data: { aggregated: managerDaily },
+            });
+          }
+
+          // If by_managers didn't return per-manager data, fall through to regular logic
+          loggerWithUser.debug(req, 'by_managers did not return data for manager, falling through', { manager_id, itigrisId });
+        }
+      } catch (e) {
+        loggerWithUser.warn(req, 'Manager daily graph failed, falling through', { manager_id, error: e.message });
+      }
+    }
 
     // --- Manual / computed metrics: build response from manualData ---
     try {
@@ -3531,6 +3658,18 @@ export function setupInternalApiRoutes(app) {
         loggerWithUser.warn(req, 'manager-breakdown: failed to fetch employees', { error: err.message, storeId });
       }
 
+      // Calculate remaining working days for forecast/predictive fields
+      let _breakdownRemainingWorkingDays = 0;
+      try {
+        const [pYear, pMonth] = String(period).split('-').map(Number);
+        const monthEnd = new Date(pYear, pMonth, 0); // last day of month
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (monthEnd >= today) {
+          _breakdownRemainingWorkingDays = getWorkingDaysInRange(today, monthEnd);
+        }
+      } catch (_) { /* ignore */ }
+
       // 2. Load metric configs + plans
       const metricsConfig = await readDashboardMetricsConfig();
       const allMetrics = metricsConfig.metrics || [];
@@ -3708,6 +3847,12 @@ export function setupInternalApiRoutes(app) {
 
           const percent = plan && plan > 0 && fact != null ? Math.round((fact / plan) * 10000) / 100 : null;
 
+          // Enrich with reserve/loss/forecast/predicted via _buildMetricResponse
+          const effectiveFact = fact ?? 0;
+          const effectivePlan = plan ?? 0;
+          const lossOrOver = _calculateLossOrOver(metric, effectiveFact, effectivePlan, null, null);
+          const enriched = _buildMetricResponse(metric, effectiveFact, effectivePlan, null, lossOrOver, '', '', _breakdownRemainingWorkingDays);
+
           return {
             employee_id: emp.employee_id,
             employee_name: emp.employee_name,
@@ -3715,6 +3860,18 @@ export function setupInternalApiRoutes(app) {
             plan,
             fact,
             percent,
+            // Derived fields for KPI card parity
+            reserve: enriched.reserve,
+            reserveUnit: enriched.reserveUnit,
+            loss: enriched.loss,
+            forecast: enriched.forecast,
+            forecastValue: enriched.forecastValue,
+            forecastUnit: enriched.forecastUnit,
+            forecastLabel: enriched.forecastLabel,
+            status: enriched.status,
+            predictedValue: enriched.predictedValue,
+            predictedCompletion: enriched.predictedCompletion,
+            dailyRate: enriched.dailyRate,
           };
         });
 
@@ -3788,6 +3945,12 @@ export function setupInternalApiRoutes(app) {
 
             const percent = plan && plan > 0 && fact != null ? Math.round((fact / plan) * 10000) / 100 : null;
 
+            // Enrich with reserve/loss/forecast/predicted via _buildMetricResponse
+            const effectiveFact = fact ?? 0;
+            const effectivePlan = plan ?? 0;
+            const lossOrOver = _calculateLossOrOver(metric, effectiveFact, effectivePlan, null, null);
+            const enriched = _buildMetricResponse(metric, effectiveFact, effectivePlan, null, lossOrOver, '', '', _breakdownRemainingWorkingDays);
+
             return {
               employee_id: emp.employee_id,
               employee_name: emp.employee_name,
@@ -3795,6 +3958,18 @@ export function setupInternalApiRoutes(app) {
               plan,
               fact,
               percent,
+              // Derived fields for KPI card parity
+              reserve: enriched.reserve,
+              reserveUnit: enriched.reserveUnit,
+              loss: enriched.loss,
+              forecast: enriched.forecast,
+              forecastValue: enriched.forecastValue,
+              forecastUnit: enriched.forecastUnit,
+              forecastLabel: enriched.forecastLabel,
+              status: enriched.status,
+              predictedValue: enriched.predictedValue,
+              predictedCompletion: enriched.predictedCompletion,
+              dailyRate: enriched.dailyRate,
             };
           });
 
@@ -4264,7 +4439,7 @@ export function setupInternalApiRoutes(app) {
   });
 
   /**
-   * User settings proxy (LoovIs user settings).
+   * User settings proxy.
    *
    * - GET /api/frappe/user-settings -> loovis_user_settings_get
    * - POST /api/frappe/user-settings -> loovis_user_settings_upsert
@@ -5262,7 +5437,7 @@ export function setupInternalApiRoutes(app) {
   // Client dimension — search clients
   app.get('/api/admin/clients/search', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.json({ data: [] });
 
       const { q = '', branch_id, limit = 20 } = req.query;
@@ -5297,7 +5472,7 @@ export function setupInternalApiRoutes(app) {
   // List clients (paginated)
   app.get('/api/admin/clients', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.json({ data: [], total: 0 });
 
       const limit = Math.min(parseInt(req.query.limit) || 50, 200);
@@ -5337,7 +5512,7 @@ export function setupInternalApiRoutes(app) {
   // Save/update custom adapter in registry
   app.post('/api/admin/adapters', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.status(503).json({ error: 'Database not connected' });
 
       const { id, name, description, version, supportedEvents, adapterCode, aiGenerated, aiPrompt } = req.body;
@@ -5366,7 +5541,7 @@ export function setupInternalApiRoutes(app) {
   // Delete custom adapter
   app.delete('/api/admin/adapters/:id', requireAuth, async (req, res) => {
     try {
-      const { isDbConnected: dbOk, query: dbQuery } = await import('./db.js');
+      const { isPrismaConnected: dbOk, rawQuery: dbQuery } = await import('./prisma.js');
       if (!dbOk()) return res.status(503).json({ error: 'Database not connected' });
 
       // Prevent deleting built-in adapters

@@ -2,7 +2,7 @@
   "metrics": [
     {
       "id": "revenue_created",
-      "name": "Выручка СЗ",
+      "name": "Выручка созданные",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "forecast",
@@ -139,20 +139,22 @@
         }
       ],
       "fieldMappings": [],
-      "lossMode": "disabled",
+      "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "revenue_closed",
-      "name": "Выручка ЗЗ",
+      "name": "Выручка закрытые",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "forecast",
       "source": "tracker",
       "trackerCode": "revenue_closed",
       "enabled": true,
-      "order": 2,
+      "order": 1,
       "widgetType": "kpi_forecast",
       "parentId": null,
       "visibleToPositions": [
@@ -195,18 +197,20 @@
       "externalHeaders": {},
       "jsonPathFact": "",
       "jsonPathPlan": "",
-      "color": "#3B82F6"
+      "color": "#3B82F6",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "frames_count",
-      "name": "Кол-во ФЛ",
+      "name": "Кол-во трафика",
       "unit": "шт",
       "forecastUnit": "%",
       "forecastLabel": "forecast",
       "source": "tracker",
       "trackerCode": "frames_count",
       "enabled": true,
-      "order": 3,
+      "order": 2,
       "widgetType": "kpi_forecast",
       "parentId": null,
       "visibleToPositions": [],
@@ -230,7 +234,15 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "color": "#3B82F6"
     },
     {
       "id": "conversion_rate",
@@ -240,6 +252,43 @@
       "forecastLabel": "deviation",
       "source": "tracker",
       "trackerCode": "conversion_rate",
+      "enabled": true,
+      "order": 3,
+      "widgetType": "kpi_deviation",
+      "parentId": null,
+      "visibleToPositions": [],
+      "dataSourceId": null,
+      "externalPath": "",
+      "externalQueryParams": [],
+      "externalBody": null,
+      "metricType": "averaged",
+      "valueType": "percentage",
+      "aggregation": "simple_average",
+      "planPeriod": "month",
+      "planProRateMethod": "working_days",
+      "decimalPlaces": 1,
+      "thresholds": {
+        "critical": -5,
+        "good": 5
+      },
+      "formula": "",
+      "formulaDependencies": [],
+      "bindings": [],
+      "fieldMappings": [],
+      "lossMode": "tracker",
+      "lossFormula": "",
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
+    },
+    {
+      "id": "csi",
+      "name": "CSI",
+      "unit": "%",
+      "forecastUnit": "%",
+      "forecastLabel": "deviation",
+      "source": "tracker",
+      "trackerCode": "csi",
       "enabled": true,
       "order": 4,
       "widgetType": "kpi_deviation",
@@ -265,53 +314,20 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
-    },
-    {
-      "id": "csi",
-      "name": "CSI",
-      "unit": "%",
-      "forecastUnit": "%",
-      "forecastLabel": "deviation",
-      "source": "tracker",
-      "trackerCode": "csi",
-      "enabled": true,
-      "order": 5,
-      "widgetType": "kpi_deviation",
-      "parentId": null,
-      "visibleToPositions": [],
-      "dataSourceId": null,
-      "externalPath": "",
-      "externalQueryParams": [],
-      "externalBody": null,
-      "metricType": "averaged",
-      "valueType": "percentage",
-      "aggregation": "simple_average",
-      "planPeriod": "month",
-      "planProRateMethod": "working_days",
-      "decimalPlaces": 1,
-      "thresholds": {
-        "critical": -5,
-        "good": 5
-      },
-      "formula": "",
-      "formulaDependencies": [],
-      "bindings": [],
-      "fieldMappings": [],
-      "lossMode": "tracker",
-      "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "avg_glasses_price",
-      "name": "Ср. стоимость очков",
+      "name": "Средний чек",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "deviation",
       "source": "tracker",
       "trackerCode": "avg_glasses_price",
       "enabled": true,
-      "order": 6,
+      "order": 5,
       "widgetType": "kpi_deviation",
       "parentId": null,
       "visibleToPositions": [],
@@ -335,7 +351,15 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "color": "#3B82F6"
     },
     {
       "id": "margin_rate",
@@ -346,7 +370,7 @@
       "source": "tracker",
       "trackerCode": "margin_rate",
       "enabled": true,
-      "order": 8,
+      "order": 7,
       "color": "#3B82F6",
       "widgetType": "kpi_deviation",
       "parentId": null,
@@ -378,18 +402,20 @@
       "externalMethod": "GET",
       "externalHeaders": {},
       "jsonPathFact": "",
-      "jsonPathPlan": ""
+      "jsonPathPlan": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "avg_repaires_price",
-      "name": "Ср. стоимость ремонтов",
+      "name": "Ср. стоимость сертификатов",
       "unit": "₽",
       "forecastUnit": "%",
       "forecastLabel": "deviation",
       "source": "tracker",
       "trackerCode": "avg_repaires_price",
       "enabled": true,
-      "order": 7,
+      "order": 6,
       "widgetType": "kpi_deviation",
       "parentId": null,
       "visibleToPositions": [],
@@ -413,7 +439,15 @@
       "fieldMappings": [],
       "lossMode": "tracker",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": "",
+      "externalUrl": "",
+      "externalMethod": "GET",
+      "externalHeaders": {},
+      "jsonPathFact": "",
+      "jsonPathPlan": "",
+      "color": "#3B82F6"
     },
     {
       "id": "test",
@@ -511,7 +545,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "2",
@@ -601,7 +637,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "amo_leads_p10241466_s81063298",
@@ -656,7 +694,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "amo_leads_p10241466_s81062894",
@@ -717,7 +757,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "amo_leads_total",
@@ -736,8 +778,8 @@
       "jsonPathPlan": "",
       "manualData": [],
       "color": "#3B82F6",
-      "enabled": true,
-      "order": 9,
+      "enabled": false,
+      "order": 10,
       "visibleToPositions": [
         "leader"
       ],
@@ -802,7 +844,9 @@
       "fieldMappings": [],
       "lossMode": "disabled",
       "lossFormula": "",
-      "jsonPathLoss": ""
+      "jsonPathLoss": "",
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "1",
@@ -822,7 +866,7 @@
       "manualData": [],
       "color": "#3B82F6",
       "enabled": true,
-      "order": 10,
+      "order": 8,
       "visibleToPositions": [],
       "dataSourceId": null,
       "externalPath": "",
@@ -847,7 +891,9 @@
       "lossMode": "auto",
       "lossFormula": "",
       "jsonPathLoss": "",
-      "fieldMappings": []
+      "fieldMappings": [],
+      "forecastMethod": null,
+      "forecastFormula": ""
     },
     {
       "id": "123",
@@ -866,8 +912,8 @@
       "jsonPathPlan": "",
       "manualData": [],
       "color": "#3B82F6",
-      "enabled": true,
-      "order": -1,
+      "enabled": false,
+      "order": 9,
       "visibleToPositions": [],
       "dataSourceId": null,
       "externalPath": "",
@@ -892,7 +938,9 @@
       "lossMode": "auto",
       "lossFormula": "",
       "jsonPathLoss": "",
-      "fieldMappings": []
+      "fieldMappings": [],
+      "forecastMethod": null,
+      "forecastFormula": ""
     }
   ],
   "widgets": [
@@ -901,7 +949,7 @@
       "type": "ranking",
       "name": "Рейтинг филиалов",
       "enabled": true,
-      "order": 100,
+      "order": 300,
       "config": {
         "entityType": "branch",
         "metricCodes": [
@@ -973,11 +1021,18 @@
       "order": 400,
       "parentId": null,
       "config": {
-        "metricCode": "revenue_created",
-        "chartType": "bar",
-        "subjectType": "store",
+        "metricSeries": [
+          {
+            "metricCode": "revenue_created",
+            "chartType": "bar",
+            "color": "#3B82F6",
+            "barStyle": "dynamic"
+          }
+        ],
+        "subjectType": "manager",
         "isAggregated": true
-      }
+      },
+      "targetPage": "manager"
     },
     {
       "id": "chart_1773417367571",
@@ -998,7 +1053,7 @@
       "type": "chart",
       "name": "csi",
       "enabled": true,
-      "order": 600,
+      "order": 500,
       "parentId": null,
       "config": {
         "metricSeries": [
@@ -1017,7 +1072,7 @@
       "type": "chart",
       "name": "СЗ ЗЗ Клиенты",
       "enabled": true,
-      "order": 700,
+      "order": 100,
       "parentId": null,
       "config": {
         "metricSeries": [
@@ -1042,15 +1097,6 @@
         "subjectType": "store",
         "isAggregated": false
       }
-    },
-    {
-      "id": "metric_selector_chart",
-      "type": "metric_selector_chart",
-      "name": "График метрики",
-      "enabled": true,
-      "order": 800,
-      "parentId": null,
-      "config": {}
     },
     {
       "id": "chart_1773472017784",
@@ -1083,6 +1129,43 @@
           "mode": "formula",
           "metricCode": "revenue_created",
           "formula": "{revenue_created} + {revenue_closed}"
+        }
+      }
+    },
+    {
+      "id": "chart_1773995168207",
+      "type": "chart",
+      "name": "Все метрики",
+      "enabled": true,
+      "order": 600,
+      "parentId": null,
+      "config": {
+        "metricSeries": [],
+        "subjectType": "store",
+        "isAggregated": true,
+        "isMetricSelector": true
+      }
+    },
+    {
+      "id": "ranking_1774523721516",
+      "type": "ranking",
+      "name": "Рейтинг филиалов",
+      "enabled": true,
+      "order": 1100,
+      "parentId": "revenue_created",
+      "config": {
+        "entityType": "branch",
+        "metricCodes": [
+          "conversion_rate",
+          "frames_count",
+          "revenue_closed",
+          "revenue_created",
+          "avg_glasses_price"
+        ],
+        "lossConfig": {
+          "mode": "formula",
+          "metricCode": "revenue_created",
+          "formula": "{revenue_created.fact} - {frames_count.fact} * {avg_glasses_price.fact}"
         }
       }
     }

@@ -33,15 +33,10 @@ const corsOptions = {
       return callback(null, true);
     }
     
-    // Проверяем ngrok URLs (паттерн: https://*.ngrok-free.app)
-    const ngrokPattern = /^https:\/\/.*\.ngrok-free\.app$/;
-    if (ngrokPattern.test(origin)) {
-      logger.info('CORS: ngrok origin allowed', { origin });
-      return callback(null, true);
-    }
-    
     logger.warn('CORS blocked origin', { origin });
-    callback(new Error('Not allowed by CORS'));
+    const err = new Error('Not allowed by CORS');
+    err.status = 403;
+    callback(err);
   },
   credentials: true,
   optionsSuccessStatus: 200
@@ -187,7 +182,12 @@ app.use((req, res, next) => {
             token: token ? `${token.substring(0, 10)}...` : 'null',
             url: req.url
         });
-        req.user = null;
+        if (process.env.NODE_ENV === 'production') {
+            req.user = null;
+        } else {
+            // Dev fallback: don't block on expired/invalid tokens
+            req.user = { tg_username: 'fedulovdm', employeename: 'fedulovdm', tg_chat_id: 'fedulovdm', demo: false };
+        }
     }
     next();
 });
@@ -280,7 +280,7 @@ import { setupDataSourceRoutes, initializeDataSources, readConfig as readDataSou
 import { setupMetricPlansRoutes } from './src/server/metric-plans-api.js';
 import { setDynamicIntegrations } from './src/server/health-checks.js';
 import { initRedisCache, closeRedisCache, isRedisConnected } from './src/server/cache.js';
-import { initDatabase, closeDatabase, isDbConnected } from './src/server/db.js';
+import { initPrisma, closePrisma, isPrismaConnected } from './src/server/prisma.js';
 import { setupSalaryAdminRoutes } from './src/server/salary-admin.js';
 import { setupShiftScheduleRoutes } from './src/server/shift-schedule-api.js';
 import { startPollingScheduler, stopPollingScheduler } from './src/server/adapters/polling-scheduler.js';
@@ -332,7 +332,7 @@ app.get('/health', (req, res) => {
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         redis: isRedisConnected() ? 'connected' : 'disconnected',
-        postgres: isDbConnected() ? 'connected' : 'disconnected'
+        postgres: isPrismaConnected() ? 'connected' : 'disconnected'
     });
 });
 
@@ -437,7 +437,7 @@ app.post('/api/auth/telegram', async (req, res) => {
 
 // Dev auto-login (no PIN required, only when DEV_AUTO_LOGIN=true)
 app.post('/api/auth/dev-auto', async (req, res) => {
-    if (process.env.DEV_AUTO_LOGIN !== 'true') {
+    if (process.env.DEV_AUTO_LOGIN !== 'true' || process.env.NODE_ENV === 'production') {
         return res.status(403).json({ error: 'Dev auto-login is disabled' });
     }
     const JWT_SECRET = process.env.JWT_SECRET;
@@ -541,9 +541,9 @@ app.post('/api/auth/demo', async (req, res) => {
         tg_chat_id: demoTgUsername,
         designation,
         department,
-        demo: false
+        demo: true
     };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
     res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -655,8 +655,9 @@ app.use((error, req, res, next) => {
     });
   }
   
-  res.status(500).json({ 
-    error: 'Internal server error',
+  const status = error.status || 500;
+  res.status(status).json({
+    error: status === 500 ? 'Internal server error' : error.message,
     message: process.env.NODE_ENV === 'local' ? (error.message || error.toString()) : 'Something went wrong'
   });
 });
@@ -675,10 +676,9 @@ initializeDataSources().then(async () => {
 });
 
 // Инициализация PostgreSQL
-initDatabase().then((connected) => {
+initPrisma().then((connected) => {
   if (connected) {
-    logger.info('PostgreSQL database initialized');
-    // Start background schedulers after DB is ready
+    logger.info('PostgreSQL database initialized (Prisma)');
     startPollingScheduler();
     startViewRefreshScheduler();
   }
@@ -701,7 +701,7 @@ const gracefulShutdown = async (signal) => {
   stopPollingScheduler();
   stopViewRefreshScheduler();
   await closeRedisCache();
-  await closeDatabase();
+  await closePrisma();
   process.exit(0);
 };
 

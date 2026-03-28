@@ -1,3 +1,4 @@
+import { useRef, useState, useCallback, useEffect } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -5,7 +6,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { ManagerDetailContent } from '@/pages/leader-dashboard/ManagerDetail';
-import { useState, useEffect } from 'react';
 
 interface ManagerDetailSheetProps {
   open: boolean;
@@ -14,6 +14,9 @@ interface ManagerDetailSheetProps {
 }
 
 export function ManagerDetailSheet({ open, onOpenChange, managerId }: ManagerDetailSheetProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+
   // Track internal managerId so switching managers inside the sheet works
   const [currentManagerId, setCurrentManagerId] = useState(managerId);
 
@@ -22,24 +25,50 @@ export function ManagerDetailSheet({ open, onOpenChange, managerId }: ManagerDet
     if (managerId) setCurrentManagerId(managerId);
   }, [managerId]);
 
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    // Expand to full screen once user scrolls past 10px
+    if (el.scrollTop > 10 && !isExpanded) {
+      setIsExpanded(true);
+    }
+    // Collapse back when scrolled to top
+    if (el.scrollTop === 0 && isExpanded) {
+      setIsExpanded(false);
+    }
+  }, [isExpanded]);
+
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (!open) setIsExpanded(false);
+    onOpenChange(open);
+  }, [onOpenChange]);
+
   if (!currentManagerId) return null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[92vh] rounded-t-2xl p-0 flex flex-col overflow-hidden"
+        className={`p-0 flex flex-col overflow-hidden transition-all duration-300 ease-out ${
+          isExpanded
+            ? 'h-[100vh] rounded-none'
+            : 'h-[92vh] rounded-t-2xl'
+        }`}
       >
         <SheetHeader className="px-4 pt-4 pb-0 shrink-0">
           <SheetTitle className="text-base font-semibold">
             Менеджер
           </SheetTitle>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto">
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="flex-1 overflow-y-auto leader-dashboard-theme"
+        >
           <ManagerDetailContent
             managerId={currentManagerId}
             embedded
-            onBack={() => onOpenChange(false)}
+            onBack={() => handleOpenChange(false)}
             onManagerChange={setCurrentManagerId}
           />
         </div>

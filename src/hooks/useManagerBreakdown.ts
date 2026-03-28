@@ -8,6 +8,18 @@ export interface ManagerEntry {
   plan: number | null;
   fact: number | null;
   percent: number | null;
+  // Derived fields for KPI card parity
+  reserve?: number;
+  reserveUnit?: string;
+  loss?: number;
+  forecast?: number;
+  forecastValue?: number;
+  forecastUnit?: string;
+  forecastLabel?: 'forecast' | 'deviation' | 'remaining';
+  status?: 'good' | 'warning' | 'critical';
+  predictedValue?: number;
+  predictedCompletion?: number;
+  dailyRate?: number;
 }
 
 export interface ManagerBreakdownData {

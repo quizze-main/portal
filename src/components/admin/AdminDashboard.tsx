@@ -1361,7 +1361,6 @@ export const AdminDashboard: React.FC = () => {
     createWidget: createWidgetFn,
     updateWidget: updateWidgetFn,
     deleteWidget: deleteWidgetFn,
-    reorderWidgets,
     isUpdating: isWidgetUpdating,
   } = useWidgets();
   const [editingWidget, setEditingWidget] = useState<DashboardWidget | null>(null);
@@ -1563,9 +1562,9 @@ export const AdminDashboard: React.FC = () => {
     const metricIds = newOrder.filter(id => metricSet.has(id));
     const widgetIds = newOrder.filter(id => widgetSet.has(id));
 
-    reorderMetrics(metricIds);
-    reorderWidgets(widgetIds);
-  }, [unifiedItems, metricSet, widgetSet, reorderMetrics, reorderWidgets]);
+    // Single atomic request — prevents race condition between two concurrent writes
+    reorderMetrics(metricIds, widgetIds);
+  }, [unifiedItems, metricSet, widgetSet, reorderMetrics]);
 
   const handleToggleEnabled = useCallback(async (id: string, enabled: boolean) => {
     await updateMetric({ id, data: { enabled } });

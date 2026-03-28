@@ -20,6 +20,8 @@ interface ChartWidgetProps {
   forceCollapsed?: boolean;
   /** Compact preview mode for admin dashboard — small chart, no controls */
   compact?: boolean;
+  /** Frappe employee ID — when set, fetches per-manager daily data instead of store aggregate */
+  managerId?: string;
 }
 
 // ─── Formatters ─────────────────────────────────────────────────────
@@ -117,7 +119,7 @@ function ChartTable({ data, metricCode }: { data: IntegratedBarChartDataPoint[];
 
 // ─── Main widget ────────────────────────────────────────────────────
 
-function ChartWidgetInner({ config, title, storeIds, dateFrom, dateTo, hideHeader, forceCollapsed, compact }: ChartWidgetProps) {
+function ChartWidgetInner({ config, title, storeIds, dateFrom, dateTo, hideHeader, forceCollapsed, compact, managerId }: ChartWidgetProps) {
   // Normalize legacy config
   const normalized = useMemo(() => normalizeChartConfig(config), [config]);
   const metricSeries = normalized.metricSeries;
@@ -160,6 +162,7 @@ function ChartWidgetInner({ config, title, storeIds, dateFrom, dateTo, hideHeade
     subjectIds: storeIds,
     isAggregated: normalized.isAggregated,
     enabled: storeIds.length > 0 && !!dateFrom && !!dateTo,
+    managerId,
   });
 
   const hasData = Object.values(seriesData).some(d => d.length > 0);
