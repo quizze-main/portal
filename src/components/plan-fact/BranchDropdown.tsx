@@ -1,11 +1,11 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { LoovisStoreOption } from '@/lib/internalApiClient';
+import type { StoreOption } from '@/lib/internalApiClient';
 import type { BranchHealth } from '@/hooks/usePlanFactDashboard';
 import { getBranchOverallColor, completionDotClass } from '@/lib/planFactUtils';
 import { cn } from '@/lib/utils';
 
 interface BranchDropdownProps {
-  branches: LoovisStoreOption[];
+  branches: StoreOption[];
   branchHealth: Map<string, BranchHealth>;
   value: string;
   onChange: (branchId: string) => void;

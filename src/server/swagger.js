@@ -11,7 +11,7 @@ const options = {
       version: '1.0.0',
       description: 'API для платформы OverBrain',
       contact: {
-        name: 'Loov Team',
+        name: 'OverBrain Team',
         email: 'dev@loov.ru'
       }
     },

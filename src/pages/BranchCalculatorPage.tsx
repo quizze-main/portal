@@ -18,7 +18,7 @@ import { useLinkedMetricValues } from '@/hooks/useLinkedMetricValues';
 
 export default function BranchCalculatorPage() {
   const { branchId } = useParams<{ branchId: string }>();
-  const { employee, storeOptions, loovisRole, hasAllBranchesAccess, canEditSalaryCalculator } = useEmployee();
+  const { employee, storeOptions, employeeRole, hasAllBranchesAccess, canEditSalaryCalculator } = useEmployee();
   const { configs: apiConfigs } = useMotivationConfig();
 
   const canChangePosition = Boolean(canEditSalaryCalculator);

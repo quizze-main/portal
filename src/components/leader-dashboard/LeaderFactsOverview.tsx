@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { useFactsOverview } from '@/hooks/useFactsOverview';
-import type { DashboardMetricConfig, LoovisStoreOption } from '@/lib/internalApiClient';
+import type { DashboardMetricConfig, StoreOption } from '@/lib/internalApiClient';
 import { DailyFactCards } from './DailyFactCards';
 import {
   Sheet,
@@ -48,7 +48,7 @@ function generateMonthDates(year: number, month: number): string[] {
 
 interface LeaderFactsOverviewProps {
   metrics: DashboardMetricConfig[];
-  branches: LoovisStoreOption[];
+  branches: StoreOption[];
   onClose: () => void;
 }
 

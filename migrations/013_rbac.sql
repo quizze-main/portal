@@ -60,7 +60,7 @@ INSERT INTO rbac_feature_flags (flag_name, scope_type, scope_value) VALUES
     ('full_dashboard_access', 'store_id', '1000000009')
 ON CONFLICT (flag_name, scope_type, scope_value) DO NOTHING;
 
--- User settings (replaces Frappe loovis_user_settings DocType)
+-- User settings (replaces Frappe user settings DocType)
 CREATE TABLE IF NOT EXISTS user_settings (
     employee_id TEXT NOT NULL REFERENCES dim_employees(id) ON DELETE CASCADE,
     variant     TEXT NOT NULL DEFAULT 'shared',  -- 'mobile_tg', 'desktop_tg', 'mobile_web', 'desktop_web', 'shared'

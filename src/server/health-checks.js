@@ -48,7 +48,7 @@ const integrations = [
   },
   {
     id: 'tracker',
-    name: 'Loovis Tracker',
+    name: 'OverBrain Tracker',
     category: 'external',
     envVars: ['TRACKER_API_URL', 'TRACKER_API_TOKEN'],
     check: async () => {

@@ -1,8 +1,8 @@
 /**
- * User Settings module — replaces Frappe's loovis_user_settings DocType.
+ * User Settings module — replaces Frappe's user settings DocType.
  *
  * Stores dashboard layout preferences per employee per client variant.
- * Data shape matches the Frappe loovis_user_settings_get/upsert responses.
+ * Data shape matches the Frappe user_settings_get/upsert responses.
  *
  * Dual-persistence: PostgreSQL primary, JSON file fallback.
  */

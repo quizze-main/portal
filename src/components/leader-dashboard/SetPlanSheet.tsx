@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSetPlan } from '@/hooks/useSetPlan';
-import { internalApiClient, type DashboardMetricConfig, type LoovisStoreOption } from '@/lib/internalApiClient';
+import { internalApiClient, type DashboardMetricConfig, type StoreOption } from '@/lib/internalApiClient';
 import { AlertCircle, Check, Divide, Equal, Loader2, Pencil, Users } from 'lucide-react';
 import { DailyFactCards } from './DailyFactCards';
 
@@ -29,7 +29,7 @@ interface SetPlanSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   metrics: DashboardMetricConfig[];
-  branches: LoovisStoreOption[];
+  branches: StoreOption[];
   defaultBranchId?: string;
   /** true if user can set plans (leader only) */
   canSetPlan: boolean;
@@ -165,7 +165,7 @@ function MetricSelect({ value, onChange, metrics }: { value: string; onChange: (
   );
 }
 
-function BranchSelect({ value, onChange, branches }: { value: string; onChange: (v: string) => void; branches: LoovisStoreOption[] }) {
+function BranchSelect({ value, onChange, branches }: { value: string; onChange: (v: string) => void; branches: StoreOption[] }) {
   return (
     <div className="space-y-2">
       <label className="text-xs font-medium text-muted-foreground">Филиал</label>
@@ -446,7 +446,7 @@ function PlanFormContent({
   isValid, isSubmitting, onSubmit,
   simplified,
 }: {
-  metrics: DashboardMetricConfig[]; branches: LoovisStoreOption[];
+  metrics: DashboardMetricConfig[]; branches: StoreOption[];
   metricId: string; setMetricId: (v: string) => void;
   branchId: string; setBranchId: (v: string) => void;
   period: string; setPeriod: (v: string) => void;
@@ -671,7 +671,7 @@ function PlanSuccessContent({
   metric, numValue, unitLabel, branch, managers, managerValues, strategyInfo, onClose,
 }: {
   metric: DashboardMetricConfig | undefined; numValue: number; unitLabel: string;
-  branch: LoovisStoreOption | undefined;
+  branch: StoreOption | undefined;
   managers: ManagerInfo[]; managerValues: number[];
   strategyInfo: typeof STRATEGY_INFO[DistributionStrategy];
   onClose: () => void;

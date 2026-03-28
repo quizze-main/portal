@@ -342,21 +342,21 @@ interface UnclosedOrdersResponse {
   data?: UnclosedOrder[];
 }
 
-// === Loovis access role (employee role + allowed stores) ===
-export type LoovisStoreOption = {
+// === Employee access role (role + allowed stores) ===
+export type StoreOption = {
   store_id: string;
   name: string;
   department_id?: string | null;
 };
 
-export type LoovisEmployeeRoleResponse = {
+export type EmployeeRoleResponse = {
   employee_id: string;
   loovis_role: string | null;
   source: string | null;
-  stores: LoovisStoreOption[];
+  stores: StoreOption[];
 };
 
-// === LoovIs user settings (stored in Frappe DocType) ===
+// === User settings (stored in Frappe DocType) ===
 export type UserSettingsVariant = 'shared' | 'mobile_tg' | 'desktop_tg' | 'mobile_web' | 'desktop_web';
 
 export type UserSettingsBlob = {
@@ -1004,7 +1004,7 @@ class InternalApiClient {
     }
   }
 
-  async getLoovisEmployeeRole(): Promise<LoovisEmployeeRoleResponse | null> {
+  async getEmployeeRole(): Promise<EmployeeRoleResponse | null> {
     try {
       const response = await fetch(`${this.baseUrl}/loovis/employee-role`, {
         method: 'POST',
@@ -1014,7 +1014,7 @@ class InternalApiClient {
         // 401/403 can happen when cookie is missing; treat as "no extra access"
         return null;
       }
-      const result = (await response.json()) as LoovisEmployeeRoleResponse;
+      const result = (await response.json()) as EmployeeRoleResponse;
       return result || null;
     } catch (error) {
       logger.error('❌ Ошибка получения роли доступа (loovis_get_employee_role):', error);
@@ -1095,7 +1095,7 @@ class InternalApiClient {
       const result = (await response.json()) as UserSettingsResponse;
       return result || null;
     } catch (error) {
-      logger.error('❌ Ошибка получения пользовательских настроек (LoovIs user settings):', error);
+      logger.error('❌ Ошибка получения пользовательских настроек (user settings):', error);
       return null;
     }
   }
@@ -1126,7 +1126,7 @@ class InternalApiClient {
       const result = (await response.json()) as UserSettingsResponse;
       return result || null;
     } catch (error) {
-      logger.error('❌ Ошибка сохранения пользовательских настроек (LoovIs user settings):', error);
+      logger.error('❌ Ошибка сохранения пользовательских настроек (user settings):', error);
       return null;
     }
   }

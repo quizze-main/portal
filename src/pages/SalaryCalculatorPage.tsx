@@ -44,13 +44,13 @@ import { getSalaryConfig as getLocalConfig } from '@/data/salaryConfig';
 const GENERIC_EMPLOYEE_VALUE = '__generic__';
 
 export default function SalaryCalculatorPage() {
-  // Apply loov-theme to <html> so portals (Select, Popover) also inherit the theme
+  // Apply overbrain-theme to <html> so portals (Select, Popover) also inherit the theme
   useEffect(() => {
-    document.documentElement.classList.add('loov-theme');
-    return () => document.documentElement.classList.remove('loov-theme');
+    document.documentElement.classList.add('overbrain-theme');
+    return () => document.documentElement.classList.remove('overbrain-theme');
   }, []);
 
-  const { employee, storeOptions, loovisRole, hasAllBranchesAccess, canEditSalaryCalculator } = useEmployee();
+  const { employee, storeOptions, employeeRole, hasAllBranchesAccess, canEditSalaryCalculator } = useEmployee();
 
   // Only leaders / elevated-access users can switch positions in calculator.
   const canChangePosition = Boolean(canEditSalaryCalculator);

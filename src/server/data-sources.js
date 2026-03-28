@@ -182,7 +182,7 @@ export function mergeEnvDefaults(config) {
     if (trackerUrl || trackerToken) {
       result.sources.tracker = {
         id: 'tracker',
-        label: 'Loovis Tracker',
+        label: 'OverBrain Tracker',
         baseUrl: trackerUrl || '',
         authType: 'bearer',
         authConfig: { token: trackerToken || '' },

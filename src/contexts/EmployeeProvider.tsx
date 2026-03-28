@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, useState, useEffect, useCallback } from 'react';
-import { internalApiClient, Employee, type LoovisStoreOption, type UserSettingsResponse } from '@/lib/internalApiClient';
+import { internalApiClient, Employee, type StoreOption, type UserSettingsResponse } from '@/lib/internalApiClient';
 import { NotRegistered } from '@/pages/NotRegistered';
 import { PinCodeModal } from '@/components/PinCodeModal';
 import { Spinner } from '@/components/Spinner';
@@ -33,10 +33,10 @@ interface EmployeeContextType {
   reloadEmployee: () => void;
   storeId: string | null;
   setActiveStoreId: (storeId: string | null) => void;
-  storeOptions: LoovisStoreOption[];
-  /** Флаг: данные о storeOptions уже загружены (loadLoovisRole завершён) */
+  storeOptions: StoreOption[];
+  /** Флаг: данные о storeOptions уже загружены (loadEmployeeRole завершён) */
   storeOptionsLoaded: boolean;
-  loovisRole: string | null;
+  employeeRole: string | null;
   hasAllBranchesAccess: boolean;
   canUseLeaderDashboard: boolean;
   canUseSalaryCalculator: boolean;
@@ -59,9 +59,9 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [storeId, setStoreId] = useState<string | null>(null);
   const [departmentStoreId, setDepartmentStoreId] = useState<string | null>(null);
-  const [storeOptions, setStoreOptions] = useState<LoovisStoreOption[]>([]);
+  const [storeOptions, setStoreOptions] = useState<StoreOption[]>([]);
   const [storeOptionsLoaded, setStoreOptionsLoaded] = useState(false);
-  const [loovisRole, setLoovisRole] = useState<string | null>(null);
+  const [employeeRole, setEmployeeRole] = useState<string | null>(null);
   const [userSettings, setUserSettings] = useState<UserSettingsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
@@ -158,14 +158,14 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
     fetchDepartmentStoreId();
   }, [employee?.department]);
 
-  // 🔹 Новый приоритетный источник доступа: loovis_get_employee_role (storeOptions + loovisRole)
+  // 🔹 Новый приоритетный источник доступа: employee role (storeOptions + employeeRole)
   useEffect(() => {
     let cancelled = false;
 
     // Сбрасываем флаг, пока грузим данные
     setStoreOptionsLoaded(false);
 
-    const loadLoovisRole = async () => {
+    const loadEmployeeRole = async () => {
       if (!employee?.name) {
         // Если нет employee — тоже считаем «загрузку» завершённой (нет данных)
         setStoreOptionsLoaded(true);
@@ -173,13 +173,13 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
       }
 
       try {
-        const resp = await internalApiClient.getLoovisEmployeeRole();
+        const resp = await internalApiClient.getEmployeeRole();
         if (cancelled) return;
 
         const role = resp?.loovis_role ?? null;
         const options = Array.isArray(resp?.stores) ? resp!.stores : [];
 
-        setLoovisRole(role);
+        setEmployeeRole(role);
         // LIS-R-00000:
         // - для менеджера заботы: ничего нового (stores игнорируем)
         // - для руководителя клуба/клиники: доступ как у руководителя "как раньше" (на свой клуб)
@@ -225,7 +225,7 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    loadLoovisRole();
+    loadEmployeeRole();
     return () => {
       cancelled = true;
     };
@@ -266,8 +266,8 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
   // - "на свой клуб/клинику" (обычно 1 store)
   // - "на все клубы" (много stores)
   // Поэтому "все филиалы" определяем по наличию множества storeOptions.
-  const hasAllBranchesAccess = loovisRole === 'LIS-R-00001' && storeOptions.length > 1;
-  const isStandardAccess = loovisRole === 'LIS-R-00000';
+  const hasAllBranchesAccess = employeeRole === 'LIS-R-00001' && storeOptions.length > 1;
+  const isStandardAccess = employeeRole === 'LIS-R-00000';
 
   // Фиче-флаг: новый дашборд доступен только для руководителей определённых клубов.
   const NEW_DASHBOARD_ALLOWED_STORE_IDS = new Set(['1000000008', '1000000052', '1000000009']);
@@ -312,8 +312,8 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
   const canUseLeaderDashboard =
     hasAllBranchesAccess ||
     isCareManagerWithFullAccess ||
-    (loovisRole === 'LIS-R-00001' && storeOptions.length === 1 && isLeaderByDesignation) ||
-    (isLeaderByDesignation && allowedByStore && loovisRole !== 'LIS-R-00001');
+    (employeeRole === 'LIS-R-00001' && storeOptions.length === 1 && isLeaderByDesignation) ||
+    (isLeaderByDesignation && allowedByStore && employeeRole !== 'LIS-R-00001');
 
   // Salary calculator access:
   // - full access: LIS-R-00001 with all branches OR leaders (any club/clinic leader by designation)
@@ -452,7 +452,7 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
 
   if (employee) {
     return (
-      <EmployeeContext.Provider value={{ employee, reloadEmployee, storeId, setActiveStoreId, storeOptions, storeOptionsLoaded, loovisRole, hasAllBranchesAccess, canUseLeaderDashboard, canUseSalaryCalculator, canEditSalaryCalculator, userSettings, reloadUserSettings }}>
+      <EmployeeContext.Provider value={{ employee, reloadEmployee, storeId, setActiveStoreId, storeOptions, storeOptionsLoaded, employeeRole, hasAllBranchesAccess, canUseLeaderDashboard, canUseSalaryCalculator, canEditSalaryCalculator, userSettings, reloadUserSettings }}>
         {children}
       </EmployeeContext.Provider>
     );

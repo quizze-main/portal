@@ -5,7 +5,7 @@ import { BRANCHES } from './branchData';
  * and Frappe store IDs (1000000008, 1000000052, etc.)
  *
  * BRANCHES slugs are used in the vendored loovis-sandbox UI components.
- * Frappe store IDs are the real IDs from the Loovis/Frappe API used for data filtering.
+ * Frappe store IDs are the real IDs from the OverBrain/Frappe API used for data filtering.
  */
 export const BRANCH_TO_STORE_ID: Record<string, string> = {
   moscow_club: '1000000052',

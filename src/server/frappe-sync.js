@@ -334,7 +334,7 @@ export async function syncDesignationsFromFrappe() {
 
 /**
  * Sync roles and store access from Frappe → JSON (+ PG if connected).
- * Calls loovis_get_employee_role for each active employee.
+ * Calls Frappe employee role API for each active employee.
  */
 export async function syncRolesFromFrappe() {
   if (!FRAPPE_BASE_URL || !FRAPPE_API_KEY) return { synced: 0, error: 'Frappe not configured' };

@@ -1,5 +1,5 @@
 /**
- * RBAC Engine — replaces Frappe's loovis_get_employee_role custom method.
+ * RBAC Engine — replaces Frappe's employee role resolution custom method.
  *
  * Resolves employee roles, store access, and feature flags from PostgreSQL,
  * with automatic JSON file fallback when DB is not connected.

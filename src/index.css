@@ -822,10 +822,10 @@ ul.list-disc li {
 }
 
 /* ------------------------------------------------------------------ */
-/* LoovIS theme scope — applied only to .loov-theme containers        */
-/* Overrides CSS variables to match loovis-sandbox original design     */
+/* OverBrain theme scope — applied only to .overbrain-theme containers */
+/* Overrides CSS variables to match the original dashboard design      */
 /* ------------------------------------------------------------------ */
-.loov-theme {
+.overbrain-theme {
   --background: 240 10% 98%;
   --foreground: 220 15% 15%;
 

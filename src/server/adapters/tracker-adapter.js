@@ -1,5 +1,5 @@
 /**
- * Loovis Tracker Adapter — discovery and polling for the internal Tracker API.
+ * OverBrain Tracker Adapter — discovery and polling for the internal Tracker API.
  *
  * Refactored from source-discovery.js Tracker discovery logic.
  */
@@ -19,7 +19,7 @@ const TRACKER_CODES = [
 
 export class TrackerAdapter extends BaseAdapter {
   adapterType = 'tracker';
-  name = 'Loovis Tracker';
+  name = 'OverBrain Tracker';
   supportedEvents = [
     'order_created',
     'order_closed',

@@ -105,7 +105,7 @@ All external API calls are proxied through the Express server. Frontend NEVER ca
 **Core BFF routes (require JWT auth):**
 - `/api/frappe/*` — Frappe ERP (employees, tasks, standards, departments, user settings)
 - `/api/outline/*` — Outline Wiki (collections, documents, search, attachment proxy)
-- `/api/loovis/*` — Loovis Tracker dashboard metrics
+- `/api/loovis/*` — OverBrain Tracker dashboard metrics
 - `/api/profile/*` — Profile photo upload/delete with EXIF normalization
 - `/api/dashboards` — Analytics dashboard data from Tracker API
 - `/api/unclosed-orders` — Orders requiring attention
@@ -155,7 +155,7 @@ All external API calls are proxied through the Express server. Frontend NEVER ca
 
 ### Role-Based Access Control
 
-**Loovis Role System:**
+**Role System:**
 - `LIS-R-00000` — Standard access (own store only)
 - `LIS-R-00001` — Manager role (multi-store or all-store access)
 
@@ -214,7 +214,7 @@ Three format generations (all supported for backward compat):
 |-------------|------------|----------|
 | Frappe ERP | `FRAPPE_BASE_URL`, `FRAPPE_API_KEY`, `FRAPPE_API_SECRET` | Employees, tasks, standards, departments, user settings, file attachments |
 | Outline Wiki | `OUTLINE_BASE_URL`, `OUTLINE_API_KEY` | Collections, documents, search. Auto-filters hidden docs (names starting with `-`) |
-| Loovis Tracker | `TRACKER_API_URL`, `TRACKER_API_TOKEN` | Leader dashboard metrics (revenue, CSI, conversion), manager rankings |
+| OverBrain Tracker | `TRACKER_API_URL`, `TRACKER_API_TOKEN` | Leader dashboard metrics (revenue, CSI, conversion), manager rankings |
 | Telegram Bot | `TELEGRAM_BOT_TOKEN` | Webhook commands, deep linking to tasks/knowledge |
 | Yandex Tracker | `YANDEX_TREKER_AUTH_TOKEN`, `X_ORG_ID` | Feedback form → issue creation |
 | PostgreSQL Logs | `DATABASE_URL`, `PG_LOGS_ENABLED` | Backend log storage (table `app_logs`) |
@@ -279,7 +279,7 @@ Create `.env` from `env.example`, run `npm run generate-api-key`, fill in remain
 - `JWT_SECRET`
 
 **Optional:**
-- `TRACKER_API_URL`, `TRACKER_API_TOKEN` — Loovis Tracker (leader dashboard)
+- `TRACKER_API_URL`, `TRACKER_API_TOKEN` — OverBrain Tracker (leader dashboard)
 - `EXTERNAL_API_KEY` — External webhook auth
 - `DEMO_PIN` — Demo mode PIN code
 - `ALLOWED_ORIGINS` — CORS whitelist

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAdminDashboardMetrics } from './useAdminDashboardMetrics';
-import { internalApiClient, type DashboardMetricConfig, type MetricPlan, type LoovisStoreOption } from '@/lib/internalApiClient';
+import { internalApiClient, type DashboardMetricConfig, type MetricPlan, type StoreOption } from '@/lib/internalApiClient';
 import { completionColor } from '@/lib/planFactUtils';
 
 export interface CoverageCell {
@@ -38,7 +38,7 @@ export interface PlanFactDashboardData {
 
 export function usePlanFactDashboard(
   period: string,
-  storeOptions: LoovisStoreOption[],
+  storeOptions: StoreOption[],
 ): PlanFactDashboardData {
   const { metrics: allMetrics, isLoading: metricsLoading } = useAdminDashboardMetrics();
 

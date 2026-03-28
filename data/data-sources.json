@@ -2,7 +2,7 @@
   "sources": {
     "tracker": {
       "id": "tracker",
-      "label": "Loovis Tracker",
+      "label": "OverBrain Tracker",
       "baseUrl": "https://tracker.loov.ru",
       "authType": "bearer",
       "authConfig": {

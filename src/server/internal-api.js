@@ -45,7 +45,7 @@ const FRAPPE_API_SECRET = env.FRAPPE_API_SECRET;
 const OUTLINE_BASE_URL = env.OUTLINE_BASE_URL || 'https://wiki.loov.ru';
 const OUTLINE_API_KEY = env.OUTLINE_API_KEY;
 
-// Конфигурация Tracker (loov dashboards)
+// Конфигурация Tracker (OverBrain dashboards)
 const TRACKER_API_URL = env.TRACKER_API_URL || 'https://tracker.loov.ru';
 const TRACKER_API_TOKEN = env.TRACKER_API_TOKEN;
 
@@ -4439,7 +4439,7 @@ export function setupInternalApiRoutes(app) {
   });
 
   /**
-   * User settings proxy (LoovIs user settings).
+   * User settings proxy.
    *
    * - GET /api/frappe/user-settings -> loovis_user_settings_get
    * - POST /api/frappe/user-settings -> loovis_user_settings_upsert

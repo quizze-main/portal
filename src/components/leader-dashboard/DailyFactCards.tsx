@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useSetPlan } from '@/hooks/useSetPlan';
 import { useFactHistory } from '@/hooks/useFactHistory';
 import { internalApiClient } from '@/lib/internalApiClient';
-import type { DashboardMetricConfig, LoovisStoreOption } from '@/lib/internalApiClient';
+import type { DashboardMetricConfig, StoreOption } from '@/lib/internalApiClient';
 import { Check, CheckCircle2, ChevronLeft, ChevronRight, Lock, Loader2, Save } from 'lucide-react';
 
 /* ── Helpers ── */
@@ -63,7 +63,7 @@ function generateMonthDates(year: number, month: number): string[] {
 
 interface DailyFactCardsProps {
   metrics: DashboardMetricConfig[];
-  branches: LoovisStoreOption[];
+  branches: StoreOption[];
   defaultBranchId: string;
   onClose: () => void;
 }

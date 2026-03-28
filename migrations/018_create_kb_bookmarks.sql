@@ -1,5 +1,5 @@
 -- Migration 018: Create KB bookmarks table
--- Bookmarks were previously stored in Frappe (loovis_kb_bookmark doctype).
+-- Bookmarks were previously stored in Frappe (kb_bookmark doctype).
 -- Now PostgreSQL is the single source of truth.
 
 CREATE TABLE IF NOT EXISTS kb_bookmarks (

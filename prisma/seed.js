@@ -50,7 +50,7 @@ async function seed() {
     await client.query(`
       INSERT INTO adapter_registry (id, name, supported_events) VALUES
         ('amocrm', 'amoCRM', ARRAY['order_created', 'order_status_changed', 'order_closed']),
-        ('tracker', 'Loovis Tracker', ARRAY['order_created', 'order_closed', 'visit_recorded']),
+        ('tracker', 'OverBrain Tracker', ARRAY['order_created', 'order_closed', 'visit_recorded']),
         ('manual', 'Manual Entry', ARRAY[]::TEXT[])
       ON CONFLICT (id) DO NOTHING
     `);
@@ -80,16 +80,16 @@ async function seed() {
 
     await client.query(`
       INSERT INTO org_networks (id, name, enabled) VALUES
-        ('loov-network', 'LoovIS', true)
+        ('overbrain-network', 'OverBrain', true)
       ON CONFLICT (id) DO NOTHING
     `);
     console.log('  org_networks: OK');
 
     await client.query(`
       INSERT INTO dim_branches (id, name, code, city, timezone, enabled, network_id, store_id) VALUES
-        ('branch-spb', 'Клуб СПб', 'SPB', 'Санкт-Петербург', 'Europe/Moscow', true, 'loov-network', '1000000008'),
-        ('branch-msk', 'Клуб Москва', 'MSK', 'Москва', 'Europe/Moscow', true, 'loov-network', '1000000052'),
-        ('branch-klg', 'Клуб Калининград', 'KLG', 'Калининград', 'Europe/Kaliningrad', true, 'loov-network', '1000000009')
+        ('branch-spb', 'Клуб СПб', 'SPB', 'Санкт-Петербург', 'Europe/Moscow', true, 'overbrain-network', '1000000008'),
+        ('branch-msk', 'Клуб Москва', 'MSK', 'Москва', 'Europe/Moscow', true, 'overbrain-network', '1000000052'),
+        ('branch-klg', 'Клуб Калининград', 'KLG', 'Калининград', 'Europe/Kaliningrad', true, 'overbrain-network', '1000000009')
       ON CONFLICT (id) DO NOTHING
     `);
     console.log('  dim_branches: OK');
